@@ -1,0 +1,30 @@
+# Walk-Forward Analysis Experiment Configuration
+
+# Inherits from base.yaml, overrides for WFA
+
+# --- WFA Settings ---
+wfa:
+  train_days: 60
+  test_days: 20
+  step_days: 20
+
+# --- Full Grid Search Parameters (per Spec F2) ---
+grid_search:
+  target_delta: [0.05, 0.075, 0.10, 0.125, 0.15]
+  width: [10, 15, 20, 25, 30]
+  take_profit_pct: [0.20, 0.30, 0.40, 0.50]
+  stop_loss_mult: [2.0, 2.5, 3.0]
+  max_hold_minutes: [20, 30, 40, 60]
+
+# --- Score Function Weights ---
+score_weights:
+  lambda_dd: 1.0
+  eta_cvar: 0.5
+  kappa_worst: 0.1
+
+# --- Output Artifacts ---
+artifacts:
+  output_dir: "./artifacts"
+  save_trades: true
+  save_fold_results: true
+  save_regime_breakdown: true
