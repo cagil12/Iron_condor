@@ -11,14 +11,12 @@ class TestIVSolver(unittest.TestCase):
         self.assertAlmostEqual(sigma, recovered_sigma, places=5)
         
     def test_iv_convergence_fail(self):
-        # Reasonable behavior on impossible prices (like negative?)
-        # For now just checking it doesn't crash on zero price
+        # Reasonable behavior on impossible prices (like zero)
+        # Hardened solver now returns NaN for invalid prices
         iv = implied_volatility(0.0, 100, 100, 1.0, 0.05, 'C')
-        # Should be low or handle gracefully?? 
-        # BSM with 0 vol = intrinsic. Argmax of 0 price for ATM call matches 0 vol?
-        # ATM Call Intrinsic is 0? Yes. (100-100).
-        # So price 0.0 implies Vol 0.0.
-        self.assertTrue(iv < 0.01 or iv == 0.5) # 0.5 is start guess, might not move if vega zero?
+        # Zero price for ATM option is invalid - should return NaN
+        import numpy as np
+        self.assertTrue(np.isnan(iv) or iv < 0.01)
 
 if __name__ == '__main__':
     unittest.main()
