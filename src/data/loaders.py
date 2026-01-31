@@ -87,8 +87,10 @@ class DataLoader:
                 exp_day = int(match.group(4))
                 option_expiry = date(exp_year, exp_month, exp_day)
                 
-                # Include all options - we'll use the closest expiration for short-term strategies
-                # (The 0DTE filter was too strict for multi-expiry data files)
+                # ESTUDIO TITO: STRICT 0DTE FILTER
+                # Only load options expiring TODAY. No mixing expirations.
+                if option_expiry != expiration:
+                    continue  # Skip non-0DTE options
                 
                 otype_char = match.group(5)
                 strike_str = match.group(6)
@@ -164,19 +166,23 @@ class DataLoader:
             )
             
             # Calculate Delta using IV
-            delta = _bs_solver.calculate_delta(
-                option_type=otype_str,
-                S=found_spot,
-                K=strike,
-                T=dte,
-                sigma=iv if iv > 0 else 0.20  # Fallback IV
-            )
+            # ESTUDIO TITO: NO FALLBACKS. If IV solver failed, propagate NaN.
+            if iv is None or iv <= 0 or np.isnan(iv):
+                delta = float('nan')  # Trade will abort on NaN delta
+            else:
+                delta = _bs_solver.calculate_delta(
+                    option_type=otype_str,
+                    S=found_spot,
+                    K=strike,
+                    T=dte,
+                    sigma=iv
+                )
             
             q = Quote(
                 bid=p['bid'],
                 ask=p['ask'],
                 mid=mid,
-                implied_vol=iv,
+                implied_vol=iv if iv and iv > 0 else float('nan'),
                 delta=delta
             )
             chain.quotes[(strike, otype)] = q

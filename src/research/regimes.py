@@ -143,10 +143,15 @@ class MarketRegime:
         if date_str in self.exclude_dates:
             return False
         
-        # 2. Check VIX bounds (if provided)
-        if vix_value is not None:
-            if vix_value < self.min_vix or vix_value > self.max_vix:
-                return False
+        # ESTUDIO TITO: VIX GATE
+        # If VIX is None, we are operating BLIND. ABORT.
+        # This is a critical safety check for real trading.
+        if vix_value is None:
+            return False  # Cannot trade without VIX visibility
+        
+        # 2. Check VIX bounds
+        if vix_value < self.min_vix or vix_value > self.max_vix:
+            return False
         
         return True
     

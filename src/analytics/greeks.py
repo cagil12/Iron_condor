@@ -74,7 +74,7 @@ class BlackScholesSolver:
 
             return brentq(objective_function, low, high, xtol=1e-6)
         except Exception:
-            return 0.0  # Fallback si no converge
+            return float('nan')  # ESTUDIO TITO: No fallbacks, propagate failure
 
     def calculate_price(self, option_type, S, K, T, sigma):
         """Alias for price_option - used by simulator fallback."""

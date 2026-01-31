@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from typing import List, Generator
 from datetime import datetime, time
 from .condor_builder import CondorBuilder, IronCondorTrade
@@ -137,8 +138,12 @@ class Simulator:
                     # Use Black-Scholes with estimated IV
                     otype_str = 'call' if leg.option_type == OptionType.CALL else 'put'
                     
-                    # Estimate IV from last known quote or use default
-                    estimated_iv = q.implied_vol if q and q.implied_vol > 0 else 0.20
+                    # ESTUDIO TITO: NO FALLBACKS. Get IV from quote or ABORT.
+                    if q and q.implied_vol and q.implied_vol > 0 and not np.isnan(q.implied_vol):
+                        estimated_iv = q.implied_vol
+                    else:
+                        print(f"  Fallback ABORTED: No valid IV for {leg.option_type.name} {leg.strike}")
+                        return None  # Cannot price without IV
                     
                     # Calculate theoretical price
                     theo_price = bs_solver.calculate_price(
@@ -154,7 +159,7 @@ class Simulator:
                     print(f"  Fallback BS: {leg.option_type.name} {leg.strike} @ ${price:.2f} (IV={estimated_iv:.0%})")
                 else:
                     # Near ATM with missing quote - dangerous, can't price safely
-                    print(f"  Fallback failed: {leg.option_type.name} {leg.strike} near ATM")
+                    print(f"  Fallback ABORTED: {leg.option_type.name} {leg.strike} near ATM")
                     return None
             
             # Accumulate debit
