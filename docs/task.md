@@ -59,3 +59,11 @@
 - [x] Align with Ingresarios Protocol (Width 10, TP 0.5, SL 3.0) <!-- id: 35 -->
 - [x] Implement Logic Firewall (Impossible Credit, Moneyness) <!-- id: 36 -->
 
+## 12. 🚨 Emergency Repair: "Estudio Tito" Audit
+- [x] Kill IV Solver fallbacks (Return NaN, abort trade on failure) <!-- id: 37 -->
+- [x] Fix Bid=0 logic (Allow Bid=0, reject Ask<=0 only) <!-- id: 38 -->
+- [x] Strict expiration filtering (Only load 0DTE matching trade date) <!-- id: 39 -->
+- [x] VIX Regime Gate (Abort if VIX is None) <!-- id: 40 -->
+- [ ] USD Standardization (All PnL in dollars, not points) <!-- id: 41 -->
+
+
