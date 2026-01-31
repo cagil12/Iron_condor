@@ -99,9 +99,15 @@ class DataLoader:
                 bid = float(row.get('bid_px_00', 0))
                 ask = float(row.get('ask_px_00', 0))
                 
-                if bid <= 0 or ask <= 0:
+                # CRITICAL FIX: Only reject if ASK is invalid (corrupted data)
+                # A bid of 0 is VALID market information - the option is worthless
+                # (This is GOOD for us when we're short - it means we won!)
+                if ask <= 0:
                     continue
                 
+                # If bid is 0, the option is essentially worthless to close
+                # Mid = ask/2 when bid=0, or (bid+ask)/2 otherwise
+                bid = max(0, bid)  # Ensure non-negative
                 mid = (bid + ask) / 2
                 
                 parsed_quotes.append({

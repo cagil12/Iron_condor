@@ -66,6 +66,12 @@ class Simulator:
             try:
                 exit_debit = self.exit_manager.calculate_debit(active_trade, last_chain)
                 
+                # FALLBACK: If standard calculation returns None (missing quotes), 
+                # try theoretical pricing for OTM options
+                if exit_debit is None:
+                    print(f"⚠️ Warning: Missing quotes at EOD. Attempting Fallback Pricing...")
+                    exit_debit = self._calculate_fallback_debit(active_trade, last_chain)
+                
                 if exit_debit is not None:
                     pnl = (active_trade.entry_credit - exit_debit) * 100  # Per contract
                     pnl_pct = pnl / (active_trade.max_loss * 100) if active_trade.max_loss > 0 else 0
@@ -81,8 +87,8 @@ class Simulator:
                     )
                     print(f"EOD Exit at {last_chain.timestamp}: PnL ${pnl:.2f}")
                 else:
-                    # Can't calculate - use stored max_loss
-                    pnl = -active_trade.max_loss * 100  # Assume max loss
+                    # Only if Fallback also fails, assume max loss
+                    pnl = -active_trade.max_loss * 100
                     
                     from .exits import TradeExit
                     active_trade.status = "CLOSED"
@@ -101,6 +107,41 @@ class Simulator:
                 print(f"EOD Exit failed: {e}")
                     
         return daily_trades
+    
+    def _calculate_fallback_debit(self, trade: IronCondorTrade, chain: OptionChain) -> float:
+        """
+        Calculate theoretical closing cost when quotes are missing.
+        If option is OTM and missing quote, assume it's worthless (price = $0.05).
+        """
+        total_debit = 0.0
+        spot = chain.underlying_price
+        
+        for leg in trade.legs:
+            q = chain.get_quote(leg.strike, leg.option_type)
+            
+            if q:
+                # Quote exists - use real market price
+                price = q.bid if leg.is_long else q.ask
+            else:
+                # Quote missing - check if deep OTM
+                dist_pct = abs(spot - leg.strike) / spot if spot > 0 else 0
+                
+                if dist_pct > 0.01:  # More than 1% away from spot
+                    # Deep OTM - assume worthless (conservative $0.05 tick)
+                    price = 0.05
+                    print(f"  Fallback: {leg.option_type.name} {leg.strike} @ $0.05 (OTM)")
+                else:
+                    # Near ATM with missing quote - dangerous, can't price safely
+                    print(f"  Fallback failed: {leg.option_type.name} {leg.strike} near ATM")
+                    return None
+            
+            # Accumulate debit
+            if leg.is_long:
+                total_debit -= price  # Credit (we receive)
+            else:
+                total_debit += price  # Debit (we pay)
+                
+        return total_debit
 
     def run_simulation(self) -> pd.DataFrame:
         """
