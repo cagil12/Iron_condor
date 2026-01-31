@@ -29,9 +29,8 @@ class MockDataGenerator:
         current_time = market_open
         current_spot = self.spot_start # Simple random walk
         
-        # Strikes: ATM +/- 500 points, every 5 points
-        # For simplicity, fixed set of strikes per day
-        strikes = np.arange(self.spot_start - 300, self.spot_start + 300, 5)
+        # Low-res strikes for fast verification: ATM +/- 100 points, every 10 points
+        strikes = np.arange(self.spot_start - 100, self.spot_start + 100, 10)
         
         while current_time <= market_close:
             # Random walk for spot
@@ -80,7 +79,7 @@ class MockDataGenerator:
                     chain.quotes[(K, otype)] = q
             
             yield chain
-            current_time += timedelta(minutes=1)
+            current_time += timedelta(minutes=5)
 
 if __name__ == "__main__":
     # Smoke test

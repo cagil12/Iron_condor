@@ -1,5 +1,5 @@
 import unittest
-from ingresarios_options_research.src.pricing.iv_solver import implied_volatility, bsm_price
+from src.pricing.iv_solver import implied_volatility, bsm_price
 
 class TestIVSolver(unittest.TestCase):
     def test_iv_recovery(self):

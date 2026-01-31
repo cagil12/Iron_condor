@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, date
-from ingresarios_options_research.src.data.schema import OptionChain, OptionType, Quote
+from src.data.schema import OptionChain, OptionType, Quote
 
 class TestChainKeys(unittest.TestCase):
     def test_keys_collision(self):

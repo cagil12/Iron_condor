@@ -91,3 +91,81 @@ def regime_breakdown(trades_df: pd.DataFrame, regime_col: str = 'hv_regime') -> 
     summary.columns = ['trade_count', 'total_pnl', 'avg_pnl', 'std_pnl', 'avg_ror']
     return summary.reset_index()
 
+
+class MarketRegime:
+    """
+    Real-time regime filter for risk management.
+    Checks VIX bounds and date blacklists (FOMC, CPI, NFP).
+    """
+    
+    def __init__(self, config: Dict):
+        """
+        Initialize with filter configuration.
+        
+        Args:
+            config: dict with 'filters' section containing:
+                - min_vix: float (default 12.0)
+                - max_vix: float (default 40.0)
+                - exclude_dates: List[str] in 'YYYY-MM-DD' format
+        """
+        filters = config.get('filters', {})
+        self.min_vix = filters.get('min_vix', 12.0)
+        self.max_vix = filters.get('max_vix', 40.0)
+        
+        # Parse exclude dates
+        raw_dates = filters.get('exclude_dates', [])
+        self.exclude_dates = set()
+        for d in raw_dates:
+            if isinstance(d, str):
+                self.exclude_dates.add(d)
+            elif hasattr(d, 'strftime'):  # datetime/date object
+                self.exclude_dates.add(d.strftime('%Y-%m-%d'))
+    
+    def is_safe(self, timestamp, vix_value: float = None) -> bool:
+        """
+        Check if it's safe to trade on the given timestamp.
+        
+        Args:
+            timestamp: datetime or date object
+            vix_value: Current VIX level (optional)
+            
+        Returns:
+            bool: True if safe to trade, False if should skip
+        """
+        # 1. Check date blacklist (FOMC, CPI, NFP)
+        if hasattr(timestamp, 'date'):
+            check_date = timestamp.date()
+        else:
+            check_date = timestamp
+            
+        date_str = check_date.strftime('%Y-%m-%d') if hasattr(check_date, 'strftime') else str(check_date)
+        
+        if date_str in self.exclude_dates:
+            return False
+        
+        # 2. Check VIX bounds (if provided)
+        if vix_value is not None:
+            if vix_value < self.min_vix or vix_value > self.max_vix:
+                return False
+        
+        return True
+    
+    def get_skip_reason(self, timestamp, vix_value: float = None) -> str:
+        """Get human-readable reason for skipping."""
+        if hasattr(timestamp, 'date'):
+            check_date = timestamp.date()
+        else:
+            check_date = timestamp
+            
+        date_str = check_date.strftime('%Y-%m-%d') if hasattr(check_date, 'strftime') else str(check_date)
+        
+        if date_str in self.exclude_dates:
+            return f"Blacklisted date: {date_str} (FOMC/CPI/NFP)"
+        
+        if vix_value is not None:
+            if vix_value < self.min_vix:
+                return f"VIX too low: {vix_value:.1f} < {self.min_vix}"
+            if vix_value > self.max_vix:
+                return f"VIX too high: {vix_value:.1f} > {self.max_vix}"
+        
+        return "Unknown"

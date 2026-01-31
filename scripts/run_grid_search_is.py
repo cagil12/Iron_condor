@@ -3,8 +3,8 @@ import yaml
 import sys
 import pandas as pd
 from datetime import date, timedelta
-from ingresarios_options_research.src.strategy.mock_data_generator import MockDataGenerator
-from ingresarios_options_research.src.research.grid_search import GridSearch
+from src.strategy.mock_data_generator import MockDataGenerator
+from src.research.grid_search import GridSearch
 
 def main():
     parser = argparse.ArgumentParser(description="Run Just-In-Time Grid Search (IS)")

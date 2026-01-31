@@ -38,6 +38,23 @@ data:
     start: "2023-01-01"
     end: "2023-12-31"
 
+# --- Risk Filters (FOMC/CPI/High Vol Days) ---
+filters:
+  min_vix: 12.0              # Skip days with VIX below this (low vol = poor premium)
+  max_vix: 40.0              # Skip days with VIX above this (extreme risk)
+  exclude_dates:             # Blacklist dates (FOMC, CPI, NFP, etc.)
+    - "2023-01-25"           # FOMC
+    - "2023-02-01"           # FOMC
+    - "2023-03-10"           # NFP
+    - "2023-03-14"           # CPI
+    - "2023-03-22"           # FOMC
+    - "2023-05-03"           # FOMC
+    - "2023-06-14"           # FOMC + CPI
+    - "2023-07-26"           # FOMC
+    - "2023-09-20"           # FOMC
+    - "2023-11-01"           # FOMC
+    - "2023-12-13"           # FOMC + CPI
+
 # --- Optimization Grid (Default Ranges) ---
 grid_search:
   target_delta: [0.05, 0.10, 0.15]

@@ -1,0 +1,46 @@
+# Quick Test Configuration for SPX 0DTE Iron Condor
+
+# --- Global Settings ---
+ticker: "SPX"
+timezone: "US/Eastern"
+currency: "USD"
+
+# --- Strategy Parameters ---
+strategy:
+  entry_time: "10:00"      # HH:MM (Market time)
+  target_delta: 0.10       # Target delta for short legs
+  width: 50                # Spread width in points (SPX strikes are 5-25pt intervals)
+  
+  # Liquidity Gates
+  min_credit: 0.50         # Minimum credit to enter
+  min_ror: 0.05            # Minimum Return on Risk (Credit/Risk)
+  max_spread_pct: 5.00     # Max relative spread (ask-bid)/mid
+  max_spread_abs: 5.00     # Max absolute spread in points
+
+# --- Exit Parameters ---
+exit:
+  take_profit_pct: 0.50    # Exit at 50% of max profit (credit)
+  stop_loss_mult: 2.5      # Exit if debit >= 2.5 * credit
+  max_hold_minutes: 45     # Time exit
+  force_close_time: "15:45" # End of day safety close
+
+# --- Simulation Settings ---
+simulation:
+  commission_per_leg: 0.65
+  slippage_per_leg: 0.00   
+  capital: 10000           
+  
+# --- Data Settings ---
+data:
+  source: "parquet"
+  data_path: "./data/raw"
+  dates:
+    start: "2023-01-01"
+    end: "2023-12-31"
+
+# --- Optimization Grid (Minimal for Speed) ---
+grid_search:
+  target_delta: [0.10]
+  width: [50]
+  take_profit_pct: [0.50]
+  stop_loss_mult: [2.5]

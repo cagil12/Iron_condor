@@ -3,9 +3,9 @@ import yaml
 import sys
 import pandas as pd
 from datetime import datetime, date
-from ingresarios_options_research.src.data.data_quality import DataQualityChecker
-from ingresarios_options_research.src.data.loaders import DataLoader
-from ingresarios_options_research.src.strategy.mock_data_generator import MockDataGenerator
+from src.data.data_quality import DataQualityChecker
+from src.data.loaders import DataLoader
+from src.strategy.mock_data_generator import MockDataGenerator
 
 def main():
     parser = argparse.ArgumentParser(description="Run Data Quality Checks")

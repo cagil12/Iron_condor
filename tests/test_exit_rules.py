@@ -1,8 +1,8 @@
 import unittest
 from datetime import datetime, date, timedelta
-from ingresarios_options_research.src.strategy.exits import ExitManager, TradeExit
-from ingresarios_options_research.src.strategy.condor_builder import IronCondorTrade, Leg
-from ingresarios_options_research.src.data.schema import OptionChain, OptionType, Quote
+from src.strategy.exits import ExitManager, TradeExit
+from src.strategy.condor_builder import IronCondorTrade, Leg
+from src.data.schema import OptionChain, OptionType, Quote
 
 class TestExitRules(unittest.TestCase):
     def test_stop_loss(self):

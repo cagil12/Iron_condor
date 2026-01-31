@@ -49,49 +49,25 @@ class CondorBuilder:
     def find_strike_by_delta(self, chain: OptionChain, otype: OptionType, target_delta_abs: float) -> Optional[float]:
         """
         Find strike closest to target delta.
-        If vendor delta is missing, infer delta via IV solver.
+        Uses pre-calculated delta from data loader.
         """
-        from ..pricing.iv_solver import implied_volatility
-        from ..pricing.greeks import calculate_greeks
-        
         candidates = []
-        spot = chain.underlying_price
-        
-        # Time to expiry (approximate: assume 0DTE, ~6.5 hours left at 10:00)
-        # More precise: calculate from timestamp to 16:00
-        # For now, use a fixed estimate of 0.02 years (~7 hours)
-        T = 0.02  # ~7 hours in year fraction
-        r = 0.05  # Risk-free rate assumption (should be config)
         
         for (strike, ot), quote in chain.quotes.items():
             if ot != otype:
                 continue
-                
-            # If delta is provided by vendor, use it
-            if quote.delta is not None:
+            
+            # Use delta calculated by loader
+            if quote.delta is not None and quote.delta != 0.0:
                 candidates.append((strike, quote.delta))
-            else:
-                # Infer delta via IV solver
-                mid = (quote.bid + quote.ask) / 2
-                if mid <= 0:
-                    continue
-                    
-                try:
-                    iv = implied_volatility(mid, spot, strike, T, r, otype.value)
-                    if iv > 0:
-                        greeks = calculate_greeks(spot, strike, T, r, iv, otype.value)
-                        inferred_delta = greeks['delta']
-                        candidates.append((strike, inferred_delta))
-                except Exception:
-                    continue  # Skip if solver fails
         
         if not candidates:
             return None
             
-        # Target: -delta for Put, +delta for Call
+        # Target: -delta for Put (e.g., -0.10), +delta for Call (e.g., +0.10)
         target = -target_delta_abs if otype == OptionType.PUT else target_delta_abs
         
-        # Sort by distance to target
+        # Sort by distance to target delta
         best_strike = min(candidates, key=lambda x: abs(x[1] - target))[0]
         return best_strike
 
@@ -139,6 +115,7 @@ class CondorBuilder:
         short_call_k = self.find_strike_by_delta(chain, OptionType.CALL, self.target_delta)
         
         if short_put_k is None or short_call_k is None:
+            # print(f"Rejected: Could not find target delta {self.target_delta}")
             return None # Can't find deltas
             
         # 2. Select Longs
@@ -146,8 +123,19 @@ class CondorBuilder:
         long_call_k = self.find_wing(chain, OptionType.CALL, short_call_k, self.width)
         
         if long_put_k is None or long_call_k is None:
+            print(f"Rejected: Could not find wings. SP:{short_put_k} SC:{short_call_k}")
             return None # Can't find wings
+        
+        # Validate actual width is not absurdly large (max 3x target width)
+        actual_put_width = short_put_k - long_put_k
+        actual_call_width = long_call_k - short_call_k
+        max_allowed_width = self.width * 3  # e.g., if width=25, max=75
+        
+        if actual_put_width > max_allowed_width or actual_call_width > max_allowed_width:
+            print(f"Rejected: Width too large. Put={actual_put_width:.0f}, Call={actual_call_width:.0f}, Max={max_allowed_width:.0f}")
+            return None
             
+        print(f"Strikes: LP={long_put_k} SP={short_put_k} SC={short_call_k} LC={long_call_k} | Spot={chain.underlying_price:.2f}")
         # 3. Get Quotes and Validate
         legs = []
         specs = [
@@ -161,8 +149,13 @@ class CondorBuilder:
         
         for strike, otype, is_long in specs:
             q = chain.get_quote(strike, otype)
-            if not q or not self.validate_quote(q, chain.underlying_price):
-                return None # Failed validation
+            if not q:
+                 print(f"Rejected: No quote for {strike} {otype}")
+                 return None
+            
+            if not self.validate_quote(q, chain.underlying_price):
+                 print(f"Rejected: Quote validation failed for {strike} {otype}. Spread: {q.ask-q.bid:.2f}")
+                 return None # Failed validation
             
             # Pricing: Sell at Bid, Buy at Ask
             price = q.ask if is_long else q.bid
@@ -177,6 +170,7 @@ class CondorBuilder:
                 
         # 4. Check Economics
         if total_credit < self.min_credit:
+            print(f"Rejected: Credit {total_credit:.2f} < Min {self.min_credit}")
             return None
             
         # Calc Max Loss (assuming symmetric width for simplicity in check, but using real logic)
@@ -190,6 +184,7 @@ class CondorBuilder:
         
         ror = total_credit / max_loss
         if ror < self.min_ror:
+            print(f"Rejected: RoR {ror:.2%}")
             return None
             
         return IronCondorTrade(

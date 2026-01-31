@@ -1,5 +1,5 @@
 import unittest
-from ingresarios_options_research.src.research.walk_forward import WalkForwardAnalysis
+from src.research.walk_forward import WalkForwardAnalysis
 from datetime import date, timedelta
 
 class TestWFASplits(unittest.TestCase):

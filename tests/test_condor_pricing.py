@@ -1,6 +1,6 @@
 import unittest
-from ingresarios_options_research.src.strategy.condor_builder import CondorBuilder, IronCondorTrade
-from ingresarios_options_research.src.data.schema import OptionChain, OptionType, Quote
+from src.strategy.condor_builder import CondorBuilder, IronCondorTrade
+from src.data.schema import OptionChain, OptionType, Quote
 from datetime import datetime, date
 
 class TestCondorPricing(unittest.TestCase):
