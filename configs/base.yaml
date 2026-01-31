@@ -7,22 +7,22 @@ currency: "USD"
 
 # --- Strategy Parameters ---
 strategy:
-  entry_time: "10:00"      # HH:MM (Market time)
-  target_delta: 0.10       # Target delta for short legs
-  width: 20                # Spread width in points
+  entry_time: "10:00"      # HH:MM (Strict Ingresarios Start)
+  target_delta: 0.10       # Target delta (OTM)
+  width: 10                # Spread width (Strict Ingresarios risk)
   
   # Liquidity Gates
   min_credit: 0.50         # Minimum credit to enter
-  min_ror: 0.05            # Minimum Return on Risk (Credit/Risk)
-  max_spread_pct: 0.10     # Max relative spread (ask-bid)/mid
-  max_spread_abs: 1.00     # Max absolute spread in points
+  min_ror: 0.05            # Minimum Return on Risk
+  max_spread_pct: 5.00     # Max relative spread
+  max_spread_abs: 5.00     # Max absolute spread
 
 # --- Exit Parameters ---
 exit:
-  take_profit_pct: 0.50    # Exit at 50% of max profit (credit)
-  stop_loss_mult: 2.5      # Exit if debit >= 2.5 * credit
-  max_hold_minutes: 45     # Time exit
-  force_close_time: "15:45" # End of day safety close
+  take_profit_pct: 0.50    # Take Profit at 50% (Speed)
+  stop_loss_mult: 3.0      # Stop Loss 3x Credit
+  hold_duration_min: 45    # Max Hold 45 mins (Sniper)
+  eod_time: "16:15"        # Force exit
 
 # --- Simulation Settings ---
 simulation:

@@ -1,0 +1,30 @@
+# Diagnostic Configuration - Relaxed Constraints
+
+# --- Global Settings ---
+ticker: "SPX"
+timezone: "US/Eastern"
+currency: "USD"
+
+# --- Strategy Parameters ---
+strategy:
+  entry_time: "10:00"      # HH:MM (Market time)
+  target_delta: 0.10       # Target delta for short legs
+  width: 50                # Spread width
+  
+  # Liquidity Gates (RELAXED)
+  min_credit: 0.05         # Lowered from 0.50 to catch cheap premiums
+  min_ror: 0.01            # Lowered from 0.05
+  max_spread_pct: 10.00    # Relaxed from 5.00
+  max_spread_abs: 20.00    # Relaxed from 5.00
+
+# --- Exit Parameters ---
+exit:
+  take_profit_pct: 0.50    # 50% of max profit
+  stop_loss_mult: 2.5      # 2.5x credit
+  hold_duration_min: 0     # 0DTE
+
+# --- Backtest Settings ---
+backtest:
+  initial_capital: 100000
+  slippage_abs: 0.00       # No slippage for diagnostic
+  commission: 0.00         # No comms

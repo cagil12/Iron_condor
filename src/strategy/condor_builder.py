@@ -59,6 +59,12 @@ class CondorBuilder:
             
             # Use delta calculated by loader
             if quote.delta is not None and quote.delta != 0.0:
+                # Ingresarios Strict: Moneyness Check
+                if otype == OptionType.PUT and strike >= chain.underlying_price:
+                    continue # Reject ITM/ATM Puts
+                if otype == OptionType.CALL and strike <= chain.underlying_price:
+                    continue # Reject ITM/ATM Calls
+                    
                 candidates.append((strike, quote.delta))
         
         if not candidates:
@@ -135,43 +141,74 @@ class CondorBuilder:
             print(f"Rejected: Width too large. Put={actual_put_width:.0f}, Call={actual_call_width:.0f}, Max={max_allowed_width:.0f}")
             return None
             
+        # SAFETY CHECK: Moneyness (Anti-Inversion Firewall)
+        # Put strike must be strictly BELOW spot. Call strike must be strictly ABOVE spot.
+        spot = chain.underlying_price
+        if short_put_k >= spot:
+            print(f"Rejected: Short Put {short_put_k} >= Spot {spot:.2f} (ITM/ATM). Dangerous.")
+            return None
+        if short_call_k <= spot:
+            print(f"Rejected: Short Call {short_call_k} <= Spot {spot:.2f} (ITM/ATM). Dangerous.")
+            return None
+            
         print(f"Strikes: LP={long_put_k} SP={short_put_k} SC={short_call_k} LC={long_call_k} | Spot={chain.underlying_price:.2f}")
         # 3. Get Quotes and Validate
         legs = []
-        specs = [
-            (short_put_k, OptionType.PUT, False),
-            (long_put_k, OptionType.PUT, True),
-            (short_call_k, OptionType.CALL, False),
-            (long_call_k, OptionType.CALL, True)
-        ]
         
-        total_credit = 0.0
-        
-        for strike, otype, is_long in specs:
+        # Helper to get valid quote or reject
+        def get_and_validate(strike, otype, is_long):
             q = chain.get_quote(strike, otype)
             if not q:
-                 print(f"Rejected: No quote for {strike} {otype}")
-                 return None
-            
+                return None
             if not self.validate_quote(q, chain.underlying_price):
-                 print(f"Rejected: Quote validation failed for {strike} {otype}. Spread: {q.ask-q.bid:.2f}")
-                 return None # Failed validation
-            
-            # Pricing: Sell at Bid, Buy at Ask
-            price = q.ask if is_long else q.bid
-            
-            leg = Leg(otype, strike, is_long, price)
-            legs.append(leg)
-            
-            if is_long:
-                total_credit -= price
-            else:
-                total_credit += price
-                
-        # 4. Check Economics
-        if total_credit < self.min_credit:
-            print(f"Rejected: Credit {total_credit:.2f} < Min {self.min_credit}")
+                print(f"Rejected: Quote validation failed for {strike} {otype}. Spread: {q.ask - q.bid:.2f}")
+                return None
+            return q
+
+        # Short Legs
+        q_sp = get_and_validate(short_put_k, OptionType.PUT, False)
+        q_sc = get_and_validate(short_call_k, OptionType.CALL, False)
+        
+        # Long Legs
+        q_lp = get_and_validate(long_put_k, OptionType.PUT, True)
+        q_lc = get_and_validate(long_call_k, OptionType.CALL, True)
+        
+        if not (q_sp and q_sc and q_lp and q_lc):
             return None
+            
+        # 4. Check Economics
+        # Credit = (Bid_SP + Bid_SC) - (Ask_LP + Ask_LC)
+        credit = (q_sp.bid + q_sc.bid) - (q_lp.ask + q_lc.ask)
+        
+        # SAFETY CHECK: Impossible Credit (Data Alucinada)
+        # Verify Credit < Width strictly.
+        # Strict Rule: If credit >= width, it is mathematically impossible with valid OTM pricing.
+        real_width_put = short_put_k - long_put_k
+        real_width_call = long_call_k - short_call_k
+        used_width = max(real_width_put, real_width_call)
+        
+        if credit >= used_width:
+             print(f"Rejected: IMPOSSIBLE CREDIT ${credit:.2f} >= Width ${used_width:.2f}. Data corrupted.")
+             return None
+        
+        # Additional "Too Good To Be True" heuristic (Ingresarios Strict):
+        # Even if < width, > 50% width is suspicious for OTM Delta 0.10.
+        if credit > used_width * 0.5:
+             print(f"Rejected: Suspicious Credit ${credit:.2f} > 50% Width. Likely data artifact.")
+             return None
+             
+        if credit < self.min_credit:
+            print(f"Rejected: Credit {credit:.2f} < Min {self.min_credit}")
+            return None
+            
+        # Construct Leg objects
+        # Pricing: Sell at Bid, Buy at Ask
+        legs.append(Leg(OptionType.PUT, short_put_k, False, q_sp.bid))
+        legs.append(Leg(OptionType.PUT, long_put_k, True, q_lp.ask))
+        legs.append(Leg(OptionType.CALL, short_call_k, False, q_sc.bid))
+        legs.append(Leg(OptionType.CALL, long_call_k, True, q_lc.ask))
+        
+        total_credit = credit
             
         # Calc Max Loss (assuming symmetric width for simplicity in check, but using real logic)
         # Real width for Put side
