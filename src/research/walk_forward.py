@@ -74,14 +74,18 @@ class WalkForwardAnalysis:
                 exit_debit = 0.0
                 
                 if t.status == 'CLOSED' and t.exit_info:
-                    # Per spec C3: gross_pnl_usd = (entry_credit - exit_debit) * 100
-                    gross_pnl_points = t.exit_info.pnl
-                    gross_pnl_usd = gross_pnl_points * 100  # Convert to USD
+                    # ESTUDIO TITO: PnL is already Standardized Net PnL USD from Simulator
+                    pnl = t.exit_info.pnl
                     
-                    # Apply commissions (8 legs round-trip)
-                    commission_per_leg = self.config.get('simulation', {}).get('commission_per_leg', 0.65)
-                    net_pnl_usd = gross_pnl_usd - (commission_per_leg * 8)
-                    pnl = net_pnl_usd
+                    # RoR is also provided or recalculated based on capital risk?
+                    # t.exit_info.pnl_pct is point-based ROR.
+                    # We can use that or recalculate:
+                    exit_reason = t.exit_info.exit_reason
+                    exit_debit = t.exit_info.exit_price
+                    
+                    # Recalculate RoR using Net PnL / Max Risk USD
+                    max_loss_usd = t.max_loss * 100 # Risk is width * 100
+                    ror = pnl / max_loss_usd if max_loss_usd > 0 else 0
                     
                     # Per spec C4: max_loss_usd = (width_real - entry_credit) * 100
                     max_loss_usd = t.max_loss * 100

@@ -15,10 +15,19 @@ class TradeExit:
 
 class ExitManager:
     def __init__(self, config: dict):
-        self.tp_pct = config.get('take_profit_pct', 0.50)
-        self.sl_multiplier = config.get('stop_loss_mult', 2.5)
-        self.max_hold_min = config.get('max_hold_minutes', 45)
-        self.force_close_time_str = config.get('force_close_time', "15:45")
+        # Handle both nested config or direct exit config
+        self.exit_config = config.get('exit', config)
+        self.sim_config = config.get('simulation', {})
+        
+        self.tp_pct = self.exit_config.get('take_profit_pct', 0.50)
+        self.sl_multiplier = self.exit_config.get('stop_loss_mult', 2.5)
+        self.max_hold_min = self.exit_config.get('max_hold_minutes', 45)
+        self.force_close_time_str = self.exit_config.get('force_close_time', "15:45")
+        
+        # Financial Reality Params
+        self.contract_multiplier = self.sim_config.get('contract_multiplier', 100)
+        self.commission_per_leg = self.sim_config.get('commission_per_leg', 1.50)
+        self.slippage_per_leg = self.sim_config.get('slippage_per_leg', 0.05)
         
     def _parse_time(self, t_str):
         return datetime.strptime(t_str, "%H:%M").time()
@@ -46,34 +55,37 @@ class ExitManager:
         current_debit = self.calculate_debit(trade, chain)
         
         if current_debit is None:
-            # Policy for missing quotes: Skip or Force Close?
-            # User spec: "skip minuto con warning_quotes" or abort. 
-            # For simplicity, if quotes missing near end of day, might be dangerous.
-            # Returning None implies holding.
             return None
         
-        pnl = trade.entry_credit - current_debit
-        pnl_pct = pnl / trade.entry_credit
+        # PnL Logic (Points) for Triggers
+        gross_pnl_points = trade.entry_credit - current_debit
+        pnl_pct = gross_pnl_points / trade.entry_credit
+        
+        # Financial Reality PnL (USD) for Reporting
+        # Net PnL = (Points * 100) - Commissions - Slippage
+        num_legs = len(trade.legs)
+        gross_pnl_usd = gross_pnl_points * self.contract_multiplier
+        total_comm = self.commission_per_leg * num_legs * 2 # Round trip
+        total_slip = self.slippage_per_leg * num_legs       # Exit only
+        
+        net_pnl_usd = gross_pnl_usd - total_comm - total_slip
         
         # 2. Check TP
         if pnl_pct >= self.tp_pct:
-            return TradeExit(chain.timestamp, current_debit, 'TP', pnl, pnl_pct)
+            return TradeExit(chain.timestamp, current_debit, 'TP', net_pnl_usd, pnl_pct)
             
         # 3. Check SL
-        # SL condition: Debit >= Credit * Multiplier
-        # Example: Credit 1.0, Mult 3.0 => Exit if Debit >= 3.0 (Loss 2.0)
         if current_debit >= trade.entry_credit * self.sl_multiplier:
-            return TradeExit(chain.timestamp, current_debit, 'SL', pnl, pnl_pct)
+            return TradeExit(chain.timestamp, current_debit, 'SL', net_pnl_usd, pnl_pct)
             
         # 4. Check Time Hold
         elapsed_min = (chain.timestamp - trade.entry_time).total_seconds() / 60
         if elapsed_min >= self.max_hold_min:
-            return TradeExit(chain.timestamp, current_debit, 'TIME', pnl, pnl_pct)
+            return TradeExit(chain.timestamp, current_debit, 'TIME', net_pnl_usd, pnl_pct)
             
         # 5. Check Force Close Time
-        # Assuming chain.timestamp is datetime
         force_time = self._parse_time(self.force_close_time_str)
         if chain.timestamp.time() >= force_time:
-             return TradeExit(chain.timestamp, current_debit, 'FORCE', pnl, pnl_pct)
+             return TradeExit(chain.timestamp, current_debit, 'FORCE', net_pnl_usd, pnl_pct)
              
         return None

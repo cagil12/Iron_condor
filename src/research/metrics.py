@@ -70,14 +70,29 @@ def calculate_metrics(trades_df: pd.DataFrame, initial_capital: float = 10000.0)
     peak = equity.cummax()
     drawdown = (equity - peak) / peak
     max_dd = drawdown.min() # Negative value
+    
+    # ESTUDIO TITO Metrics
+    total_return_on_capital = total_pnl / initial_capital
+    
+    # Sharpe on Account Returns (Daily PnL / Capital)
+    daily_ret_account = daily_pnl / initial_capital
+    mean_daily_ret = daily_ret_account.mean()
+    std_daily_ret = daily_ret_account.std()
+    
+    if std_daily_ret > 0:
+        sharpe_account = (mean_daily_ret * 252) / (std_daily_ret * np.sqrt(252))
+    else:
+        sharpe_account = 0.0
 
     return {
         "total_trades": total_trades,
         "total_pnl": total_pnl,
         "win_rate": win_rate,
         "profit_factor": profit_factor,
-        "avg_ror_per_trade": avg_trade_ror,
+        "avg_ror_per_trade": avg_trade_ror, # Return on Risk (Trade level)
+        "total_return_on_equity": total_return_on_capital, # Return on Capital (Portfolio level)
         "sharpe_ror": sharpe_ror,
+        "sharpe_account": sharpe_account,
         "max_dd_pct": max_dd,
         "cvar_95": calculate_cvar(trades_df['pnl'], 0.95) if not trades_df.empty else 0.0,
         "worst_day_pnl": daily_pnl.min() if len(daily_pnl) > 0 else 0.0

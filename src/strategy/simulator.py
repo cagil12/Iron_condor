@@ -17,7 +17,16 @@ class Simulator:
         self.regime_filter = MarketRegime(config)
         self.trades: List[IronCondorTrade] = []
         
+        # Financial Reality Params
+        sim_config = config.get('simulation', {})
+        self.contract_multiplier = sim_config.get('contract_multiplier', 100)
+        self.commission_per_leg = sim_config.get('commission_per_leg', 1.50)
+        self.slippage_per_leg = sim_config.get('slippage_per_leg', 0.05)
+        self.max_daily_loss = sim_config.get('max_daily_loss', 3000)
+        self.daily_pnl = 0.0
+        
     def run_day(self, date) -> List[IronCondorTrade]:
+        self.daily_pnl = 0.0 # Reset PnL at start of day
         daily_trades = []
         active_trade: IronCondorTrade = None
         entry_attempted = False  # Flag to only attempt entry once per day
@@ -32,6 +41,11 @@ class Simulator:
         for chain in chain_stream:
             # 1. Entry Logic
             if active_trade is None and not entry_attempted:
+                # KILL SWITCH: Check Daily Loss Limit
+                if self.daily_pnl < -self.max_daily_loss:
+                     print(f"💀 DAILY LOSS LIMIT HIT (${self.daily_pnl:.2f} < -${self.max_daily_loss}). HALTING.")
+                     break # Stop trading for the day (skip remaining chains)
+
                 # Check time: >= entry_time (first chain at or after target time)
                 if chain.timestamp.time() >= entry_time_obj:
                     entry_attempted = True  # Only try once per day
@@ -54,17 +68,22 @@ class Simulator:
                 if exit_signal:
                     active_trade.status = "CLOSED"
                     active_trade.exit_info = exit_signal
-                    print(f"Exited trade at {chain.timestamp}: {exit_signal.exit_reason}")
+                    
+                    # Update Daily PnL
+                    self.daily_pnl += exit_signal.pnl
+                    
+                    print(f"Exited trade at {chain.timestamp}: {exit_signal.exit_reason} | PnL: ${exit_signal.pnl:.2f}")
                     active_trade = None
                     break
                     
                 # Track last chain for EOD exit
                 last_chain = chain
         
-        # 3. EOD Auto-Exit: Close any remaining open trade at end of day
+        # End of Day Cleanup
         if active_trade is not None and active_trade.status == "OPEN":
-            # Calculate exit using last available chain
-            try:
+            # Force Close at EOD using last available chain
+            if last_chain:
+                # Calculate exit price (Mark to Market)
                 exit_debit = self.exit_manager.calculate_debit(active_trade, last_chain)
                 
                 # FALLBACK: If standard calculation returns None (missing quotes), 
@@ -74,8 +93,16 @@ class Simulator:
                     exit_debit = self._calculate_fallback_debit(active_trade, last_chain)
                 
                 if exit_debit is not None:
-                    pnl = (active_trade.entry_credit - exit_debit) * 100  # Per contract
-                    pnl_pct = pnl / (active_trade.max_loss * 100) if active_trade.max_loss > 0 else 0
+                    # Calculate Net USD PnL (Standardized)
+                    gross_pnl_points = active_trade.entry_credit - exit_debit
+                    gross_pnl_usd = gross_pnl_points * self.contract_multiplier
+                    
+                    # Costs
+                    num_legs = len(active_trade.legs)
+                    costs = (self.commission_per_leg * num_legs * 2) + (self.slippage_per_leg * num_legs)
+                    
+                    pnl = gross_pnl_usd - costs
+                    pnl_pct = pnl / (active_trade.max_loss * self.contract_multiplier) if active_trade.max_loss > 0 else 0
                     
                     from .exits import TradeExit
                     active_trade.status = "CLOSED"
@@ -86,10 +113,20 @@ class Simulator:
                         pnl=pnl,
                         pnl_pct=pnl_pct
                     )
+                    self.daily_pnl += pnl
                     print(f"EOD Exit at {last_chain.timestamp}: PnL ${pnl:.2f}")
                 else:
                     # Only if Fallback also fails, assume max loss
-                    pnl = -active_trade.max_loss * 100
+                    # Max Loss in USD
+                    pnl = -active_trade.max_loss * self.contract_multiplier
+                    # Add costs? If max loss, usually you pay full width.
+                    # Costs are already implicit in the width diff?
+                    # Max Loss = Width - Credit. This is the net cash flow if expires ITM.
+                    # But we usually pay commissions to close or expire? 
+                    # If expires, usually no comms on OTM, but full comms on ITM?
+                    # Assume worst case: Max Loss + Comms.
+                    costs = (self.commission_per_leg * len(active_trade.legs) * 2) 
+                    pnl = pnl - costs
                     
                     from .exits import TradeExit
                     active_trade.status = "CLOSED"
@@ -100,6 +137,7 @@ class Simulator:
                         pnl=pnl,
                         pnl_pct=-1.0
                     )
+                    self.daily_pnl += pnl
                     print(f"EOD Exit (No Quote) - Assumed Max Loss: ${pnl:.2f}")
                     
             except Exception as e:
