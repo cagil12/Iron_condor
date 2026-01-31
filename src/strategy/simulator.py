@@ -111,10 +111,17 @@ class Simulator:
     def _calculate_fallback_debit(self, trade: IronCondorTrade, chain: OptionChain) -> float:
         """
         Calculate theoretical closing cost when quotes are missing.
-        If option is OTM and missing quote, assume it's worthless (price = $0.05).
+        Uses Black-Scholes for theoretical pricing when market quotes unavailable.
         """
+        from ..analytics.greeks import BlackScholesSolver
+        from ..data.schema import OptionType
+        
         total_debit = 0.0
         spot = chain.underlying_price
+        bs_solver = BlackScholesSolver()
+        
+        # Estimate time to expiration (assume EOD = ~0 hours left)
+        dte_years = 1 / (365 * 24)  # ~1 hour left in 0DTE
         
         for leg in trade.legs:
             q = chain.get_quote(leg.strike, leg.option_type)
@@ -123,13 +130,28 @@ class Simulator:
                 # Quote exists - use real market price
                 price = q.bid if leg.is_long else q.ask
             else:
-                # Quote missing - check if deep OTM
+                # Quote missing - use Black-Scholes theoretical price
                 dist_pct = abs(spot - leg.strike) / spot if spot > 0 else 0
                 
                 if dist_pct > 0.01:  # More than 1% away from spot
-                    # Deep OTM - assume worthless (conservative $0.05 tick)
-                    price = 0.05
-                    print(f"  Fallback: {leg.option_type.name} {leg.strike} @ $0.05 (OTM)")
+                    # Use Black-Scholes with estimated IV
+                    otype_str = 'call' if leg.option_type == OptionType.CALL else 'put'
+                    
+                    # Estimate IV from last known quote or use default
+                    estimated_iv = q.implied_vol if q and q.implied_vol > 0 else 0.20
+                    
+                    # Calculate theoretical price
+                    theo_price = bs_solver.calculate_price(
+                        option_type=otype_str,
+                        S=spot,
+                        K=leg.strike,
+                        T=dte_years,
+                        sigma=estimated_iv
+                    )
+                    
+                    # Floor at tick minimum
+                    price = max(0.05, theo_price)
+                    print(f"  Fallback BS: {leg.option_type.name} {leg.strike} @ ${price:.2f} (IV={estimated_iv:.0%})")
                 else:
                     # Near ATM with missing quote - dangerous, can't price safely
                     print(f"  Fallback failed: {leg.option_type.name} {leg.strike} near ATM")
