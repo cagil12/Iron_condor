@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Optional, Dict, Any, List
 from dataclasses import dataclass
 
-from ib_insync import IB, Option, Order, LimitOrder, Trade as IBTrade
+from ib_insync import IB, Option, Order, LimitOrder, Trade as IBTrade, Contract, ComboLeg
 
 from src.data.ib_connector import IBConnector
 from src.utils.config import get_live_config
@@ -96,6 +96,68 @@ class LiveExecutor:
         self.ib.cancelMktData(contract)
         return None
     
+    def build_combo_contract(self, legs: List[Dict[str, Any]]) -> Contract:
+        """
+        Build a BAG (Combo) contract.
+        
+        Args:
+            legs: List of dicts with 'contract', 'ratio', 'action'
+            
+        Returns:
+            IB Contract object with secType='BAG'
+        """
+        contract = Contract()
+        contract.symbol = 'XSP'
+        contract.secType = 'BAG'
+        contract.currency = 'USD'
+        contract.exchange = 'SMART'
+        
+        combo_legs = []
+        for leg in legs:
+            # Must qualify contract to get conId
+            c = leg['contract']
+            if not c.conId:
+                self.ib.qualifyContracts(c)
+            
+            combo_leg = ComboLeg()
+            combo_leg.conId = c.conId
+            combo_leg.ratio = leg['ratio']
+            combo_leg.action = leg['action']
+            combo_leg.exchange = 'SMART'
+            combo_legs.append(combo_leg)
+            
+        contract.comboLegs = combo_legs
+        return contract
+
+    def check_margin_impact(self, contract: Contract, order: Order) -> bool:
+        """
+        Check if order is within margin limits using whatIfOrder.
+        
+        Returns:
+            True if safe to proceed, False if margin too high
+        """
+        print("   🛡️ Checking margin impact...")
+        try:
+            state = self.ib.whatIfOrder(contract, order)
+            
+            # Initial Margin Change
+            init_margin = float(state.initMarginChange)
+            
+            # Max Risk Tolerance ($200 account -> ~$100-150 max margin allowed)
+            # Iron Condor 1.0 wide should be ~$100 margin
+            MAX_MARGIN = 180.0 
+            
+            print(f"   💰 Estimated Margin: ${init_margin:.2f}")
+            
+            if float(init_margin) > MAX_MARGIN:
+                print(f"   ⚠️ MARGIN TOO HIGH: ${init_margin:.2f} > ${MAX_MARGIN}")
+                return False
+                
+            return True
+        except Exception as e:
+            print(f"   ⚠️ Could not verify margin: {e}")
+            return False  # Fail safe
+
     def execute_iron_condor(
         self,
         short_put: float,
@@ -106,18 +168,7 @@ class LiveExecutor:
         delta_net: float
     ) -> Optional[IronCondorPosition]:
         """
-        Execute an Iron Condor order.
-        
-        Args:
-            short_put: Short put strike
-            short_call: Short call strike
-            expiry: Expiration date (YYYYMMDD)
-            spot: Current spot price
-            vix: Current VIX value
-            delta_net: Net delta of position
-            
-        Returns:
-            IronCondorPosition if successful, None otherwise
+        Execute an Iron Condor order using IBKR BAG (Combo).
         """
         # SAFETY CHECK: No pyramiding
         if self.has_active_position():
@@ -128,24 +179,28 @@ class LiveExecutor:
         long_put = short_put - self.WING_WIDTH
         long_call = short_call + self.WING_WIDTH
         
-        # Build contracts
-        contracts = {
-            'short_put': self.build_option_contract(short_put, 'P', expiry),
-            'long_put': self.build_option_contract(long_put, 'P', expiry),
-            'short_call': self.build_option_contract(short_call, 'C', expiry),
-            'long_call': self.build_option_contract(long_call, 'C', expiry),
+        # Build individual contracts
+        c_short_put = self.build_option_contract(short_put, 'P', expiry)
+        c_long_put = self.build_option_contract(long_put, 'P', expiry)
+        c_short_call = self.build_option_contract(short_call, 'C', expiry)
+        c_long_call = self.build_option_contract(long_call, 'C', expiry)
+        
+        # Get prices for credit estimation
+        contracts_map = {
+            'short_put': c_short_put, 'long_put': c_long_put,
+            'short_call': c_short_call, 'long_call': c_long_call
         }
         
-        # Get mid prices
         prices = {}
-        for name, contract in contracts.items():
+        print("⏳ Getting leg prices...")
+        for name, contract in contracts_map.items():
             price = self.get_mid_price(contract)
             if price is None:
                 print(f"❌ Could not get price for {name}")
                 return None
             prices[name] = price
-        
-        # Calculate net credit (sell short, buy long)
+            
+        # Calculate Net Credit
         credit_put_spread = prices['short_put'] - prices['long_put']
         credit_call_spread = prices['short_call'] - prices['long_call']
         total_credit = credit_put_spread + credit_call_spread
@@ -153,71 +208,92 @@ class LiveExecutor:
         if total_credit <= 0:
             print(f"❌ Invalid credit: ${total_credit:.2f}")
             return None
-        
+            
         print(f"📊 Calculated Credit: ${total_credit:.2f} per contract")
         
-        # Place orders using combo or individual legs
-        # For simplicity, using individual leg orders
-        order_ids = []
+        # 1. Prepare Combo Legs
+        # Convention: We BUY the Strategy. Value = Net Credit (Negative Price)
+        # To match the strategy payoff:
+        # - Short Put: SELL
+        # - Long Put: BUY 
+        # - Short Call: SELL
+        # - Long Call: BUY
         
+        legs = [
+            {'contract': c_short_put, 'ratio': 1, 'action': 'SELL'},
+            {'contract': c_long_put,  'ratio': 1, 'action': 'BUY'},
+            {'contract': c_short_call,'ratio': 1, 'action': 'SELL'},
+            {'contract': c_long_call, 'ratio': 1, 'action': 'BUY'}
+        ]
+        
+        bag_contract = self.build_combo_contract(legs)
+        
+        # 2. Create Limit Order
+        # Price must be negative to indicate CREDIT when Buying the BAG
+        limit_price = -round(total_credit, 2)
+        
+        print(f"📦 Combo Constructed: BUY 1 BAG @ ${limit_price} (Credit)")
+        order = LimitOrder('BUY', self.MAX_QTY, limit_price)
+        order.tif = 'DAY'
+        
+        # 3. Margin Guard (What-If)
+        print("🛡️ Checking Margin Impact...")
         try:
-            # SELL short put
-            order = LimitOrder('SELL', self.MAX_QTY, prices['short_put'])
-            trade = self.ib.placeOrder(contracts['short_put'], order)
-            order_ids.append(trade.order.orderId)
+            state = self.ib.whatIfOrder(bag_contract, order)
+            init_margin = float(state.initMarginChange)
             
-            # BUY long put  
-            order = LimitOrder('BUY', self.MAX_QTY, prices['long_put'])
-            trade = self.ib.placeOrder(contracts['long_put'], order)
-            order_ids.append(trade.order.orderId)
+            print(f"   💵 Init Margin Change: ${init_margin:.2f}")
             
-            # SELL short call
-            order = LimitOrder('SELL', self.MAX_QTY, prices['short_call'])
-            trade = self.ib.placeOrder(contracts['short_call'], order)
-            order_ids.append(trade.order.orderId)
+            # Max accepted margin: ~$100 (risk) + buffer = $250
+            MAX_MARGIN_ACCEPTED = 250.0
             
-            # BUY long call
-            order = LimitOrder('BUY', self.MAX_QTY, prices['long_call'])
-            trade = self.ib.placeOrder(contracts['long_call'], order)
-            order_ids.append(trade.order.orderId)
-            
-            # Wait for fills (simple implementation)
-            self.ib.sleep(self.ORDER_TIMEOUT)
-            
-            # Create position object
-            max_profit = total_credit * self.MAX_QTY * 100
-            max_loss = (self.WING_WIDTH - total_credit) * self.MAX_QTY * 100
-            
-            self.active_position = IronCondorPosition(
-                entry_time=datetime.now(),
-                short_put_strike=short_put,
-                long_put_strike=long_put,
-                short_call_strike=short_call,
-                long_call_strike=long_call,
-                entry_credit=total_credit,
-                qty=self.MAX_QTY,
-                max_profit=max_profit,
-                max_loss=max_loss,
-                spot_at_entry=spot,
-                vix_at_entry=vix,
-                delta_net=delta_net,
-                order_ids=order_ids
-            )
-            
-            print(f"✅ Iron Condor OPENED")
-            print(f"   Max Profit: ${max_profit:.2f}")
-            print(f"   Max Loss: ${max_loss:.2f}")
-            
-            return self.active_position
+            if init_margin > MAX_MARGIN_ACCEPTED:
+                print(f"⚠️ MARGIN REJECT: Expected < ${MAX_MARGIN_ACCEPTED}, Got ${init_margin:.2f}")
+                return None
+                
+            print("   ✅ Margin Check Passed")
             
         except Exception as e:
-            print(f"❌ Order execution failed: {e}")
-            # Cancel any pending orders
-            for oid in order_ids:
-                try:
-                    self.ib.cancelOrder(oid)
-                except:
-                    pass
+            print(f"⚠️ Margin Check Failed: {e}")
+            return None # Conservative: Don't trade if check fails
+            
+        # 4. Execute
+        try:
+            print(f"🚀 Sending Combo Order...")
+            trade = self.ib.placeOrder(bag_contract, order)
+            self.ib.sleep(self.ORDER_TIMEOUT)
+            
+            status = trade.orderStatus.status
+            print(f"📋 Order Status: {status}")
+            
+            if status in ['Filled', 'Submitted', 'PreSubmitted']:
+                # Success - Record Position
+                max_profit = total_credit * self.MAX_QTY * 100
+                max_loss = (self.WING_WIDTH - total_credit) * self.MAX_QTY * 100
+                
+                self.active_position = IronCondorPosition(
+                    entry_time=datetime.now(),
+                    short_put_strike=short_put,
+                    long_put_strike=long_put,
+                    short_call_strike=short_call,
+                    long_call_strike=long_call,
+                    entry_credit=total_credit,
+                    qty=self.MAX_QTY,
+                    max_profit=max_profit,
+                    max_loss=max_loss,
+                    spot_at_entry=spot,
+                    vix_at_entry=vix,
+                    delta_net=delta_net,
+                    order_ids=[trade.order.orderId]
+                )
+                print("✅ Iron Condor Opened (Combo)")
+                return self.active_position
+            else:
+                print(f"⚠️ Order not active: {status}")
+                return None
+                
+        except Exception as e:
+            print(f"❌ Execution Error: {e}")
             return None
     
     def get_position_pnl(self) -> Optional[float]:
