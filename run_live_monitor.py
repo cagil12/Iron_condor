@@ -61,6 +61,8 @@ def print_trade_banner(
     short_call: float,
     width: float,
     credit: float,
+    gross: float,
+    protection: float,
     vix: float,
     spot: float,
     delta: float
@@ -78,9 +80,10 @@ def print_trade_banner(
     
     line1 = f"🎯 Short Strikes: {sp_str}P / {sc_str}C"
     line2 = f"🛡️  Wings: {width:.1f} wide"
-    line3 = f"💰 Est. Credit: ${credit:.2f} (${credit_usd:.2f})"
-    line4 = f"📊 VIX: {vix:.2f} | Spot: {spot:.2f}"
-    line5 = f"⚡ Delta Net: {delta:.4f}"
+    line3 = f"💰 Net Credit: ${credit:.2f} (${credit_usd:.0f})"
+    line4 = f"   (Gross: ${gross:.2f} | Prot: -${protection:.2f})"
+    line5 = f"📊 VIX: {vix:.2f} | Spot: {spot:.2f}"
+    line6 = f"⚡ Delta Net: {delta:.4f}"
     
     print("╔════════════════ NEW TRADE DETECTED ════════════════╗")
     print("║ 🟢 OPENING IRON CONDOR (XSP)                       ║")
@@ -90,6 +93,7 @@ def print_trade_banner(
     print(f"║ {line3}{pad(line3)}║")
     print(f"║ {line4}{pad(line4)}║")
     print(f"║ {line5}{pad(line5)}║")
+    print(f"║ {line6}{pad(line6)}║")
     print("╚════════════════════════════════════════════════════╝")
 
 
@@ -273,14 +277,15 @@ def find_trade_opportunity(
         return None
     
     # Calculate Net Credit
-    put_spread_credit = bid_short_put - ask_long_put
-    call_spread_credit = bid_short_call - ask_long_call
-    total_credit = put_spread_credit + call_spread_credit
+    # Conservative: Sell at Bid, Buy at Ask
+    gross_credit = bid_short_put + bid_short_call
+    protection_cost = ask_long_put + ask_long_call
+    net_credit_est = gross_credit - protection_cost
     
     # Minimum credit filter
     min_credit = config.get('min_credit', 0.10)
-    if total_credit < min_credit:
-        print(f"⚠️ Credit too low: ${total_credit:.2f} < ${min_credit:.2f}")
+    if net_credit_est < min_credit:
+        print(f"⚠️ Credit too low: ${net_credit_est:.2f} < ${min_credit:.2f}")
         return None
     
     return {
@@ -289,7 +294,9 @@ def find_trade_opportunity(
         'short_put': short_put,
         'short_call': short_call,
         'expiry': expiry,
-        'credit': total_credit,
+        'credit': net_credit_est,
+        'gross_credit': gross_credit,       # NEW
+        'protection_cost': protection_cost, # NEW
         'delta_net': 0.0,
         'delta_put': delta_put,
         'delta_call': delta_call,
@@ -390,6 +397,8 @@ def main():
                         short_call=trade_setup['short_call'],
                         width=executor.WING_WIDTH,
                         credit=trade_setup['credit'],
+                        gross=trade_setup.get('gross_credit', 0.0), # NEW
+                        protection=trade_setup.get('protection_cost', 0.0), # NEW
                         vix=trade_setup['vix'],
                         spot=trade_setup['spot'],
                         delta=trade_setup['delta_net']
@@ -425,6 +434,7 @@ def main():
                                 selection_method=trade_setup.get('selection_method', 'UNKNOWN'),
                                 target_delta=trade_setup.get('target_delta', 0.10),
                                 otm_distance_pct="N/A" if trade_setup.get('selection_method') == 'DELTA_TARGET' else "1.5%",
+                                snapshot_json=position.snapshot_json, # NEW
                                 reasoning=f"VIX={trade_setup['vix']:.1f}, Spot={trade_setup['spot']:.2f}, Method={trade_setup.get('selection_method', 'UNKNOWN')}"
                             )
                             

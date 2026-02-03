@@ -8,6 +8,7 @@ SAFETY: Hardcoded limits for small account ($200 capital).
 """
 import time
 from datetime import datetime
+import json
 from typing import Optional, Dict, Any, List
 from dataclasses import dataclass
 
@@ -32,6 +33,7 @@ class IronCondorPosition:
     spot_at_entry: float
     vix_at_entry: float
     delta_net: float
+    snapshot_json: str = "{}"  # NEW
     
     # Order IDs for tracking
     order_ids: List[int] = None
@@ -196,6 +198,10 @@ class LiveExecutor:
             if not best_put or not best_call:
                 raise ValueError("Could not find valid Delta strikes")
             
+            # Additional Safety: Check for NaN
+            if best_put.get('delta') is None or best_call.get('delta') is None:
+                raise ValueError("Received NaN Delta values")
+
             print(f"   ✅ Found: {best_put['strike']}P (Δ={best_put['delta']:.3f}), {best_call['strike']}C (Δ={best_call['delta']:.3f})")
             
             return {
@@ -207,7 +213,8 @@ class LiveExecutor:
             }
             
         except Exception as e:
-            print(f"   ⚠️ Greeks data missing ({e}). Reverting to distance heuristic.")
+            print(f"   ⚠️ Delta selection failed: {e}") 
+            print("   ⚠️ Greeks data unavailable. Reverting to Distance Heuristic (1.5%).")
             
             # FALLBACK: Distance-based selection (1.5% OTM)
             otm_distance = spot * 0.015
@@ -312,31 +319,47 @@ class LiveExecutor:
         c_short_call = self.build_option_contract(short_call, 'C', expiry)
         c_long_call = self.build_option_contract(long_call, 'C', expiry)
         
-        # Get prices for credit estimation
+        # Get prices for credit estimation and snapshot
         contracts_map = {
             'short_put': c_short_put, 'long_put': c_long_put,
             'short_call': c_short_call, 'long_call': c_long_call
         }
         
         prices = {}
-        print("⏳ Getting leg prices...")
+        snapshot_data = {}
+        print("⏳ Getting leg prices (Bid/Ask) for snapshot...")
+        
         for name, contract in contracts_map.items():
-            price = self.get_mid_price(contract)
-            if price is None:
-                print(f"❌ Could not get price for {name}")
-                return None
-            prices[name] = price
+            # Request live ticker
+            ticker = self.ib.reqMktData(contract, '', False, False)
+            self.ib.sleep(1.0) # Wait for data
             
-        # Calculate Net Credit
+            if ticker.bid and ticker.ask and ticker.bid > 0:
+                mid = (ticker.bid + ticker.ask) / 2
+                prices[name] = mid
+                snapshot_data[f"{name}_bid"] = ticker.bid
+                snapshot_data[f"{name}_ask"] = ticker.ask
+                snapshot_data[f"{name}_mid"] = mid
+            else:
+                print(f"❌ Could not get Price/Bid/Ask for {name} (Bid={ticker.bid}, Ask={ticker.ask})")
+                self.ib.cancelMktData(contract)
+                return None
+                
+            self.ib.cancelMktData(contract)
+            
+        # Calculate Net Credit (using Mids for Limit Price estimation)
+        # Note: We use Mid for execution limit, but logic checks against conservative if needed
         credit_put_spread = prices['short_put'] - prices['long_put']
         credit_call_spread = prices['short_call'] - prices['long_call']
         total_credit = credit_put_spread + credit_call_spread
+        
+        snapshot_json_str = json.dumps(snapshot_data)
         
         if total_credit <= 0:
             print(f"❌ Invalid credit: ${total_credit:.2f}")
             return None
             
-        print(f"📊 Calculated Credit: ${total_credit:.2f} per contract")
+        print(f"📊 Calculated Mid Credit: ${total_credit:.2f} per contract")
         
         # 1. Prepare Combo Legs
         # Convention: We BUY the Strategy. Value = Net Credit (Negative Price)
@@ -356,7 +379,9 @@ class LiveExecutor:
         bag_contract = self.build_combo_contract(legs)
         
         # 2. Create Limit Order
-        # Price must be negative to indicate CREDIT when Buying the BAG
+        # IBKR Convention: For Credit Strategies (like Iron Condor), using BUY with Negative Limit Price 
+        # is the robust standard to ensure execution as a package (Debit of negative amount = Credit).
+        # We stick to this to avoid ambiguity.
         limit_price = -round(total_credit, 2)
         
         print(f"📦 Combo Constructed: BUY 1 BAG @ ${limit_price} (Credit)")
@@ -411,6 +436,7 @@ class LiveExecutor:
                     spot_at_entry=spot,
                     vix_at_entry=vix,
                     delta_net=delta_net,
+                    snapshot_json=snapshot_json_str, # Captured snapshot
                     order_ids=[trade.order.orderId]
                 )
                 print("✅ Iron Condor Opened (Combo)")

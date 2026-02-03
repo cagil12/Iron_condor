@@ -52,6 +52,8 @@ class TradeJournal:
         'exit_reason',
         'final_pnl_usd',
         'hold_duration_mins',
+        # Audit
+        'snapshot_json',      # NEW: Forensic pricing snapshot
         # Notes
         'reasoning',
     ]
@@ -99,6 +101,7 @@ class TradeJournal:
         selection_method: str = "",  # NEW
         target_delta: float = 0.0,   # NEW
         otm_distance_pct: str = "",  # NEW
+        snapshot_json: str = "",     # NEW
         reasoning: str = ""
     ) -> int:
         """
@@ -134,6 +137,7 @@ class TradeJournal:
             'exit_reason': '',
             'final_pnl_usd': '',
             'hold_duration_mins': '',
+            'snapshot_json': snapshot_json,         # NEW
             'reasoning': reasoning,
         }
         

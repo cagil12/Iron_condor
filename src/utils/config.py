@@ -40,6 +40,11 @@ def save_config_used(config: Dict, output_path: str):
 # ══════════════════════════════════════════════════════════════════════════════
 
 LIVE_CONFIG = {
+    # Trading Environment
+    'trading_mode': 'PAPER',  # 'PAPER' or 'LIVE'
+    'account_id': 'DU_PLACEHOLDER', # User should update this via env or args
+    'port': 7497,             # Default to Paper Port
+
     # Instrument Settings
     'symbol': 'XSP',
     'exchange': 'CBOE',
@@ -50,22 +55,23 @@ LIVE_CONFIG = {
     'wing_width': 1.0,  # Equivalent to 10 pts in SPX
     'target_delta': 0.10,
     'min_credit': 0.10,  # $10 min credit per contract
+    'min_days_expiry': 0, # 0DTE
     
     # Risk Management
     'max_capital': 200.0,  # $200 USD initial capital
-    'max_contracts': 2,    # Max contracts based on capital
+    'max_contracts': 1,    # Conservative start
     'max_daily_loss': 50.0,  # $50 daily loss limit
     
     # Exit Parameters
     'take_profit_pct': 0.50,  # 50% of premium
-    'stop_loss_mult': 2.0,   # 2x premium
+    'stop_loss_mult': 3.0,    # Updated to 3x based on recent tests
     
     # IBKR Connection
     'ibkr': {
         'host': '127.0.0.1',
         'paper_port': 7497,  # TWS Paper Trading
         'live_port': 7496,   # TWS Live Trading
-        'client_id': 1,
+        'client_id': 777,
         'timeout': 30,
     },
     
