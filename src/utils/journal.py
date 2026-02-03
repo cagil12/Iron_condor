@@ -37,13 +37,17 @@ class TradeJournal:
         'entry_credit',
         'max_profit_usd',
         'max_loss_usd',
+        # Execution Quality (NEW)
+        'target_credit',    # Wanted Limit Price
+        'slippage_usd',     # Entry - Target
+        'commissions_est',  # Estimated Fees
         # Greeks
         'delta_net',
-        'delta_put',      # NEW: Delta of short put at entry
-        'delta_call',     # NEW: Delta of short call at entry
+        'delta_put',      # Delta of short put at entry
+        'delta_call',     # Delta of short call at entry
         'theta',
         'gamma',
-        # Selection Context (NEW)
+        # Selection Context
         'selection_method',   # e.g., OTM_DISTANCE_PCT, DELTA_TARGET
         'target_delta',       # e.g., 0.10
         'otm_distance_pct',   # e.g., 1.5%
@@ -51,9 +55,11 @@ class TradeJournal:
         'exit_time',
         'exit_reason',
         'final_pnl_usd',
+        'max_adverse_excursion', # NEW: Max pain ($ drawdown)
         'hold_duration_mins',
         # Audit
-        'snapshot_json',      # NEW: Forensic pricing snapshot
+        'snapshot_json',      # Entry Snapshot
+        'exit_snapshot_json', # NEW: Exit Snapshot
         # Notes
         'reasoning',
     ]
@@ -65,11 +71,34 @@ class TradeJournal:
         self._trade_counter = self._get_last_trade_id()
         
     def _ensure_file_exists(self):
-        """Create CSV file with headers if it doesn't exist."""
+        """Create CSV file with headers if it doesn't exist, or migrate schema if changed."""
         if not self.journal_path.exists():
             with open(self.journal_path, 'w', newline='', encoding='utf-8') as f:
                 writer = csv.DictWriter(f, fieldnames=self.COLUMNS)
                 writer.writeheader()
+            return
+
+        # Check existing headers
+        try:
+            with open(self.journal_path, 'r', encoding='utf-8') as f:
+                reader = csv.reader(f)
+                headers = next(reader, [])
+                
+            if headers != self.COLUMNS:
+                print(f"⚠️ Journal schema mismatch. Backing up old journal...")
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                backup_path = self.journal_path.with_name(f"{self.journal_path.stem}_backup_{timestamp}.csv")
+                
+                os.rename(self.journal_path, backup_path)
+                print(f"📦 Archived to {backup_path}")
+                
+                # Re-create fresh file
+                with open(self.journal_path, 'w', newline='', encoding='utf-8') as f:
+                    writer = csv.DictWriter(f, fieldnames=self.COLUMNS)
+                    writer.writeheader()
+                    
+        except Exception as e:
+            print(f"⚠️ Error checking journal schema: {e}")
     
     def _get_last_trade_id(self) -> int:
         """Get the last trade ID from the journal."""
@@ -94,14 +123,16 @@ class TradeJournal:
         max_profit_usd: float,
         max_loss_usd: float,
         delta_net: float,
-        delta_put: float = 0.0,      # NEW
-        delta_call: float = 0.0,     # NEW
+        delta_put: float = 0.0,
+        delta_call: float = 0.0,
         theta: float = 0.0,
         gamma: float = 0.0,
-        selection_method: str = "",  # NEW
-        target_delta: float = 0.0,   # NEW
-        otm_distance_pct: str = "",  # NEW
-        snapshot_json: str = "",     # NEW
+        selection_method: str = "",
+        target_delta: float = 0.0,
+        otm_distance_pct: str = "",
+        snapshot_json: str = "",
+        target_credit: float = 0.0,       # NEW
+        commissions_est: float = 2.60,    # NEW
         reasoning: str = ""
     ) -> int:
         """
@@ -112,6 +143,11 @@ class TradeJournal:
         """
         self._trade_counter += 1
         trade_id = self._trade_counter
+        
+        # Calculate Slippage
+        slippage = 0.0
+        if target_credit > 0:
+            slippage = entry_credit - target_credit
         
         entry = {
             'trade_id': trade_id,
@@ -125,19 +161,26 @@ class TradeJournal:
             'entry_credit': round(entry_credit, 4),
             'max_profit_usd': round(max_profit_usd, 2),
             'max_loss_usd': round(max_loss_usd, 2),
+            # HFT Metrics
+            'target_credit': round(target_credit, 4),
+            'slippage_usd': round(slippage, 4),
+            'commissions_est': round(commissions_est, 2),
+            # Greeks
             'delta_net': round(delta_net, 4),
-            'delta_put': round(delta_put, 4),       # NEW
-            'delta_call': round(delta_call, 4),     # NEW
+            'delta_put': round(delta_put, 4),       
+            'delta_call': round(delta_call, 4),     
             'theta': round(theta, 4),
             'gamma': round(gamma, 6),
-            'selection_method': selection_method,   # NEW
-            'target_delta': round(target_delta, 4), # NEW
-            'otm_distance_pct': otm_distance_pct,   # NEW
+            'selection_method': selection_method,   
+            'target_delta': round(target_delta, 4), 
+            'otm_distance_pct': otm_distance_pct,   
             'exit_time': '',
             'exit_reason': '',
             'final_pnl_usd': '',
+            'max_adverse_excursion': '', # NEW
             'hold_duration_mins': '',
-            'snapshot_json': snapshot_json,         # NEW
+            'snapshot_json': snapshot_json,         
+            'exit_snapshot_json': '',    # NEW
             'reasoning': reasoning,
         }
         
@@ -153,7 +196,9 @@ class TradeJournal:
         trade_id: int,
         exit_reason: str,
         final_pnl_usd: float,
-        entry_timestamp: datetime
+        entry_timestamp: datetime,
+        max_adverse_excursion: float = 0.0, # NEW
+        exit_snapshot_json: str = ""        # NEW
     ):
         """
         Update a trade entry with close information.
@@ -163,6 +208,8 @@ class TradeJournal:
             exit_reason: Why the trade was closed
             final_pnl_usd: Final PnL in dollars
             entry_timestamp: When the trade was opened
+            max_adverse_excursion: Lowest PnL point during trade
+            exit_snapshot_json: Final market state
         """
         # Read all rows
         rows = []
@@ -171,12 +218,15 @@ class TradeJournal:
             rows = list(reader)
         
         # Find and update the trade
+        found = False
         for row in rows:
             if int(row.get('trade_id', 0)) == trade_id:
                 row['status'] = 'CLOSED'
                 row['exit_time'] = datetime.now().isoformat()
                 row['exit_reason'] = exit_reason
                 row['final_pnl_usd'] = round(final_pnl_usd, 2)
+                row['max_adverse_excursion'] = round(max_adverse_excursion, 2)
+                row['exit_snapshot_json'] = exit_snapshot_json
                 
                 # Calculate hold duration
                 try:
@@ -186,8 +236,14 @@ class TradeJournal:
                     row['hold_duration_mins'] = round(duration_mins, 1)
                 except:
                     row['hold_duration_mins'] = ''
+                
+                found = True
                 break
         
+        if not found:
+            print(f"⚠️ Trade #{trade_id} not found in journal")
+            return
+
         # Write all rows back
         with open(self.journal_path, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=self.COLUMNS)
@@ -215,9 +271,14 @@ class TradeJournal:
             }
         
         pnls = []
+        maes = []
+        slippages = []
+        
         for r in closed_trades:
             try:
                 pnls.append(float(r.get('final_pnl_usd', 0)))
+                maes.append(float(r.get('max_adverse_excursion', 0)))
+                slippages.append(float(r.get('slippage_usd', 0)))
             except ValueError:
                 pass
         
@@ -234,6 +295,8 @@ class TradeJournal:
             'avg_loss': sum(losers) / len(losers) if losers else 0,
             'best_trade': max(pnls) if pnls else 0,
             'worst_trade': min(pnls) if pnls else 0,
+            'avg_mae': sum(maes) / len(maes) if maes else 0,       # NEW
+            'total_slippage': sum(slippages) if slippages else 0,  # NEW
         }
     
     def print_summary(self):
@@ -251,5 +314,7 @@ class TradeJournal:
             print(f"  📈 Win Rate: {stats.get('win_rate', 0):.1f}%")
             print(f"  🏆 Best Trade: ${stats.get('best_trade', 0):.2f}")
             print(f"  💀 Worst Trade: ${stats.get('worst_trade', 0):.2f}")
+            print(f"  📉 Avg Pain (MAE): ${stats.get('avg_mae', 0):.2f}")
+            print(f"  💸 Total Slippage: ${stats.get('total_slippage', 0):.2f}")
         
         print("═" * 50 + "\n")
