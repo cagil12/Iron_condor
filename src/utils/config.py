@@ -42,8 +42,9 @@ def save_config_used(config: Dict, output_path: str):
 LIVE_CONFIG = {
     # Trading Environment
     'trading_mode': 'PAPER',  # 'PAPER' or 'LIVE'
-    'account_id': 'DU_PLACEHOLDER', # User should update this via env or args
+    'account_id': 'DUO988990', # Explicit Paper Trading Account
     'port': 7497,             # Default to Paper Port
+    'entry_time': '10:00',    # Entry Time (ET) - Updated
 
     # Instrument Settings
     'symbol': 'XSP',
