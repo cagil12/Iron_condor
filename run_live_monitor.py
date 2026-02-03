@@ -254,18 +254,28 @@ def find_trade_opportunity(
         delta_call = 0.10
         selection_method = "OTM_DISTANCE_PCT"
     
-    # Get option quotes to estimate credit
-    bid_put, ask_put = connector.get_option_quote('XSP', expiry, short_put, 'P')
-    bid_call, ask_call = connector.get_option_quote('XSP', expiry, short_call, 'C')
+    # Get option quotes to estimate NET credit
+    # We need to account for the cost of the Long Wings
+    WING_WIDTH = 1.0
+    long_put = short_put - WING_WIDTH
+    long_call = short_call + WING_WIDTH
     
-    if not all([bid_put, bid_call]):
-        print("⏳ Waiting for option quotes...")
+    # Quotes for Shorts (Bid)
+    bid_short_put, _ = connector.get_option_quote('XSP', expiry, short_put, 'P')
+    bid_short_call, _ = connector.get_option_quote('XSP', expiry, short_call, 'C')
+    
+    # Quotes for Longs (Ask) - Cost of protection
+    _, ask_long_put = connector.get_option_quote('XSP', expiry, long_put, 'P')
+    _, ask_long_call = connector.get_option_quote('XSP', expiry, long_call, 'C')
+    
+    if None in [bid_short_put, bid_short_call, ask_long_put, ask_long_call]:
+        print("⏳ Waiting for option quotes (all legs)...")
         return None
     
-    # Estimate credit (mid of bid)
-    put_credit = bid_put
-    call_credit = bid_call
-    total_credit = put_credit + call_credit
+    # Calculate Net Credit
+    put_spread_credit = bid_short_put - ask_long_put
+    call_spread_credit = bid_short_call - ask_long_call
+    total_credit = put_spread_credit + call_spread_credit
     
     # Minimum credit filter
     min_credit = config.get('min_credit', 0.10)
