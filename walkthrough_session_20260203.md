@@ -92,19 +92,20 @@ Mientras discutíamos, implementamos mejoras críticas en el código para dejarl
 
 ---
 
-## 🔬 Post-Mortem: Distancia vs Delta (12:45 PM)
+## 🔬 Post-Mortem: Distancia vs Delta (14:55 PM)
 
-Realizamos una simulación para ver qué hubiera pasado si hubiéramos ejecutado el trade de las 10:00 AM y cómo lo habría manejado la nueva lógica Delta.
+Realizamos una simulación numérica final para comparar el desempeño de ambas lógicas tras la caída del mercado de hoy (Spot 695 -> 688, -1.0%).
 
-**Escenario:** El mercado cayó de 695 a 690 en 2 horas (-0.7%).
+| Métrica | Escenario "Distancia 1.5%" (Strike 685P) | Escenario "Smart Delta 0.10" (Strike 675P) |
+|---------|------------------------------------------|--------------------------------------------|
+| **Costo de Cierre** (Debit) | $0.58 | $0.39 |
+| **P&L Latente** | 🔴 **-$43 USD** | 🟠 **-$27 USD** |
+| **Resultado Stop Loss** | ❌ **SALTADO ($0.45 trigger)** | ❌ **SALTADO ($0.36 trigger)** |
 
-| Método | Strike Put (10AM) | Delta Actual | Precio Actual | PnL Latente |
-|--------|-------------------|--------------|---------------|-------------|
-| **Distancia (1.5%)** | 685 P | **-0.33** (Peligro) | $2.94 | **Perdiendo** (Cerca de Stop Loss) |
-| **Smart Delta (0.10)** | 675 P (Est.) | **-0.15** (Seguro) | $1.16 | **Recuperable** (Lejos de Stop Loss) |
-
-**Veredicto:**
-La implementación de la selección por Delta **ha salvado la estrategia**. La regla de distancia fija (1.5%) era demasiado agresiva para la volatilidad actual y nos habría puesto en una posición muy difícil hoy. La nueva lógica habría seleccionado un strike 10 puntos más lejos (675 vs 685), proporcionando un margen de seguridad vital.
+**Análisis Forense:**
+1.  **Día de Tendencia:** Debido a la fuerte caída del mercado hoy, **ninguna estrategia neutral habría sobrevivido** intacta sin gestión activa.
+2.  **Reducción de Riesgo:** La estrategia basada en Delta **redujo la pérdida en un 37%** y se mantuvo mucho más cerca de los niveles de supervivencia.
+3.  **Confirmación:** La migración a Delta Selection proporciona una defensa estructural muy superior. Aunque hoy fue un día perdedor para los alcistas (Bull Puts), la nueva lógica amortiguó el golpe significativamente.
 
 ---
 
