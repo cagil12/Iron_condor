@@ -68,11 +68,15 @@ class IBConnector:
         port = self.config['paper_port'] if paper else self.config['live_port']
         mode = "PAPER" if paper else "LIVE"
         
+        # Randomize Client ID to avoid conflicts
+        import random
+        client_id = self.config['client_id'] + random.randint(100, 999)
+        
         try:
             self.ib.connect(
                 host=self.config['host'],
                 port=port,
-                clientId=self.config['client_id'],
+                clientId=client_id,
                 timeout=self.config['timeout']
             )
             
@@ -89,6 +93,9 @@ class IBConnector:
                     if av.tag == 'NetLiquidation' and av.currency == 'USD':
                         self.account_value = float(av.value)
                         break
+            
+            # Enable Delayed Data (Type 3) in case Live isn't active yet
+            self.ib.reqMarketDataType(3)
             
             return True, f"Connected to TWS ({mode}) - Account: {self.account_id}"
             
@@ -138,14 +145,24 @@ class IBConnector:
             ticker = self.ib.reqMktData(contract, '', snapshot=False)
             
             # Wait briefly for data
-            for _ in range(10):
+            for _ in range(15):  # Increased wait time
                 self.ib.sleep(0.2)
-                if ticker.last and ticker.last > 0:
+                # Check Last price
+                if ticker.last and ticker.last > 0 and not (ticker.last != ticker.last): 
                     self.ib.cancelMktData(contract)
                     return ticker.last
-                if ticker.close and ticker.close > 0:
+                # Fallback: Check Close price (common for indices/delayed)
+                if ticker.close and ticker.close > 0 and not (ticker.close != ticker.close): 
                     self.ib.cancelMktData(contract)
                     return ticker.close
+                # Fallback: Check Bid/Ask midpoint or single side
+                if ticker.bid and ticker.bid > 0:
+                     self.ib.cancelMktData(contract)
+                     return ticker.bid
+
+            if ticker.close and ticker.close > 0:
+                 self.ib.cancelMktData(contract)
+                 return ticker.close
             
             self.ib.cancelMktData(contract)
             return None
