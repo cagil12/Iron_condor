@@ -6,6 +6,7 @@ from .condor_builder import CondorBuilder, IronCondorTrade
 from .exits import ExitManager
 from ..data.schema import OptionChain
 from ..data.loaders import DataLoader
+from ..data.vix_loader import get_vix_loader
 from ..research.regimes import MarketRegime
 
 class Simulator:
@@ -16,6 +17,10 @@ class Simulator:
         self.exit_manager = ExitManager(config['exit'])
         self.regime_filter = MarketRegime(config)
         self.trades: List[IronCondorTrade] = []
+        
+        # VIX Loader for Regime Filter
+        self.vix_loader = get_vix_loader()
+        self.vix_loader.ensure_data(start_date="2025-10-01")
         
         # Financial Reality Params
         sim_config = config.get('simulation', {})
@@ -50,9 +55,10 @@ class Simulator:
                 if chain.timestamp.time() >= entry_time_obj:
                     entry_attempted = True  # Only try once per day
                     
-                    # TAREA 2: Regime Filter Check
-                    if not self.regime_filter.is_safe(chain.timestamp, vix_value=None):
-                        print(f"Trade Skipped: High Risk Regime at {chain.timestamp}")
+                    # REGIME FILTER: Check VIX bounds and blacklist dates
+                    vix_today = self.vix_loader.get_vix(chain.timestamp.date())
+                    if not self.regime_filter.is_safe(chain.timestamp, vix_value=vix_today):
+                        print(f"Trade Skipped: High Risk Regime at {chain.timestamp} (VIX={vix_today})")
                         continue
 
                     print(f"Attempting trade at {chain.timestamp}, Spot={chain.underlying_price:.2f}, Quotes={len(chain.quotes)}")
@@ -139,11 +145,6 @@ class Simulator:
                     )
                     self.daily_pnl += pnl
                     print(f"EOD Exit (No Quote) - Assumed Max Loss: ${pnl:.2f}")
-                    
-            except Exception as e:
-                # If we can't calculate exit, mark as expired with max loss
-                active_trade.status = "EXPIRED"
-                print(f"EOD Exit failed: {e}")
                     
         return daily_trades
     

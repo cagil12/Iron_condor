@@ -33,3 +33,49 @@ def save_config_used(config: Dict, output_path: str):
     
     with open(output_path, 'w') as f:
         yaml.dump(config_with_meta, f, default_flow_style=False)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# LIVE TRADING CONFIGURATION (XSP Mini-SPX)
+# ══════════════════════════════════════════════════════════════════════════════
+
+LIVE_CONFIG = {
+    # Instrument Settings
+    'symbol': 'XSP',
+    'exchange': 'CBOE',
+    'currency': 'USD',
+    'contract_multiplier': 100,  # XSP is also x100
+    
+    # Strategy Parameters (Scaled for XSP)
+    'wing_width': 1.0,  # Equivalent to 10 pts in SPX
+    'target_delta': 0.10,
+    'min_credit': 0.10,  # $10 min credit per contract
+    
+    # Risk Management
+    'max_capital': 200.0,  # $200 USD initial capital
+    'max_contracts': 2,    # Max contracts based on capital
+    'max_daily_loss': 50.0,  # $50 daily loss limit
+    
+    # Exit Parameters
+    'take_profit_pct': 0.50,  # 50% of premium
+    'stop_loss_mult': 2.0,   # 2x premium
+    
+    # IBKR Connection
+    'ibkr': {
+        'host': '127.0.0.1',
+        'paper_port': 7497,  # TWS Paper Trading
+        'live_port': 7496,   # TWS Live Trading
+        'client_id': 1,
+        'timeout': 30,
+    },
+    
+    # Data Subscriptions Required
+    'subscriptions': {
+        'index': 'CBOE Indices',
+        'options': 'OPRA (US Options)',
+    }
+}
+
+def get_live_config() -> Dict[str, Any]:
+    """Get live trading configuration."""
+    return LIVE_CONFIG.copy()

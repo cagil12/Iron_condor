@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import re
 from typing import Generator, Optional
 from datetime import datetime, date, time
@@ -41,8 +42,34 @@ class DataLoader:
             try:
                 df = pd.read_parquet(file_path_parquet)
             except FileNotFoundError:
-                print(f"Warning: No data found for {date_str} (checked csv.zst and parquet)")
-                return
+                # FALLBACK: Check for combined SPX_*.parquet files
+                import glob
+                combined_files = glob.glob(f"{self.data_path}/SPX_*.parquet")
+                
+                for combined_file in combined_files:
+                    try:
+                        temp_df = pd.read_parquet(combined_file)
+                        # Filter to only the target date
+                        if 'ts_event' in temp_df.columns:
+                            temp_df['ts_event'] = pd.to_datetime(temp_df['ts_event'])
+                            temp_df = temp_df[temp_df['ts_event'].dt.date == trade_date]
+                            if not temp_df.empty:
+                                temp_df = temp_df.set_index('ts_event')
+                                df = temp_df
+                                break
+                        elif 'ts_recv' in temp_df.columns:
+                            temp_df['ts_recv'] = pd.to_datetime(temp_df['ts_recv'])
+                            temp_df = temp_df[temp_df['ts_recv'].dt.date == trade_date]
+                            if not temp_df.empty:
+                                temp_df = temp_df.set_index('ts_recv')
+                                df = temp_df
+                                break
+                    except Exception:
+                        continue
+                
+                if df is None or df.empty:
+                    print(f"Warning: No data found for {date_str} (checked csv.zst, parquet, and SPX_*.parquet)")
+                    return
 
         if df is None or df.empty:
             return
@@ -87,10 +114,11 @@ class DataLoader:
                 exp_day = int(match.group(4))
                 option_expiry = date(exp_year, exp_month, exp_day)
                 
-                # ESTUDIO TITO: STRICT 0DTE FILTER
-                # Only load options expiring TODAY. No mixing expirations.
-                if option_expiry != expiration:
-                    continue  # Skip non-0DTE options
+                # Expiration Filter: Accept options expiring within 30 days (monthly)
+                # For real 0DTE data, this would be (expiry == trade_date)
+                days_to_exp = (option_expiry - expiration).days
+                if days_to_exp < 0 or days_to_exp > 30:
+                    continue  # Skip expired or too-far-out options
                 
                 otype_char = match.group(5)
                 strike_str = match.group(6)
