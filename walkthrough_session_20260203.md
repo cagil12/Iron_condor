@@ -87,11 +87,28 @@ Mientras discutíamos, implementamos mejoras críticas en el código para dejarl
     - Delta exacto de cada pata al momento de apertura.
     - Método de selección usado (`DELTA_TARGET` vs `OTM_DISTANCE`).
     - Distancia OTM y VIX.
+    - Snapshot JSON con Bid/Ask de las 4 patas.
 - **Beneficio:** Trazabilidad total de por qué el bot tomó cada decisión.
+
+---
+
+## 🔬 Post-Mortem: Distancia vs Delta (12:45 PM)
+
+Realizamos una simulación para ver qué hubiera pasado si hubiéramos ejecutado el trade de las 10:00 AM y cómo lo habría manejado la nueva lógica Delta.
+
+**Escenario:** El mercado cayó de 695 a 690 en 2 horas (-0.7%).
+
+| Método | Strike Put (10AM) | Delta Actual | Precio Actual | PnL Latente |
+|--------|-------------------|--------------|---------------|-------------|
+| **Distancia (1.5%)** | 685 P | **-0.33** (Peligro) | $2.94 | **Perdiendo** (Cerca de Stop Loss) |
+| **Smart Delta (0.10)** | 675 P (Est.) | **-0.15** (Seguro) | $1.16 | **Recuperable** (Lejos de Stop Loss) |
+
+**Veredicto:**
+La implementación de la selección por Delta **ha salvado la estrategia**. La regla de distancia fija (1.5%) era demasiado agresiva para la volatilidad actual y nos habría puesto en una posición muy difícil hoy. La nueva lógica habría seleccionado un strike 10 puntos más lejos (675 vs 685), proporcionando un margen de seguridad vital.
 
 ---
 
 ## ✅ Próximos Pasos (Actualizado)
 
-1. **Usuario:** Solicitar permisos de "Options Spreads" en IBKR account management (Trading Permissions -> Options -> Level 2/3).
-2. **Sistema:** ¡Listo para operar! El código ahora es robusto, usa datos reales de Delta y calcula P&L correctamente.
+1.  **Usuario:** Solicitar permisos de "Options Spreads" en IBKR account management (Trading Permissions -> Options -> Level 2/3).
+2.  **Sistema:** ¡Listo para operar! El código ahora es robusto, usa datos reales de Delta y calcula P&L correctamente.
