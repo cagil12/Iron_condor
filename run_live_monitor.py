@@ -107,6 +107,25 @@ def is_market_open() -> bool:
     return market_open <= current_time <= market_close
 
 
+def is_entry_time_reached(entry_time_str: str = "10:00") -> bool:
+    """
+    Check if we've reached the entry time window.
+    
+    Args:
+        entry_time_str: Entry time in HH:MM format (default 10:00)
+    
+    Returns:
+        True if current time >= entry time
+    """
+    now = datetime.now()
+    try:
+        hour, minute = map(int, entry_time_str.split(':'))
+        entry_time = dt_time(hour, minute)
+        return now.time() >= entry_time
+    except:
+        return True  # Default to allow if parsing fails
+
+
 def get_next_friday_expiry() -> str:
     """Get the next Friday expiration in YYYYMMDD format."""
     from datetime import date, timedelta
@@ -255,6 +274,14 @@ def main():
                 vix_value = vix_loader.get_vix(datetime.now().date())
                 if vix_value is None:
                     vix_value = 15.0  # Default fallback
+                
+                # Check entry time (default 10:00 AM)
+                entry_time = config.get('entry_time', '10:00')
+                if not is_entry_time_reached(entry_time):
+                    now = datetime.now().strftime("%H:%M:%S")
+                    print(f"[{now}] ⏰ Waiting for entry time ({entry_time})... VIX: {vix_value:.1f}")
+                    time.sleep(30)
+                    continue
                 
                 # Scan for opportunity
                 now = datetime.now().strftime("%H:%M:%S")
