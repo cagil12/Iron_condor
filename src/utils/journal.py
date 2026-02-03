@@ -39,8 +39,14 @@ class TradeJournal:
         'max_loss_usd',
         # Greeks
         'delta_net',
+        'delta_put',      # NEW: Delta of short put at entry
+        'delta_call',     # NEW: Delta of short call at entry
         'theta',
         'gamma',
+        # Selection Context (NEW)
+        'selection_method',   # e.g., OTM_DISTANCE_PCT, DELTA_TARGET
+        'target_delta',       # e.g., 0.10
+        'otm_distance_pct',   # e.g., 1.5%
         # Outcome
         'exit_time',
         'exit_reason',
@@ -86,8 +92,13 @@ class TradeJournal:
         max_profit_usd: float,
         max_loss_usd: float,
         delta_net: float,
+        delta_put: float = 0.0,      # NEW
+        delta_call: float = 0.0,     # NEW
         theta: float = 0.0,
         gamma: float = 0.0,
+        selection_method: str = "",  # NEW
+        target_delta: float = 0.0,   # NEW
+        otm_distance_pct: str = "",  # NEW
         reasoning: str = ""
     ) -> int:
         """
@@ -112,8 +123,13 @@ class TradeJournal:
             'max_profit_usd': round(max_profit_usd, 2),
             'max_loss_usd': round(max_loss_usd, 2),
             'delta_net': round(delta_net, 4),
+            'delta_put': round(delta_put, 4),       # NEW
+            'delta_call': round(delta_call, 4),     # NEW
             'theta': round(theta, 4),
             'gamma': round(gamma, 6),
+            'selection_method': selection_method,   # NEW
+            'target_delta': round(target_delta, 4), # NEW
+            'otm_distance_pct': otm_distance_pct,   # NEW
             'exit_time': '',
             'exit_reason': '',
             'final_pnl_usd': '',

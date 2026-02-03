@@ -326,7 +326,12 @@ def main():
                                 max_profit_usd=position.max_profit,
                                 max_loss_usd=position.max_loss,
                                 delta_net=position.delta_net,
-                                reasoning=f"VIX={trade_setup['vix']:.1f}, Spot={trade_setup['spot']:.2f}"
+                                delta_put=-0.10,  # TODO: Get from live Greeks
+                                delta_call=0.10,  # TODO: Get from live Greeks
+                                selection_method="OTM_DISTANCE_PCT",
+                                target_delta=config.get('target_delta', 0.10),
+                                otm_distance_pct="1.5%",
+                                reasoning=f"VIX={trade_setup['vix']:.1f}, Spot={trade_setup['spot']:.2f}, Method=OTM_DISTANCE"
                             )
                             
                             # Monitor until exit
