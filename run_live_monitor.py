@@ -161,20 +161,100 @@ def find_trade_opportunity(
         print(f"⚠️ VIX ({vix_value:.1f}) outside range [{vix_min}-{vix_max}]")
         return None
     
-    # Calculate strikes based on delta target
-    # For XSP ~580-600 range: ~10 delta is roughly 8-10 points OTM
-    target_delta = config.get('target_delta', 0.10)
-    
-    # Simplified strike selection (in production, use Greeks calculation)
-    # For 10 delta on XSP, roughly 1.5-2% OTM
-    otm_distance = spot * 0.015  # 1.5% OTM
-    
-    short_put = round(spot - otm_distance)
-    short_call = round(spot + otm_distance)
-    
-    # Get option quotes to estimate credit
+    # Get expiry first
     expiry = get_next_friday_expiry()
     
+    # Use Delta-based strike selection (NEW)
+    target_delta = config.get('target_delta', 0.10)
+    
+    # This requires executor - we'll pass it or create temporarily
+    # For now, use the simple approach inline
+    from ib_insync import Index, Option
+    
+    try:
+        # Smart Delta Selection
+        print(f"   🎯 Finding strikes with Delta ~{target_delta}...")
+        
+        underlying = Index('XSP', 'CBOE')
+        connector.ib.qualifyContracts(underlying)
+        
+        chains = connector.ib.reqSecDefOptParams('XSP', '', 'IND', underlying.conId)
+        if chains:
+            chain = chains[0]
+            all_strikes = sorted(chain.strikes)
+            
+            # Filter to spot +/- 15
+            filtered_strikes = [k for k in all_strikes if (spot - 15) < k < (spot + 15)]
+            
+            if filtered_strikes:
+                # Build and request data
+                contracts = []
+                for k in filtered_strikes:
+                    contracts.append(Option('XSP', expiry, k, 'P', 'SMART'))
+                    contracts.append(Option('XSP', expiry, k, 'C', 'SMART'))
+                
+                connector.ib.qualifyContracts(*contracts)
+                
+                tickers = [connector.ib.reqMktData(c, '', False, False) for c in contracts]
+                connector.ib.sleep(3)
+                
+                # Find best delta matches
+                best_put_strike = None
+                best_call_strike = None
+                best_put_delta = None
+                best_call_delta = None
+                min_put_diff = 999
+                min_call_diff = 999
+                
+                for t in tickers:
+                    if t.modelGreeks and t.modelGreeks.delta is not None:
+                        delta = t.modelGreeks.delta
+                        strike = t.contract.strike
+                        
+                        if t.contract.right == 'P':
+                            diff = abs(delta - (-target_delta))
+                            if diff < min_put_diff:
+                                min_put_diff = diff
+                                best_put_strike = strike
+                                best_put_delta = delta
+                        else:
+                            diff = abs(delta - target_delta)
+                            if diff < min_call_diff:
+                                min_call_diff = diff
+                                best_call_strike = strike
+                                best_call_delta = delta
+                
+                # Cleanup
+                for t in tickers:
+                    try:
+                        connector.ib.cancelMktData(t.contract)
+                    except:
+                        pass
+                
+                if best_put_strike and best_call_strike:
+                    short_put = best_put_strike
+                    short_call = best_call_strike
+                    delta_put = best_put_delta
+                    delta_call = best_call_delta
+                    selection_method = "DELTA_TARGET"
+                    print(f"   ✅ Delta selection: {short_put}P (Δ={delta_put:.3f}), {short_call}C (Δ={delta_call:.3f})")
+                else:
+                    raise ValueError("No valid delta strikes found")
+            else:
+                raise ValueError("No strikes in range")
+        else:
+            raise ValueError("No option chain")
+            
+    except Exception as e:
+        print(f"   ⚠️ Delta selection failed ({e}). Using distance fallback.")
+        otm_distance = spot * 0.015
+        short_put = round(spot - otm_distance)
+        short_call = round(spot + otm_distance)
+        delta_put = -0.10
+        delta_call = 0.10
+        selection_method = "OTM_DISTANCE_PCT"
+    
+    # Get option quotes to estimate credit
     bid_put, ask_put = connector.get_option_quote('XSP', expiry, short_put, 'P')
     bid_call, ask_call = connector.get_option_quote('XSP', expiry, short_call, 'C')
     
@@ -200,7 +280,11 @@ def find_trade_opportunity(
         'short_call': short_call,
         'expiry': expiry,
         'credit': total_credit,
-        'delta_net': 0.0,  # Would need proper Greek calculation
+        'delta_net': 0.0,
+        'delta_put': delta_put,
+        'delta_call': delta_call,
+        'selection_method': selection_method,
+        'target_delta': target_delta,
     }
 
 
@@ -326,12 +410,12 @@ def main():
                                 max_profit_usd=position.max_profit,
                                 max_loss_usd=position.max_loss,
                                 delta_net=position.delta_net,
-                                delta_put=-0.10,  # TODO: Get from live Greeks
-                                delta_call=0.10,  # TODO: Get from live Greeks
-                                selection_method="OTM_DISTANCE_PCT",
-                                target_delta=config.get('target_delta', 0.10),
-                                otm_distance_pct="1.5%",
-                                reasoning=f"VIX={trade_setup['vix']:.1f}, Spot={trade_setup['spot']:.2f}, Method=OTM_DISTANCE"
+                                delta_put=trade_setup.get('delta_put', -0.10),
+                                delta_call=trade_setup.get('delta_call', 0.10),
+                                selection_method=trade_setup.get('selection_method', 'UNKNOWN'),
+                                target_delta=trade_setup.get('target_delta', 0.10),
+                                otm_distance_pct="N/A" if trade_setup.get('selection_method') == 'DELTA_TARGET' else "1.5%",
+                                reasoning=f"VIX={trade_setup['vix']:.1f}, Spot={trade_setup['spot']:.2f}, Method={trade_setup.get('selection_method', 'UNKNOWN')}"
                             )
                             
                             # Monitor until exit

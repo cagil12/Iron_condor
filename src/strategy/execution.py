@@ -96,6 +96,133 @@ class LiveExecutor:
         self.ib.cancelMktData(contract)
         return None
     
+    def find_delta_strikes(
+        self, 
+        spot: float, 
+        expiry: str, 
+        target_delta: float = 0.10
+    ) -> Dict[str, Any]:
+        """
+        Find optimal strikes using real-time Delta from IBKR.
+        
+        Uses Smart Filter: Only requests data for strikes within Spot +/- 20.
+        Falls back to distance heuristic if Greeks unavailable.
+        
+        Returns:
+            dict with 'short_put', 'short_call', 'delta_put', 'delta_call', 'method'
+        """
+        STRIKE_RANGE = 20  # +/- 20 from spot
+        TARGET_PUT_DELTA = -target_delta  # e.g., -0.10
+        TARGET_CALL_DELTA = target_delta   # e.g., 0.10
+        
+        print(f"   🎯 Finding strikes with Delta ~{target_delta} (Smart Filter)...")
+        
+        try:
+            # 1. Get option chain metadata (no quota used)
+            from ib_insync import Index
+            underlying = Index('XSP', 'CBOE')
+            self.ib.qualifyContracts(underlying)
+            
+            chains = self.ib.reqSecDefOptParams('XSP', '', 'IND', underlying.conId)
+            if not chains:
+                raise ValueError("No option chain found")
+                
+            chain = chains[0]
+            all_strikes = sorted(chain.strikes)
+            
+            # 2. Smart Filter: Only strikes in range
+            lower_bound = spot - STRIKE_RANGE
+            upper_bound = spot + STRIKE_RANGE
+            filtered_strikes = [k for k in all_strikes if lower_bound < k < upper_bound]
+            
+            print(f"   📊 Filtered to {len(filtered_strikes)} strikes in [{lower_bound:.0f} - {upper_bound:.0f}]")
+            
+            if len(filtered_strikes) == 0:
+                raise ValueError("No strikes in range")
+            
+            # 3. Build contracts for Puts and Calls
+            put_contracts = []
+            call_contracts = []
+            
+            for k in filtered_strikes:
+                put_contracts.append(Option('XSP', expiry, k, 'P', 'SMART'))
+                call_contracts.append(Option('XSP', expiry, k, 'C', 'SMART'))
+            
+            all_contracts = put_contracts + call_contracts
+            self.ib.qualifyContracts(*all_contracts)
+            
+            # 4. Request market data
+            print(f"   📡 Requesting Greeks for {len(all_contracts)} contracts...")
+            tickers = []
+            for c in all_contracts:
+                t = self.ib.reqMktData(c, '', False, False)
+                tickers.append(t)
+            
+            self.ib.sleep(3)  # Wait for Greeks
+            
+            # 5. Find best matches
+            best_put = None
+            best_call = None
+            min_put_diff = 999
+            min_call_diff = 999
+            
+            for t in tickers:
+                if not t.modelGreeks or t.modelGreeks.delta is None:
+                    continue
+                    
+                delta = t.modelGreeks.delta
+                strike = t.contract.strike
+                right = t.contract.right
+                
+                if right == 'P':
+                    diff = abs(delta - TARGET_PUT_DELTA)
+                    if diff < min_put_diff:
+                        min_put_diff = diff
+                        best_put = {'strike': strike, 'delta': delta}
+                else:  # Call
+                    diff = abs(delta - TARGET_CALL_DELTA)
+                    if diff < min_call_diff:
+                        min_call_diff = diff
+                        best_call = {'strike': strike, 'delta': delta}
+            
+            # 6. Cleanup subscriptions
+            for t in tickers:
+                try:
+                    self.ib.cancelMktData(t.contract)
+                except:
+                    pass
+            
+            # 7. Validate results
+            if not best_put or not best_call:
+                raise ValueError("Could not find valid Delta strikes")
+            
+            print(f"   ✅ Found: {best_put['strike']}P (Δ={best_put['delta']:.3f}), {best_call['strike']}C (Δ={best_call['delta']:.3f})")
+            
+            return {
+                'short_put': best_put['strike'],
+                'short_call': best_call['strike'],
+                'delta_put': best_put['delta'],
+                'delta_call': best_call['delta'],
+                'method': 'DELTA_TARGET'
+            }
+            
+        except Exception as e:
+            print(f"   ⚠️ Greeks data missing ({e}). Reverting to distance heuristic.")
+            
+            # FALLBACK: Distance-based selection (1.5% OTM)
+            otm_distance = spot * 0.015
+            short_put = round(spot - otm_distance)
+            short_call = round(spot + otm_distance)
+            
+            return {
+                'short_put': short_put,
+                'short_call': short_call,
+                'delta_put': -0.10,  # Estimated
+                'delta_call': 0.10,  # Estimated
+                'method': 'OTM_DISTANCE_PCT'
+            }
+
+    
     def build_combo_contract(self, legs: List[Dict[str, Any]]) -> Contract:
         """
         Build a BAG (Combo) contract.
