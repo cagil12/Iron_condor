@@ -158,8 +158,8 @@ def find_trade_opportunity(
         return None
     
     # VIX filter
-    vix_min = config.get('risk_filters', {}).get('vix_threshold_min', 12)
-    vix_max = config.get('risk_filters', {}).get('vix_threshold_max', 30)
+    vix_min = config.get('min_vix', 10.0)
+    vix_max = config.get('max_vix', 25.0)
     
     if vix_value < vix_min or vix_value > vix_max:
         print(f"⚠️ VIX ({vix_value:.1f}) outside range [{vix_min}-{vix_max}]")
