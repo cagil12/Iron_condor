@@ -62,6 +62,7 @@ LIVE_CONFIG = {
     'max_capital': 200.0,  # $200 USD initial capital
     'max_contracts': 1,    # Conservative start
     'max_daily_loss': 50.0,  # $50 daily loss limit
+    'max_vix': 25.0,       # KILL SWITCH: No trading if VIX > 25
     
     # Exit Parameters
     'take_profit_pct': 0.50,  # 50% of premium

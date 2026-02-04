@@ -376,6 +376,14 @@ def main():
                 if vix_value is None:
                     vix_value = 15.0  # Default fallback
                 
+                # VIX SAFETY CHECK (HARD LIMIT)
+                max_vix = config.get('max_vix', 25.0)
+                if vix_value > max_vix:
+                    now_str = datetime.now().strftime("%H:%M:%S")
+                    print(f"[{now_str}] 🛑 MARKET DANGER: VIX ({vix_value:.2f}) > Limit ({max_vix}). System HALTED.")
+                    time.sleep(60)
+                    continue
+                
                 # Check entry time (default 10:00 AM)
                 entry_time = config.get('entry_time', '10:00')
                 if not is_entry_time_reached(entry_time):
