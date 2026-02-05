@@ -358,6 +358,27 @@ def main():
         
         while True:
             try:
+                # -----------------------------------------------------------
+                # SAFETY: KILL SWITCH L1 (Equity Protection)
+                # -----------------------------------------------------------
+                if connector.ib.isConnected():
+                    try:
+                        # Filter by specific account if possible, or grab first NetLiquidation
+                        target_acct = config.get('account_id')
+                        summary = connector.ib.accountSummary()
+                        
+                        net_liq_item = next((x for x in summary if x.tag == 'NetLiquidation' and (not target_acct or x.account == target_acct)), None)
+                        
+                        if net_liq_item:
+                            equity = float(net_liq_item.value)
+                            min_equity = config.get('min_account_value', 1400.0)
+                            
+                            if equity < min_equity:
+                                print(f"\n💀 KILL SWITCH L1 ACTIVATED: Equity (${equity:,.2f}) < Limit (${min_equity:,.2f}). System SHUTDOWN.")
+                                sys.exit(1)
+                    except Exception as e_safety:
+                         pass # Don't crash on transient data issues
+
                 # Check market hours
                 if not is_market_open():
                     now = datetime.now().strftime("%H:%M:%S")

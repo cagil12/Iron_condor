@@ -63,6 +63,7 @@ LIVE_CONFIG = {
     'max_contracts': 1,    # Conservative start
     'max_daily_loss': 50.0,  # $50 daily loss limit
     'max_vix': 25.0,       # KILL SWITCH: No trading if VIX > 25
+    'min_account_value': 1400.0, # HARD SWITCH: Equity Floor ($1400)
     
     # Exit Parameters
     'take_profit_pct': 0.50,  # 50% of premium

@@ -44,6 +44,10 @@ data:
 filters:
   min_vix: 10.0              # Skip days with VIX below this (low vol = poor premium)
   max_vix: 25.0              # KILL SWITCH: Skip days with VIX above 25.0 (extreme risk)
+  
+risk:
+  min_account_value: 1400.0  # HARD STOP: Si Equity < $1400, apagar sistema.
+
   exclude_dates:             # Blacklist dates (FOMC, CPI, NFP, etc.)
     - "2023-01-25"           # FOMC
     - "2023-02-01"           # FOMC
