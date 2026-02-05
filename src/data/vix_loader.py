@@ -2,23 +2,28 @@
 vix_loader.py
 
 Downloads and provides historical VIX data for regime filtering.
-Uses yfinance to fetch VIX (^VIX) data from Yahoo Finance.
+Uses yfinance for historical data, IBKR for real-time.
 """
 import pandas as pd
 from datetime import date, datetime
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Any
 
 class VixLoader:
     """
-    Loads VIX data from local cache or downloads from Yahoo Finance.
+    Loads VIX data from IBKR (real-time) or local cache (fallback).
     """
     
-    def __init__(self, cache_path: str = "data/vix_cache.parquet"):
+    def __init__(self, cache_path: str = "data/vix_cache.parquet", ib_connector: Any = None):
         self.cache_path = Path(cache_path)
         self._vix_data: Optional[pd.DataFrame] = None
+        self._ib_connector = ib_connector
         self._load_cache()
     
+    def set_ib_connector(self, connector: Any):
+        """Set the IBKR connector for real-time VIX fetching."""
+        self._ib_connector = connector
+        
     def _load_cache(self):
         """Load VIX data from local cache if available."""
         if self.cache_path.exists():
@@ -28,6 +33,55 @@ class VixLoader:
             except Exception as e:
                 print(f"Failed to load VIX cache: {e}")
                 self._vix_data = None
+    
+    def get_vix_from_ibkr(self) -> Optional[float]:
+        """
+        Get real-time VIX from IBKR connection.
+        
+        Returns:
+            Current VIX value or None if unavailable
+        """
+        if self._ib_connector is None:
+            return None
+            
+        try:
+            from ib_insync import Index
+            
+            ib = self._ib_connector.ib
+            if not ib.isConnected():
+                return None
+            
+            # Create VIX Index contract
+            vix_contract = Index('VIX', 'CBOE')
+            ib.qualifyContracts(vix_contract)
+            
+            # Request market data (snapshot)
+            ticker = ib.reqMktData(vix_contract, '', False, False)
+            
+            # Wait briefly for data
+            ib.sleep(1)
+            
+            # Get last price
+            vix_value = None
+            if ticker.last and ticker.last > 0:
+                vix_value = ticker.last
+            elif ticker.close and ticker.close > 0:
+                vix_value = ticker.close
+            elif ticker.bid and ticker.bid > 0:
+                vix_value = ticker.bid
+                
+            # Cancel market data subscription
+            ib.cancelMktData(vix_contract)
+            
+            if vix_value:
+                print(f"📈 VIX (LIVE from IBKR): {vix_value:.2f}")
+                return float(vix_value)
+            
+            return None
+            
+        except Exception as e:
+            print(f"⚠️ Failed to get VIX from IBKR: {e}")
+            return None
     
     def download(self, start_date: str = "2025-01-01", end_date: str = None) -> pd.DataFrame:
         """
@@ -75,15 +129,22 @@ class VixLoader:
     
     def get_vix(self, trade_date: date) -> Optional[float]:
         """
-        Get VIX value for a specific date.
+        Get VIX value. Tries IBKR first (real-time), then falls back to cache.
         
         Args:
-            trade_date: The date to lookup
+            trade_date: The date to lookup (used for cache fallback)
             
         Returns:
             VIX value or None if not available
         """
+        # 1. Try IBKR real-time first
+        live_vix = self.get_vix_from_ibkr()
+        if live_vix is not None:
+            return live_vix
+        
+        # 2. Fallback to cache
         if self._vix_data is None or self._vix_data.empty:
+            print("⚠️ No VIX data in cache")
             return None
         
         # Handle datetime input
@@ -91,13 +152,17 @@ class VixLoader:
             trade_date = trade_date.date()
         
         if trade_date in self._vix_data.index:
-            return float(self._vix_data.loc[trade_date, 'vix'])
+            cached_vix = float(self._vix_data.loc[trade_date, 'vix'])
+            print(f"📊 VIX (CACHE): {cached_vix:.2f}")
+            return cached_vix
         
         # Try to find closest prior date (T-1)
         prior_dates = [d for d in self._vix_data.index if d < trade_date]
         if prior_dates:
             closest = max(prior_dates)
-            return float(self._vix_data.loc[closest, 'vix'])
+            cached_vix = float(self._vix_data.loc[closest, 'vix'])
+            print(f"📊 VIX (CACHE T-1): {cached_vix:.2f}")
+            return cached_vix
         
         return None
     
@@ -111,9 +176,11 @@ class VixLoader:
 # Singleton instance for easy import
 _vix_loader: Optional[VixLoader] = None
 
-def get_vix_loader(cache_path: str = "data/vix_cache.parquet") -> VixLoader:
+def get_vix_loader(cache_path: str = "data/vix_cache.parquet", ib_connector: Any = None) -> VixLoader:
     """Get or create the singleton VIX loader."""
     global _vix_loader
     if _vix_loader is None:
-        _vix_loader = VixLoader(cache_path)
+        _vix_loader = VixLoader(cache_path, ib_connector)
+    elif ib_connector is not None:
+        _vix_loader.set_ib_connector(ib_connector)
     return _vix_loader

@@ -345,6 +345,9 @@ def main():
         capital = connector.get_account_value()
         print(f"💰 Account Value: ${capital:,.2f}")
         
+        # Enable real-time VIX fetching now that we have IBKR connection
+        vix_loader.set_ib_connector(connector)
+        
         # Initialize executor
         executor = LiveExecutor(connector)
         
