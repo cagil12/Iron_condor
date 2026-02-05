@@ -613,26 +613,9 @@ class LiveExecutor:
             
             # Capture IV: Prefer Options IV, fallback to VIX/100
             iv_est = vix / 100.0
-            
-            # Try to extract actual IV from snapshot data (using Short Put as proxy)
-            # snapshot_data contains 'delta_put', 'theta_put' etc but implies we had greeks.
-            # We didn't explicitly store 'impliedVol' in snapshot_data in the loop above
-            # Let's see if we can get it from the loop variable if we are still in scope? 
-            # No, loop is done. 
-            
-            # Correct approach: logic above in the loop needs to save impliedVol to snapshot_data
-            # For now, we will assume if we have greeks, we might have IV, but we didn't save it.
-            # To fix this properly for next run without changing the big loop above too much:
-            # We will rely on the VIX proxy for now as the 'safest' immediate fix 
-            # unless we edit the loop. The user asked to "Extraer impliedVol ... ya tienes los datos".
-            # Ah, I need to edit the loop (lines 489-499) to save impliedVol.
-            
-            # Since I am in a multi-replace block for `execute_iron_condor`, I cannot easily edit the loop above 
-            # in the same call if it's far away. 
-            # I will stick to the VIX proxy in THIS block, and do a separate edit for the loop IV capture if needed.
-            # BUT, wait, I can edit the loop in a separate chunk of THIS call? Yes.
-            
-            # ... (Proceeding with VIX proxy here, will add Loop chunk below)
+            iv_from_options = snapshot_data.get('iv_put') or snapshot_data.get('iv_call')
+            if iv_from_options and iv_from_options > 0:
+                iv_est = iv_from_options
             
             # Log to Journal if available
             trade_id = 0
@@ -847,9 +830,6 @@ class LiveExecutor:
                 if current_spread_cost > max_spread_val:
                     max_spread_val = current_spread_cost
             
-            pnl = self.get_position_pnl()
-            
-            
             # Get current spot
             spot = self.connector.get_live_price('XSP') or 0.0
             
@@ -862,13 +842,18 @@ class LiveExecutor:
             dist_put = spot - short_put
             dist_call = short_call - spot
             
-            # Time remaining
+            # Calculate percentages
+            max_profit = self.active_position.max_profit
+            max_loss = self.active_position.max_loss
+            pnl_val = pnl if pnl is not None else 0.0
+            
+            tp_pct = (pnl_val / max_profit * 100) if max_profit > 0 else 0
+            sl_pct = (pnl_val / max_loss * 100) if max_loss > 0 else 0 # Careful, max_loss is positive number
+            # Actually max_loss is max loss amount. SL hit is negative PnL. 
+            # Let's stick to TP% of MaxProfit.
+            
+            # Time held
             now = datetime.now()
-            close_dt = now.replace(hour=16, minute=0, second=0)
-            time_left = close_dt - now
-            mins_left = max(0, int(time_left.total_seconds() // 60))
-            hours_left = mins_left // 60
-            mins_remainder = mins_left % 60
             
             # Calculate hold time
             hold_time = (now - self.active_position.entry_time).total_seconds() / 60
