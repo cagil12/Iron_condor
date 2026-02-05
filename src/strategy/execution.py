@@ -6,8 +6,8 @@ Handles order placement, position monitoring, and exit management.
 
 SAFETY: Hardcoded limits for small account ($200 capital).
 """
-import time
-from datetime import datetime
+import time as time_module
+from datetime import datetime, time
 import json
 from typing import Optional, Dict, Any, List
 from dataclasses import dataclass
@@ -67,6 +67,7 @@ class LiveExecutor:
     ORDER_TIMEOUT = 10     # Seconds to wait for fill
     CHASE_TICKS = 3        # Number of times to chase price
     TICK_SIZE = 0.01       # XSP option tick size
+    FORCE_CLOSE_TIME = time(15, 45)  # Hard EOD exit at 3:45 PM
     
     def __init__(self, connector: IBConnector):
         self.connector = connector
@@ -150,8 +151,35 @@ class LiveExecutor:
             wing_width = short_put.contract.strike - long_put.contract.strike
             max_loss = (wing_width * qty * 100) - max_profit
             
+            # Attempt to recover actual entry time from IBKR executions
+            entry_time = None
+            try:
+                # Request today's executions for XSP
+                from ib_insync import ExecutionFilter
+                exec_filter = ExecutionFilter(symbol='XSP')
+                executions = self.ib.reqExecutions(exec_filter)
+                
+                # Filter for today and find earliest
+                today = datetime.now().date()
+                xsp_execs_today = [e for e in executions if e.execution.time.date() == today]
+                
+                if xsp_execs_today:
+                    # Get earliest execution time
+                    earliest = min(xsp_execs_today, key=lambda e: e.execution.time)
+                    # IBKR returns UTC time, convert to local then strip tzinfo for compatibility
+                    utc_entry = earliest.execution.time
+                    local_entry = utc_entry.astimezone()  # Convert to local timezone
+                    entry_time = local_entry.replace(tzinfo=None)  # Strip tzinfo for naive comparison
+                    print(f"   📅 Recovered Entry Time from Executions: {entry_time.strftime('%H:%M:%S')} (local)")
+                else:
+                    print("   ⚠️ No executions found today. Using market open (10:00) as entry time.")
+                    entry_time = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
+            except Exception as exec_err:
+                print(f"   ⚠️ Could not query executions: {exec_err}. Using market open as fallback.")
+                entry_time = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
+            
             self.active_position = IronCondorPosition(
-                entry_time=datetime.now(), # Approximate (resumed)
+                entry_time=entry_time,
                 short_put_strike=short_put.contract.strike,
                 long_put_strike=long_put.contract.strike,
                 short_call_strike=short_call.contract.strike,
@@ -167,9 +195,13 @@ class LiveExecutor:
                 delta_put=0.0, theta=0.0, gamma=0.0 # Greeks lost
             )
             
+            # Calculate hold time for display
+            hold_minutes = (datetime.now() - entry_time).total_seconds() / 60
+            
             print(f"   ✅ Position Successfully Recovered!")
             print(f"      Strikes: {long_put.contract.strike}/{short_put.contract.strike}P - {short_call.contract.strike}/{long_call.contract.strike}C")
             print(f"      Max Profit: ${max_profit:.2f}, Max Loss: ${max_loss:.2f}")
+            print(f"      Hold Time: {hold_minutes:.0f} minutes since entry")
             
         except Exception as e:
             print(f"   ❌ Recovery Failed: {e}")
@@ -628,11 +660,18 @@ class LiveExecutor:
         take_profit_target = max_profit * self.TAKE_PROFIT_PCT
         stop_loss_target = -self.active_position.entry_credit * 100 * self.STOP_LOSS_MULT
         
+        # 1. Take Profit
         if pnl >= take_profit_target:
             return f"TAKE_PROFIT (PnL: ${pnl:.2f} >= ${take_profit_target:.2f})"
         
+        # 2. Stop Loss
         if pnl <= stop_loss_target:
             return f"STOP_LOSS (PnL: ${pnl:.2f} <= ${stop_loss_target:.2f})"
+        
+        # 3. EOD Force Close (time of day cutoff)
+        now_time = datetime.now().time()
+        if now_time >= self.FORCE_CLOSE_TIME:
+            return f"⏰ EOD_EXIT (Time {now_time.strftime('%H:%M')} >= 15:45 cutoff, PnL: ${pnl:.2f})"
         
         return None
     
@@ -683,18 +722,63 @@ class LiveExecutor:
         Args:
             check_interval: Seconds between checks
         """
+        from datetime import time as dt_time
+        
         if not self.active_position:
             print("No active position to monitor.")
             return
         
         print(f"\n📡 Monitoring position (checking every {check_interval}s)...")
         
+        # Market close time
+        market_close = dt_time(16, 0)
+        
         while self.active_position:
             pnl = self.get_position_pnl()
+            
+            # Get current spot
+            spot = self.connector.get_live_price('XSP') or 0.0
+            
+            # Get VIX
+            vix = self.connector.get_live_price('VIX') or 0.0
+            
+            # Calculate distances to strikes
+            short_put = self.active_position.short_put_strike
+            short_call = self.active_position.short_call_strike
+            dist_put = spot - short_put
+            dist_call = short_call - spot
+            
+            # Time remaining
+            now = datetime.now()
+            close_dt = now.replace(hour=16, minute=0, second=0)
+            time_left = close_dt - now
+            mins_left = max(0, int(time_left.total_seconds() // 60))
+            hours_left = mins_left // 60
+            mins_remainder = mins_left % 60
+            
+            # Calculate hold time
+            hold_time = (now - self.active_position.entry_time).total_seconds() / 60
+            
             if pnl is not None:
                 max_profit = self.active_position.max_profit
-                pnl_pct = (pnl / max_profit) * 100 if max_profit > 0 else 0
-                print(f"   PnL: ${pnl:.2f} ({pnl_pct:.1f}% of max)", end="\r")
+                tp_target = max_profit * self.TAKE_PROFIT_PCT
+                # Show % of TP target reached (100% = hit target)
+                tp_pct = (pnl / tp_target) * 100 if tp_target > 0 else 0
+                # Also show % of max profit for context
+                max_pct = (pnl / max_profit) * 100 if max_profit > 0 else 0
+                
+                # Calculate SL progress
+                sl_target = -self.active_position.entry_credit * 100 * self.STOP_LOSS_MULT
+                sl_pct = (pnl / sl_target) * 100 if sl_target < 0 else 0
+                
+                # Danger zone detection
+                min_distance = min(dist_put, dist_call)
+                danger = "⚠️ DANGER" if min_distance < 5 else ""
+                
+                # Enhanced output: TP% means progress to TP target, Hold shows time in trade
+                now_str = now.strftime("%H:%M:%S")
+                base_output = f"[{now_str}] XSP: {spot:.2f} | VIX: {vix:.1f} | PnL: ${pnl:.2f} ({max_pct:.0f}%Max) | TP:{tp_pct:.0f}% SL:{sl_pct:.0f}% | {short_put:.0f}P({dist_put:+.0f}) {short_call:.0f}C({dist_call:+.0f}) | Hold:{hold_time:.0f}m"
+                print(f"{danger} {base_output}" if danger else base_output, end="\r")
             
             exit_reason = self.check_exit_conditions()
             if exit_reason:
@@ -702,3 +786,4 @@ class LiveExecutor:
                 break
             
             self.ib.sleep(check_interval)
+
