@@ -37,8 +37,8 @@ class TradeJournal:
         'entry_credit',
         'max_profit_usd',
         'max_loss_usd',
-        'max_loss_usd',
         'max_spread_val',   # NEW: Max spread value observed (Tail Risk)
+        'rv_duration',      # NEW: Realized Volatility over duration (Placeholder)
         # Execution Quality (NEW)
         'initial_credit',   # NEW: Net credit at open
         'target_credit',    # Wanted Limit Price
@@ -169,7 +169,6 @@ class TradeJournal:
             'entry_credit': round(entry_credit, 4),
             'max_profit_usd': round(max_profit_usd, 2),
             'max_loss_usd': round(max_loss_usd, 2),
-            'max_loss_usd': round(max_loss_usd, 2),
             # HFT Metrics
             'initial_credit': round(initial_credit, 4),
             'target_credit': round(target_credit, 4),
@@ -190,6 +189,8 @@ class TradeJournal:
             'exit_reason': '',
             'final_pnl_usd': '',
             'max_adverse_excursion': '', # NEW
+            'max_spread_val': '', # NEW
+            'rv_duration': '',    # NEW
             'hold_duration_mins': '',
             'snapshot_json': snapshot_json,         
             'exit_snapshot_json': '',    # NEW
