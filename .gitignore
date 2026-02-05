@@ -75,3 +75,7 @@ logs/
 *.key
 *.pem
 secrets.yaml
+
+# Archives
+archive_*/
+

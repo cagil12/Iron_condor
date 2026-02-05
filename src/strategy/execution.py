@@ -35,6 +35,12 @@ class IronCondorPosition:
     delta_net: float
     snapshot_json: str = "{}"  # NEW
     
+    # Greeks Snapshot
+    delta_put: float = 0.0
+    delta_call: float = 0.0
+    theta: float = 0.0
+    gamma: float = 0.0
+    
     # Order IDs for tracking
     order_ids: List[int] = None
     
@@ -347,6 +353,19 @@ class LiveExecutor:
                 
             self.ib.cancelMktData(contract)
             
+            # Capture Greeks if available
+            greeks = ticker.modelGreeks
+            if greeks:
+                if name == 'short_put':
+                    snapshot_data['delta_put'] = greeks.delta
+                    snapshot_data['theta_put'] = greeks.theta
+                    snapshot_data['gamma_put'] = greeks.gamma
+                elif name == 'short_call':
+                    snapshot_data['delta_call'] = greeks.delta
+                    snapshot_data['theta_call'] = greeks.theta
+                    snapshot_data['gamma_call'] = greeks.gamma
+
+            
         # Calculate Net Credit (using Mids for Limit Price estimation)
         # Note: We use Mid for execution limit, but logic checks against conservative if needed
         credit_put_spread = prices['short_put'] - prices['long_put']
@@ -413,37 +432,64 @@ class LiveExecutor:
         try:
             print(f"🚀 Sending Combo Order...")
             trade = self.ib.placeOrder(bag_contract, order)
-            self.ib.sleep(self.ORDER_TIMEOUT)
+            # WAIT FOR FILL (Fixes duplicate logging bug)
+            print(f"⏳ Waiting for fill (max 45s)...")
+            start_wait = time.time()
+            filled = False
             
-            status = trade.orderStatus.status
-            print(f"📋 Order Status: {status}")
+            while (time.time() - start_wait) < 45:
+                self.ib.sleep(1)
+                status = trade.orderStatus.status
+                if status == 'Filled':
+                    filled = True
+                    break
+                if status in ['Cancelled', 'Inactive', 'ApiCancelled']:
+                    print(f"❌ Order Cancelled/Inactive: {status}")
+                    return None
             
-            if status in ['Filled', 'Submitted', 'PreSubmitted']:
-                # Success - Record Position
-                max_profit = total_credit * self.MAX_QTY * 100
-                max_loss = (self.WING_WIDTH - total_credit) * self.MAX_QTY * 100
-                
-                self.active_position = IronCondorPosition(
-                    entry_time=datetime.now(),
-                    short_put_strike=short_put,
-                    long_put_strike=long_put,
-                    short_call_strike=short_call,
-                    long_call_strike=long_call,
-                    entry_credit=total_credit,
-                    qty=self.MAX_QTY,
-                    max_profit=max_profit,
-                    max_loss=max_loss,
-                    spot_at_entry=spot,
-                    vix_at_entry=vix,
-                    delta_net=delta_net,
-                    snapshot_json=snapshot_json_str, # Captured snapshot
-                    order_ids=[trade.order.orderId]
-                )
-                print("✅ Iron Condor Opened (Combo)")
-                return self.active_position
-            else:
-                print(f"⚠️ Order not active: {status}")
+            if not filled:
+                print(f"⚠️ Order timeout (Status: {trade.orderStatus.status}). Cancelling...")
+                self.ib.cancelOrder(order)
                 return None
+            
+            # Success - Record Position
+            print(f"📋 Order Filled! Exec Price: {trade.orderStatus.avgFillPrice}")
+            
+            max_profit = total_credit * self.MAX_QTY * 100
+            max_loss = (self.WING_WIDTH - total_credit) * self.MAX_QTY * 100
+            
+            # Extract Greeks from snapshot (safely)
+            delta_put = snapshot_data.get('delta_put', 0.0) or 0.0
+            delta_call = snapshot_data.get('delta_call', 0.0) or 0.0
+            
+            # Sum up theta/gamma from short legs (dominant)
+            theta_total = (snapshot_data.get('theta_put', 0.0) or 0.0) + (snapshot_data.get('theta_call', 0.0) or 0.0)
+            gamma_total = (snapshot_data.get('gamma_put', 0.0) or 0.0) + (snapshot_data.get('gamma_call', 0.0) or 0.0)
+            
+            self.active_position = IronCondorPosition(
+                entry_time=datetime.now(),
+                short_put_strike=short_put,
+                long_put_strike=long_put,
+                short_call_strike=short_call,
+                long_call_strike=long_call,
+                entry_credit=total_credit,
+                qty=self.MAX_QTY,
+                max_profit=max_profit,
+                max_loss=max_loss,
+                spot_at_entry=spot,
+                vix_at_entry=vix,
+                delta_net=delta_net,
+                snapshot_json=snapshot_json_str,
+                order_ids=[trade.order.orderId],
+                # New Greeks
+                delta_put=delta_put,
+                delta_call=delta_call,
+                theta=theta_total,
+                gamma=gamma_total
+            )
+            print("✅ Iron Condor Opened (Combo) & Filled")
+            return self.active_position
+
                 
         except Exception as e:
             print(f"❌ Execution Error: {e}")
