@@ -832,10 +832,23 @@ class LiveExecutor:
         print(f"\n📡 Monitoring position (checking every {check_interval}s)...")
         
         # Market close time
+        # Market close time
         market_close = dt_time(16, 0)
         
+        max_spread_val = 0.0
+        
         while self.active_position:
+            # Update Max Spread Value (Tail Risk)
+            # PnL = (EntryCredit - CurrentSpread) * 100 * Qty
+            # CurrentSpread = EntryCredit - (PnL / (100 * self.active_position.qty))
             pnl = self.get_position_pnl()
+            if pnl is not None:
+                current_spread_cost = self.active_position.entry_credit - (pnl / (100 * self.active_position.qty))
+                if current_spread_cost > max_spread_val:
+                    max_spread_val = current_spread_cost
+            
+            pnl = self.get_position_pnl()
+            
             
             # Get current spot
             spot = self.connector.get_live_price('XSP') or 0.0
@@ -877,6 +890,7 @@ class LiveExecutor:
                 current_spread_cost = self.active_position.entry_credit - (pnl / (100 * self.active_position.qty))
                 if current_spread_cost > max_spread_val:
                     max_spread_val = current_spread_cost
+            
             
             exit_reason = self.check_exit_conditions()
             if exit_reason:
