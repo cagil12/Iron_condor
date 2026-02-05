@@ -379,6 +379,23 @@ def main():
                     except Exception as e_safety:
                          pass # Don't crash on transient data issues
 
+                # -----------------------------------------------------------
+                # TIME GATE: No trading before start_time (10:00 AM ET)
+                # -----------------------------------------------------------
+                start_time_str = config.get('start_time', config.get('entry_time', '10:00'))
+                try:
+                    start_h, start_m = map(int, start_time_str.split(':'))
+                    start_time_obj = dt_time(start_h, start_m)
+                    current_time = datetime.now().time()
+                    
+                    if current_time < start_time_obj:
+                        now_str = datetime.now().strftime("%H:%M:%S")
+                        print(f"[{now_str}] ⏳ MARKET WARMUP: Waiting until {start_time_str} AM... (Current: {now_str[:5]})")
+                        time.sleep(60)
+                        continue
+                except Exception:
+                    pass  # Fallback if parsing fails
+
                 # Check market hours
                 if not is_market_open():
                     now = datetime.now().strftime("%H:%M:%S")
@@ -405,13 +422,6 @@ def main():
                     time.sleep(60)
                     continue
                 
-                # Check entry time (default 10:00 AM)
-                entry_time = config.get('entry_time', '10:00')
-                if not is_entry_time_reached(entry_time):
-                    now = datetime.now().strftime("%H:%M:%S")
-                    print(f"[{now}] ⏰ Waiting for entry time ({entry_time})... VIX: {vix_value:.1f}")
-                    time.sleep(30)
-                    continue
                 
                 # Scan for opportunity
                 now = datetime.now().strftime("%H:%M:%S")
