@@ -74,6 +74,106 @@ class LiveExecutor:
         self.config = get_live_config()
         self.active_position: Optional[IronCondorPosition] = None
         
+    def recover_active_position(self):
+        """
+        Attempt to recover active position state from IBKR.
+        Used on restart to resume management of existing positions.
+        """
+        print("🔍 Checking for existing positions to resume...")
+        positions = self.ib.positions()
+        xsp_positions = [p for p in positions if p.contract.symbol == 'XSP' and p.position != 0]
+        
+        if not xsp_positions:
+            print("   ✅ No existing positions found. Ready for new entries.")
+            return
+
+        print(f"   ⚠️ Found {len(xsp_positions)} existing XSP legs. Attempting recovery...")
+        
+        # We need exactly 4 legs for an Iron Condor (or handled subsets later)
+        # For now, simplistic recovery assuming standard Iron Condor structure
+        
+        try:
+            # Sort by strike
+            # Puts: Long Put (Lowest Strike), Short Put (Low-Mid)
+            # Calls: Short Call (High-Mid), Long Call (Highest)
+            
+            puts = []
+            calls = []
+            
+            total_credit_collected = 0.0
+            qty = 0
+            
+            for p in xsp_positions:
+                c = p.contract
+                if c.right == 'P':
+                    puts.append(p)
+                elif c.right == 'C':
+                    calls.append(p)
+                
+                # Calculate Credit/Debit contribution
+                # avgCost is total cost for the position (always positive)
+                # If Short (-pos), we RECEIVED avgCost -> Credit (+)
+                # If Long (+pos), we PAID avgCost -> Debit (-)
+                if p.position < 0:
+                    total_credit_collected += p.avgCost
+                else:
+                    total_credit_collected -= p.avgCost
+                    
+                # Assume symmetric qty for now
+                qty = abs(int(p.position))
+
+            puts.sort(key=lambda p: p.contract.strike)
+            calls.sort(key=lambda p: p.contract.strike)
+            
+            if len(puts) != 2 or len(calls) != 2:
+                print(f"   ❌ Complex position structure detected (Puts: {len(puts)}, Calls: {len(calls)}). Manual intervention required.")
+                return
+
+            long_put = puts[0]
+            short_put = puts[1]
+            short_call = calls[0]
+            long_call = calls[1]
+            
+            # Validation
+            if not (long_put.position > 0 and short_put.position < 0 and 
+                    short_call.position < 0 and long_call.position > 0):
+                 print("   ❌ Position structure does not match Iron Condor (Long/Short logic mismatch).")
+                 return
+                 
+            # Reconstruct Data
+            # Note: avgCost is total value. Credit per contract = Total Credit / Qty / 100
+            entry_credit = total_credit_collected / qty / 100
+            
+            print(f"   📊 Recovered Credit: ${total_credit_collected:.2f} (Total) -> ${entry_credit:.2f}/contract")
+            
+            max_profit = total_credit_collected
+            wing_width = short_put.contract.strike - long_put.contract.strike
+            max_loss = (wing_width * qty * 100) - max_profit
+            
+            self.active_position = IronCondorPosition(
+                entry_time=datetime.now(), # Approximate (resumed)
+                short_put_strike=short_put.contract.strike,
+                long_put_strike=long_put.contract.strike,
+                short_call_strike=short_call.contract.strike,
+                long_call_strike=long_call.contract.strike,
+                entry_credit=entry_credit,
+                qty=qty,
+                max_profit=max_profit,
+                max_loss=max_loss,
+                spot_at_entry=0.0, # Unknown
+                vix_at_entry=0.0,  # Unknown
+                delta_net=0.0,     # Unknown
+                snapshot_json="{}",
+                delta_put=0.0, theta=0.0, gamma=0.0 # Greeks lost
+            )
+            
+            print(f"   ✅ Position Successfully Recovered!")
+            print(f"      Strikes: {long_put.contract.strike}/{short_put.contract.strike}P - {short_call.contract.strike}/{long_call.contract.strike}C")
+            print(f"      Max Profit: ${max_profit:.2f}, Max Loss: ${max_loss:.2f}")
+            
+        except Exception as e:
+            print(f"   ❌ Recovery Failed: {e}")
+
     def has_active_position(self) -> bool:
         """Check if there's an active position."""
         # Check our internal tracking

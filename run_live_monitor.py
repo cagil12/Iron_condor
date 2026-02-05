@@ -351,6 +351,9 @@ def main():
         # Initialize executor
         executor = LiveExecutor(connector)
         
+        # ATTEMPT RECOVERY OF EXISTING POSITIONS via IBKR
+        executor.recover_active_position()
+        
         # Main loop
         print("\n" + "═" * 50)
         print("  🔍 SCANNING FOR OPPORTUNITIES")
