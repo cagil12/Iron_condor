@@ -605,6 +605,10 @@ class LiveExecutor:
             # Determine Method (Heuristic)
             method = "DELTA_TARGET" if delta_net != 0.0 else "OTM_DISTANCE_PCT"
             
+            # Capture IV (Placeholder - needs real market data request if not available)
+            # For now, we use a VIX-based estimation if options IV is missing
+            iv_est = vix / 100.0
+            
             # Log to Journal if available
             trade_id = 0
             if self.journal:
@@ -615,8 +619,8 @@ class LiveExecutor:
                     short_call_strike=short_call,
                     wing_width=self.WING_WIDTH,
                     entry_credit=total_credit,
-                    initial_credit=total_credit, # Capture initial
-                    iv_entry_atm=0.0, # TODO: Capture from IBKR
+                    initial_credit=total_credit,
+                    iv_entry_atm=iv_est, # Log estimated IV
                     max_profit_usd=max_profit,
                     max_loss_usd=max_loss,
                     delta_net=delta_put + delta_call,
@@ -625,8 +629,8 @@ class LiveExecutor:
                     theta=theta_total,
                     gamma=gamma_total,
                     selection_method=method,
-                    target_delta=0.10, # Assumption
-                    otm_distance_pct="N/A",
+                    target_delta=0.10,
+                    otm_distance_pct="1.5%" if method == "OTM_DISTANCE_PCT" else "N/A",
                     snapshot_json=snapshot_json_str,
                     reasoning=f"Auto-Execution (VIX={vix:.1f})"
                 )
@@ -696,16 +700,16 @@ class LiveExecutor:
         
         # 1. Take Profit
         if pnl >= take_profit_target:
-            return f"TAKE_PROFIT (PnL: ${pnl:.2f} >= ${take_profit_target:.2f})"
+            return f"TP_50"
         
         # 2. Stop Loss
         if pnl <= stop_loss_target:
-            return f"STOP_LOSS (PnL: ${pnl:.2f} <= ${stop_loss_target:.2f})"
+            return f"SL_2X"
         
         # 3. EOD Force Close (time of day cutoff)
         now_time = datetime.now().time()
         if now_time >= self.FORCE_CLOSE_TIME:
-            return f"⏰ EOD_EXIT (Time {now_time.strftime('%H:%M')} >= 15:45 cutoff, PnL: ${pnl:.2f})"
+            return f"EOD_TIME"
         
         return None
     

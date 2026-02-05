@@ -38,6 +38,7 @@ class TradeJournal:
         'max_profit_usd',
         'max_loss_usd',
         'max_loss_usd',
+        'max_spread_val',   # NEW: Max spread value observed (Tail Risk)
         # Execution Quality (NEW)
         'initial_credit',   # NEW: Net credit at open
         'target_credit',    # Wanted Limit Price
@@ -203,6 +204,7 @@ class TradeJournal:
         return trade_id
     
     def log_trade_close(
+        self,
         trade_id: int,
         exit_reason: str,
         final_pnl_usd: float,
