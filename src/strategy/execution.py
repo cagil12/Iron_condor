@@ -675,45 +675,71 @@ class LiveExecutor:
         
         return None
     
-    def close_position(self, reason: str) -> float:
+    def close_position(self, reason: str) -> bool:
         """
-        Close the active position.
+        Close the active position with blocking confirmation.
         
         Args:
             reason: Reason for closing
             
         Returns:
-            Final PnL
+            True if closed successfully, False if failed/timeout
         """
         if not self.active_position:
-            return 0.0
+            return True
         
         print(f"\n🔴 CLOSING POSITION: {reason}")
         
-        # Get final PnL before closing
+        # Get final PnL estimate
         final_pnl = self.get_position_pnl() or 0.0
         
         # Close all XSP positions
         positions = self.ib.positions()
-        for pos in positions:
-            if pos.contract.symbol == 'XSP' and pos.position != 0:
-                action = 'SELL' if pos.position > 0 else 'BUY'
-                qty = abs(pos.position)
-                
-                # Market order to close
-                order = LimitOrder(action, qty, 0)  # Will need proper pricing
-                order.orderType = 'MKT'  # Override to market
-                self.ib.placeOrder(pos.contract, order)
+        xsp_positions = [p for p in positions if p.contract.symbol == 'XSP' and p.position != 0]
         
-        self.ib.sleep(5)  # Wait for fills
+        if not xsp_positions:
+            print("   ⚠️ No positions found at broker. Marking closed.")
+            self.active_position = None
+            return True
+            
+        closing_trades = []
+        print(f"   📉 Placing closing orders for {len(xsp_positions)} legs...")
         
-        print(f"✅ Position closed. Final PnL: ${final_pnl:.2f}")
+        for pos in xsp_positions:
+            action = 'SELL' if pos.position > 0 else 'BUY'
+            qty = abs(pos.position)
+            
+            # Market order to close
+            order = LimitOrder(action, qty, 0) 
+            order.orderType = 'MKT'
+            trade = self.ib.placeOrder(pos.contract, order)
+            closing_trades.append(trade)
         
-        # Clear active position
-        closed_position = self.active_position
-        self.active_position = None
+        # BLOQUEO HASTA LLENADO (Wait Loop)
+        print("   ⏳ Waiting for fills (max 30s)...")
+        start_wait = time_module.time()
+        all_filled = False
         
-        return final_pnl
+        while (time_module.time() - start_wait) < 30:
+            self.ib.sleep(1)
+            
+            # Check status of all trades
+            pending = [t for t in closing_trades if t.orderStatus.status != 'Filled']
+            if not pending:
+                all_filled = True
+                break
+        
+        if all_filled:
+            print(f"✅ EXIT CONFIRMED. Final PnL: ${final_pnl:.2f}")
+            self.active_position = None
+            return True
+        else:
+            print("❌ EXIT FAILED - TIMEOUT. Position remains open (Unsafe).")
+            print("   ⚠️ Cancelling pending orders...")
+            for t in closing_trades:
+                if t.orderStatus.status not in ['Filled', 'Cancelled']:
+                    self.ib.cancelOrder(t.order)
+            return False
     
     def monitor_position(self, check_interval: float = 10.0):
         """
@@ -782,8 +808,12 @@ class LiveExecutor:
             
             exit_reason = self.check_exit_conditions()
             if exit_reason:
-                self.close_position(exit_reason)
-                break
+                success = self.close_position(exit_reason)
+                if success:
+                    break
+                else:
+                    print("⚠️ Exit failed. Retrying monitoring loop...")
+                    self.ib.sleep(1)
             
             self.ib.sleep(check_interval)
 
