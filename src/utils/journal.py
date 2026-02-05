@@ -37,10 +37,14 @@ class TradeJournal:
         'entry_credit',
         'max_profit_usd',
         'max_loss_usd',
+        'max_loss_usd',
         # Execution Quality (NEW)
+        'initial_credit',   # NEW: Net credit at open
         'target_credit',    # Wanted Limit Price
         'slippage_usd',     # Entry - Target
         'commissions_est',  # Estimated Fees
+        # Market State (NEW)
+        'iv_entry_atm',     # IV at entry
         # Greeks
         'delta_net',
         'delta_put',      # Delta of short put at entry
@@ -130,9 +134,12 @@ class TradeJournal:
         selection_method: str = "",
         target_delta: float = 0.0,
         otm_distance_pct: str = "",
+
         snapshot_json: str = "",
-        target_credit: float = 0.0,       # NEW
-        commissions_est: float = 2.60,    # NEW
+        target_credit: float = 0.0,       
+        commissions_est: float = 2.60,
+        initial_credit: float = 0.0,      # NEW
+        iv_entry_atm: float = 0.0,        # NEW
         reasoning: str = ""
     ) -> int:
         """
@@ -161,10 +168,14 @@ class TradeJournal:
             'entry_credit': round(entry_credit, 4),
             'max_profit_usd': round(max_profit_usd, 2),
             'max_loss_usd': round(max_loss_usd, 2),
+            'max_loss_usd': round(max_loss_usd, 2),
             # HFT Metrics
+            'initial_credit': round(initial_credit, 4),
             'target_credit': round(target_credit, 4),
             'slippage_usd': round(slippage, 4),
             'commissions_est': round(commissions_est, 2),
+            # Market State
+            'iv_entry_atm': round(iv_entry_atm, 4),
             # Greeks
             'delta_net': round(delta_net, 4),
             'delta_put': round(delta_put, 4),       
@@ -192,13 +203,13 @@ class TradeJournal:
         return trade_id
     
     def log_trade_close(
-        self,
         trade_id: int,
         exit_reason: str,
         final_pnl_usd: float,
         entry_timestamp: datetime,
-        max_adverse_excursion: float = 0.0, # NEW
-        exit_snapshot_json: str = ""        # NEW
+        max_adverse_excursion: float = 0.0,
+        max_spread_val: float = 0.0,        # NEW
+        exit_snapshot_json: str = ""        
     ):
         """
         Update a trade entry with close information.
@@ -208,7 +219,8 @@ class TradeJournal:
             exit_reason: Why the trade was closed
             final_pnl_usd: Final PnL in dollars
             entry_timestamp: When the trade was opened
-            max_adverse_excursion: Lowest PnL point during trade
+            max_adverse_excursion: Lowest PnL point
+            max_spread_val: Max price of spread (Tail Risk)
             exit_snapshot_json: Final market state
         """
         # Read all rows
@@ -226,6 +238,7 @@ class TradeJournal:
                 row['exit_reason'] = exit_reason
                 row['final_pnl_usd'] = round(final_pnl_usd, 2)
                 row['max_adverse_excursion'] = round(max_adverse_excursion, 2)
+                row['max_spread_val'] = round(max_spread_val, 2) # NEW
                 row['exit_snapshot_json'] = exit_snapshot_json
                 
                 # Calculate hold duration
@@ -295,8 +308,9 @@ class TradeJournal:
             'avg_loss': sum(losers) / len(losers) if losers else 0,
             'best_trade': max(pnls) if pnls else 0,
             'worst_trade': min(pnls) if pnls else 0,
-            'avg_mae': sum(maes) / len(maes) if maes else 0,       # NEW
-            'total_slippage': sum(slippages) if slippages else 0,  # NEW
+            'avg_mae': sum(maes) / len(maes) if maes else 0,       
+            'total_slippage': sum(slippages) if slippages else 0,  
+            'max_spread_val': 0.0, # Placeholder
         }
     
     def print_summary(self):

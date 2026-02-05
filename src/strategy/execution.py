@@ -16,11 +16,13 @@ from ib_insync import IB, Option, Order, LimitOrder, Trade as IBTrade, Contract,
 
 from src.data.ib_connector import IBConnector
 from src.utils.config import get_live_config
+from src.utils.journal import TradeJournal
 
 
 @dataclass
 class IronCondorPosition:
     """Represents an active Iron Condor position."""
+    trade_id: int # NEW
     entry_time: datetime
     short_put_strike: float
     long_put_strike: float
@@ -69,11 +71,12 @@ class LiveExecutor:
     TICK_SIZE = 0.01       # XSP option tick size
     FORCE_CLOSE_TIME = time(15, 45)  # Hard EOD exit at 3:45 PM
     
-    def __init__(self, connector: IBConnector):
+    def __init__(self, connector: IBConnector, journal: Optional[TradeJournal] = None):
         self.connector = connector
         self.ib = connector.ib
         self.config = get_live_config()
         self.active_position: Optional[IronCondorPosition] = None
+        self.journal = journal
         
     def recover_active_position(self):
         """
@@ -179,6 +182,7 @@ class LiveExecutor:
                 entry_time = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
             
             self.active_position = IronCondorPosition(
+                trade_id=0, # Unknown from recovery
                 entry_time=entry_time,
                 short_put_strike=short_put.contract.strike,
                 long_put_strike=long_put.contract.strike,
@@ -598,7 +602,37 @@ class LiveExecutor:
             theta_total = (snapshot_data.get('theta_put', 0.0) or 0.0) + (snapshot_data.get('theta_call', 0.0) or 0.0)
             gamma_total = (snapshot_data.get('gamma_put', 0.0) or 0.0) + (snapshot_data.get('gamma_call', 0.0) or 0.0)
             
+            # Determine Method (Heuristic)
+            method = "DELTA_TARGET" if delta_net != 0.0 else "OTM_DISTANCE_PCT"
+            
+            # Log to Journal if available
+            trade_id = 0
+            if self.journal:
+                trade_id = self.journal.log_trade_open(
+                    spot_price=spot,
+                    vix_value=vix,
+                    short_put_strike=short_put,
+                    short_call_strike=short_call,
+                    wing_width=self.WING_WIDTH,
+                    entry_credit=total_credit,
+                    initial_credit=total_credit, # Capture initial
+                    iv_entry_atm=0.0, # TODO: Capture from IBKR
+                    max_profit_usd=max_profit,
+                    max_loss_usd=max_loss,
+                    delta_net=delta_put + delta_call,
+                    delta_put=delta_put,
+                    delta_call=delta_call,
+                    theta=theta_total,
+                    gamma=gamma_total,
+                    selection_method=method,
+                    target_delta=0.10, # Assumption
+                    otm_distance_pct="N/A",
+                    snapshot_json=snapshot_json_str,
+                    reasoning=f"Auto-Execution (VIX={vix:.1f})"
+                )
+            
             self.active_position = IronCondorPosition(
+                trade_id=trade_id,
                 entry_time=datetime.now(),
                 short_put_strike=short_put,
                 long_put_strike=long_put,
@@ -731,6 +765,17 @@ class LiveExecutor:
         
         if all_filled:
             print(f"✅ EXIT CONFIRMED. Final PnL: ${final_pnl:.2f}")
+            
+            # Log Close
+            if self.journal and self.active_position and self.active_position.trade_id > 0:
+                self.journal.log_trade_close(
+                    trade_id=self.active_position.trade_id,
+                    exit_reason=reason,
+                    final_pnl_usd=final_pnl,
+                    entry_timestamp=self.active_position.entry_time,
+                    max_spread_val=0.0 # Placeholder
+                )
+            
             self.active_position = None
             return True
         else:

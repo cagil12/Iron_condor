@@ -349,7 +349,7 @@ def main():
         vix_loader.set_ib_connector(connector)
         
         # Initialize executor
-        executor = LiveExecutor(connector)
+        executor = LiveExecutor(connector, journal)
         
         # ATTEMPT RECOVERY OF EXISTING POSITIONS via IBKR
         executor.recover_active_position()
@@ -463,39 +463,14 @@ def main():
                         )
                         
                         if position:
-                            # Log to journal
-                            trade_id = journal.log_trade_open(
-                                spot_price=position.spot_at_entry,
-                                vix_value=position.vix_at_entry,
-                                short_put_strike=position.short_put_strike,
-                                short_call_strike=position.short_call_strike,
-                                wing_width=executor.WING_WIDTH,
-                                entry_credit=position.entry_credit,
-                                max_profit_usd=position.max_profit,
-                                max_loss_usd=position.max_loss,
-                                delta_net=position.delta_put + position.delta_call, # Recalculated from snapshot
-                                delta_put=position.delta_put,
-                                delta_call=position.delta_call,
-                                theta=position.theta,
-                                gamma=position.gamma,
-                                selection_method=trade_setup.get('selection_method', 'UNKNOWN'),
-                                target_delta=trade_setup.get('target_delta', 0.10),
-                                otm_distance_pct="N/A" if trade_setup.get('selection_method') == 'DELTA_TARGET' else "1.5%",
-                                snapshot_json=position.snapshot_json, # NEW
-                                reasoning=f"VIX={trade_setup['vix']:.1f}, Spot={trade_setup['spot']:.2f}, Method={trade_setup.get('selection_method', 'UNKNOWN')}"
-                            )
+                             # Position created and logged internally by executor
+                             print(f"📋 Position internal log ID: {position.trade_id}")
                             
-                            # Monitor until exit
-                            executor.monitor_position()
+                             # Monitor until exit
+                             executor.monitor_position()
                             
-                            # Log close
-                            final_pnl = executor.get_position_pnl() or 0
-                            journal.log_trade_close(
-                                trade_id=trade_id,
-                                exit_reason="Automated",
-                                final_pnl_usd=final_pnl,
-                                entry_timestamp=position.entry_time
-                            )
+                             # Log close (Handled by executor close_position)
+
                 
                 # Wait before next scan
                 time.sleep(scan_interval)
