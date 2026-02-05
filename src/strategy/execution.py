@@ -876,6 +876,16 @@ class LiveExecutor:
                 if current_spread_cost > max_spread_val:
                     max_spread_val = current_spread_cost
             
+            # Danger zone detection
+            danger = "⚠️ DANGER" if min_distance < 5 else ""
+            
+            # Enhanced output: TP% means progress to TP target, Hold shows time in trade
+            now_str = now.strftime("%H:%M:%S")
+            # Calculate max potential profit pct realized
+            max_pct = (pnl_val / max_profit * 100)
+            
+            base_output = f"[{now_str}] XSP: {spot:.2f} | VIX: {vix:.1f} | PnL: ${pnl_val:.2f} ({max_pct:.0f}%Max) | TP:{tp_pct:.0f}% SL:{sl_pct:.0f}% | {short_put:.0f}P({dist_put:+.0f}) {short_call:.0f}C({dist_call:+.0f}) | Hold:{hold_time:.0f}m | MaxSprd:{max_spread_val:.2f}"
+            print(f"{danger} {base_output}" if danger else base_output, end="\r")
             
             exit_reason = self.check_exit_conditions()
             if exit_reason:
