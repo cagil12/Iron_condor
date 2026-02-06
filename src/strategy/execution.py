@@ -12,6 +12,8 @@ import json
 from typing import Optional, Dict, Any, List
 import argparse
 import sys
+import logging
+from pathlib import Path
 import numpy as np # NEW: For RV calculation
 from dataclasses import dataclass
 
@@ -48,10 +50,13 @@ class IronCondorPosition:
     
     # Order IDs for tracking
     order_ids: List[int] = None
+    legs: List[Dict[str, Any]] = None  # NEW: Store conId and action for BAG closure
     
     def __post_init__(self):
         if self.order_ids is None:
             self.order_ids = []
+        if self.legs is None:
+            self.legs = []
 
 
 class LiveExecutor:
@@ -73,44 +78,109 @@ class LiveExecutor:
     CHASE_TICKS = 3        # Number of times to chase price
     TICK_SIZE = 0.01       # XSP option tick size
     FORCE_CLOSE_TIME = time(15, 45)  # Hard EOD exit at 3:45 PM
+    STATE_FILE = Path("state.json")
+    MAX_MARGIN_ACCEPTED = 250.0     # Maximum initial margin for 1 contract
     
     def __init__(self, connector: IBConnector, journal: Optional[TradeJournal] = None):
         self.connector = connector
         self.ib = connector.ib
+        self.logger = logging.getLogger(__name__)
+        # If logger has no handlers, add a simple stream handler
+        if not self.logger.handlers:
+            self.logger.setLevel(logging.INFO)
+            sh = logging.StreamHandler()
+            sh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+            self.logger.addHandler(sh)
+            
         self.config = get_live_config()
         self.active_position: Optional[IronCondorPosition] = None
         self.journal = journal
         
         # Load dynamic settings
         self.STOP_LOSS_MULT = self.config.get('stop_loss_mult', 3.0)
-        print(f"🔧 Executor Config: SL={self.STOP_LOSS_MULT}x")
+        self.logger.info(f"🔧 Executor Config: SL={self.STOP_LOSS_MULT}x")
+        
+        # FIX 3: Load state at startup
+        self.load_state()
+
+    def save_state(self):
+        """Persistir estado a disco para sobrevivir reinicios (FIX 3)"""
+        try:
+            state = {
+                'active_position': self.active_position.__dict__ if self.active_position else None,
+                'last_updated': datetime.now().isoformat()
+            }
+            # Handle non-serializable objects in __dict__ if any (delta/datetime handled by default str logic)
+            self.STATE_FILE.write_text(json.dumps(state, indent=2, default=str))
+            self.logger.debug("State saved to disk")
+        except Exception as e:
+            self.logger.error(f"Failed to save state: {e}")
+
+    def load_state(self):
+        """Cargar estado previo al iniciar (FIX 3)"""
+        if self.STATE_FILE.exists():
+            try:
+                state = json.loads(self.STATE_FILE.read_text())
+                pos_data = state.get('active_position')
+                if pos_data:
+                    # Convert strings back to datetime objects
+                    pos_data['entry_time'] = datetime.fromisoformat(pos_data['entry_time'])
+                    self.active_position = IronCondorPosition(**pos_data)
+                    self.logger.info(f"Loaded active position from {state.get('last_updated')}")
+                else:
+                    self.active_position = None
+            except Exception as e:
+                self.logger.error(f"Failed to load state: {e}")
+                self.active_position = None
+
+    def startup_reconciliation(self):
+        """Cancelar órdenes huérfanas y reconciliar posiciones al iniciar (FIX 2)"""
+        self.logger.info("REMINDER: Verify TWS setting 'Download open orders on connection' is enabled")
+        self.logger.info("TWS → Global Configuration → API → Settings → ☑️ Download open orders")
+        
+        # 1. Ver qué hay abierto
+        open_orders = self.ib.reqAllOpenOrders()
+        if open_orders:
+            self.logger.warning(f"Found {len(open_orders)} open orders at startup")
+            for trade in open_orders:
+                self.logger.warning(
+                    f"  {trade.contract.symbol} {trade.order.action} "
+                    f"qty={trade.order.totalQuantity} "
+                    f"status={trade.orderStatus.status}"
+                )
+        
+        # 2. Cancelar TODAS las órdenes abiertas (API + TWS + otros clients)
+        self.ib.reqGlobalCancel()
+        self.ib.sleep(2)
+        
+        # 3. Reconciliar posiciones reales contra state
+        positions = self.ib.positions()
+        # Log posiciones encontradas para reconciliación manual si es necesario
+        for pos in positions:
+            if pos.contract.symbol == 'XSP' and pos.contract.secType == 'OPT':
+                self.logger.info(
+                    f"  Position: {pos.contract.symbol} {pos.contract.strike} "
+                    f"{pos.contract.right} qty={pos.position}"
+                )
         
     def recover_active_position(self):
         """
         Attempt to recover active position state from IBKR.
-        Used on restart to resume management of existing positions.
+        Ensures 'legs' are populated for Atomic Closure (FIX 4).
         """
-        print("🔍 Checking for existing positions to resume...")
+        self.logger.info("🔍 Checking for existing positions to resume...")
         positions = self.ib.positions()
         xsp_positions = [p for p in positions if p.contract.symbol == 'XSP' and p.position != 0]
         
         if not xsp_positions:
-            print("   ✅ No existing positions found. Ready for new entries.")
+            self.logger.info("   ✅ No existing positions found. Ready for new entries.")
             return
 
-        print(f"   ⚠️ Found {len(xsp_positions)} existing XSP legs. Attempting recovery...")
-        
-        # We need exactly 4 legs for an Iron Condor (or handled subsets later)
-        # For now, simplistic recovery assuming standard Iron Condor structure
+        self.logger.warning(f"   ⚠️ Found {len(xsp_positions)} existing XSP legs. Attempting recovery...")
         
         try:
-            # Sort by strike
-            # Puts: Long Put (Lowest Strike), Short Put (Low-Mid)
-            # Calls: Short Call (High-Mid), Long Call (Highest)
-            
             puts = []
             calls = []
-            
             total_credit_collected = 0.0
             qty = 0
             
@@ -121,23 +191,18 @@ class LiveExecutor:
                 elif c.right == 'C':
                     calls.append(p)
                 
-                # Calculate Credit/Debit contribution
-                # avgCost is total cost for the position (always positive)
-                # If Short (-pos), we RECEIVED avgCost -> Credit (+)
-                # If Long (+pos), we PAID avgCost -> Debit (-)
+                # Credit/Debit calculation
                 if p.position < 0:
                     total_credit_collected += p.avgCost
                 else:
                     total_credit_collected -= p.avgCost
-                    
-                # Assume symmetric qty for now
                 qty = abs(int(p.position))
 
             puts.sort(key=lambda p: p.contract.strike)
             calls.sort(key=lambda p: p.contract.strike)
             
             if len(puts) != 2 or len(calls) != 2:
-                print(f"   ❌ Complex position structure detected (Puts: {len(puts)}, Calls: {len(calls)}). Manual intervention required.")
+                self.logger.error(f"   ❌ Complex structure (P:{len(puts)}, C:{len(calls)}). Manual required.")
                 return
 
             long_put = puts[0]
@@ -145,51 +210,42 @@ class LiveExecutor:
             short_call = calls[0]
             long_call = calls[1]
             
-            # Validation
             if not (long_put.position > 0 and short_put.position < 0 and 
                     short_call.position < 0 and long_call.position > 0):
-                 print("   ❌ Position structure does not match Iron Condor (Long/Short logic mismatch).")
+                 self.logger.error("   ❌ Structure mismatch (Long/Short logic error).")
                  return
                  
-            # Reconstruct Data
-            # Note: avgCost is total value. Credit per contract = Total Credit / Qty / 100
             entry_credit = total_credit_collected / qty / 100
-            
-            print(f"   📊 Recovered Credit: ${total_credit_collected:.2f} (Total) -> ${entry_credit:.2f}/contract")
-            
             max_profit = total_credit_collected
             wing_width = short_put.contract.strike - long_put.contract.strike
             max_loss = (wing_width * qty * 100) - max_profit
             
-            # Attempt to recover actual entry time from IBKR executions
+            # Populate legs for Atomic Closure (FIX 4 compatibility)
+            recovered_legs = [
+                {'conId': long_put.contract.conId, 'action': 'BUY', 'strike': long_put.contract.strike, 'right': 'P'},
+                {'conId': short_put.contract.conId, 'action': 'SELL', 'strike': short_put.contract.strike, 'right': 'P'},
+                {'conId': short_call.contract.conId, 'action': 'SELL', 'strike': short_call.contract.strike, 'right': 'C'},
+                {'conId': long_call.contract.conId, 'action': 'BUY', 'strike': long_call.contract.strike, 'right': 'C'},
+            ]
+            
+            # Entry time recovery
             entry_time = None
             try:
-                # Request today's executions for XSP
                 from ib_insync import ExecutionFilter
                 exec_filter = ExecutionFilter(symbol='XSP')
                 executions = self.ib.reqExecutions(exec_filter)
-                
-                # Filter for today and find earliest
                 today = datetime.now().date()
                 xsp_execs_today = [e for e in executions if e.execution.time.date() == today]
-                
                 if xsp_execs_today:
-                    # Get earliest execution time
                     earliest = min(xsp_execs_today, key=lambda e: e.execution.time)
-                    # IBKR returns UTC time, convert to local then strip tzinfo for compatibility
-                    utc_entry = earliest.execution.time
-                    local_entry = utc_entry.astimezone()  # Convert to local timezone
-                    entry_time = local_entry.replace(tzinfo=None)  # Strip tzinfo for naive comparison
-                    print(f"   📅 Recovered Entry Time from Executions: {entry_time.strftime('%H:%M:%S')} (local)")
+                    entry_time = earliest.execution.time.astimezone().replace(tzinfo=None)
                 else:
-                    print("   ⚠️ No executions found today. Using market open (10:00) as entry time.")
                     entry_time = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
-            except Exception as exec_err:
-                print(f"   ⚠️ Could not query executions: {exec_err}. Using market open as fallback.")
+            except Exception:
                 entry_time = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
             
             self.active_position = IronCondorPosition(
-                trade_id=0, # Unknown from recovery
+                trade_id=0,
                 entry_time=entry_time,
                 short_put_strike=short_put.contract.strike,
                 long_put_strike=long_put.contract.strike,
@@ -199,23 +255,18 @@ class LiveExecutor:
                 qty=qty,
                 max_profit=max_profit,
                 max_loss=max_loss,
-                spot_at_entry=0.0, # Unknown
-                vix_at_entry=0.0,  # Unknown
-                delta_net=0.0,     # Unknown
+                spot_at_entry=0.0,
+                vix_at_entry=0.0,
+                delta_net=0.0,
                 snapshot_json="{}",
-                delta_put=0.0, theta=0.0, gamma=0.0 # Greeks lost
+                legs=recovered_legs
             )
             
-            # Calculate hold time for display
-            hold_minutes = (datetime.now() - entry_time).total_seconds() / 60
-            
-            print(f"   ✅ Position Successfully Recovered!")
-            print(f"      Strikes: {long_put.contract.strike}/{short_put.contract.strike}P - {short_call.contract.strike}/{long_call.contract.strike}C")
-            print(f"      Max Profit: ${max_profit:.2f}, Max Loss: ${max_loss:.2f}")
-            print(f"      Hold Time: {hold_minutes:.0f} minutes since entry")
+            hold_min = (datetime.now() - entry_time).total_seconds() / 60
+            self.logger.info(f"   ✅ Position Recovered! Strikes: {short_put.contract.strike}P/{short_call.contract.strike}C | Hold: {hold_min:.0f}m")
             
         except Exception as e:
-            print(f"   ❌ Recovery Failed: {e}")
+            self.logger.error(f"   ❌ Recovery Failed: {e}")
 
     def has_active_position(self) -> bool:
         """Check if there's an active position."""
@@ -426,20 +477,17 @@ class LiveExecutor:
             # Initial Margin Change
             init_margin = float(state.initMarginChange)
             
-            # Max Risk Tolerance ($200 account -> ~$100-150 max margin allowed)
-            # Iron Condor 1.0 wide should be ~$100 margin
-            MAX_MARGIN = 180.0 
+            self.logger.info(f"   💰 Estimated Margin: ${init_margin:.2f}")
             
-            print(f"   💰 Estimated Margin: ${init_margin:.2f}")
-            
-            if float(init_margin) > MAX_MARGIN:
-                print(f"   ⚠️ MARGIN TOO HIGH: ${init_margin:.2f} > ${MAX_MARGIN}")
+            if init_margin > self.MAX_MARGIN_ACCEPTED:
+                self.logger.warning(f"   ⚠️ MARGIN TOO HIGH: ${init_margin:.2f} > ${self.MAX_MARGIN_ACCEPTED}")
                 return False
                 
             return True
         except Exception as e:
             print(f"   ⚠️ Could not verify margin: {e}")
             return False  # Fail safe
+
 
     def execute_iron_condor(
         self,
@@ -452,21 +500,31 @@ class LiveExecutor:
     ) -> Optional[IronCondorPosition]:
         """
         Execute an Iron Condor order using IBKR BAG (Combo).
+        Includes Chase Logic (FIX 1, 6b) and Stores Leg Info (FIX 4).
         """
         # SAFETY CHECK: No pyramiding
         if self.has_active_position():
-            print("⚠️ ABORT: Active position exists. No pyramiding allowed.")
+            self.logger.warning("⚠️ ABORT: Active position exists. No pyramiding allowed.")
             return None
         
         # Calculate wing strikes
-        long_put = short_put - self.WING_WIDTH
-        long_call = short_call + self.WING_WIDTH
+        long_put_strike = short_put - self.WING_WIDTH
+        long_call_strike = short_call + self.WING_WIDTH
         
         # Build individual contracts
-        c_short_put = self.build_option_contract(short_put, 'P', expiry)
-        c_long_put = self.build_option_contract(long_put, 'P', expiry)
-        c_short_call = self.build_option_contract(short_call, 'C', expiry)
-        c_long_call = self.build_option_contract(long_call, 'C', expiry)
+        # FIX 8: Qualify individual legs FIRST
+        legs_contracts = [
+            Option('XSP', expiry, long_put_strike, 'P', 'SMART'),
+            Option('XSP', expiry, short_put, 'P', 'SMART'),
+            Option('XSP', expiry, short_call, 'C', 'SMART'),
+            Option('XSP', expiry, long_call_strike, 'C', 'SMART')
+        ]
+        qualified_legs = self.ib.qualifyContracts(*legs_contracts)
+        
+        c_long_put = qualified_legs[0]
+        c_short_put = qualified_legs[1]
+        c_short_call = qualified_legs[2]
+        c_long_call = qualified_legs[3]
         
         # Get prices for credit estimation and snapshot
         contracts_map = {
@@ -476,12 +534,11 @@ class LiveExecutor:
         
         prices = {}
         snapshot_data = {}
-        print("⏳ Getting leg prices (Bid/Ask) for snapshot...")
+        self.logger.info("⏳ Getting leg prices (Bid/Ask) for snapshot...")
         
         for name, contract in contracts_map.items():
-            # Request live ticker
             ticker = self.ib.reqMktData(contract, '', False, False)
-            self.ib.sleep(1.0) # Wait for data
+            self.ib.sleep(1.0)
             
             if ticker.bid and ticker.ask and ticker.bid > 0:
                 mid = (ticker.bid + ticker.ask) / 2
@@ -490,222 +547,257 @@ class LiveExecutor:
                 snapshot_data[f"{name}_ask"] = ticker.ask
                 snapshot_data[f"{name}_mid"] = mid
             else:
-                print(f"❌ Could not get Price/Bid/Ask for {name} (Bid={ticker.bid}, Ask={ticker.ask})")
+                self.logger.error(f"❌ Could not get Price/Bid/Ask for {name} (Bid={ticker.bid}, Ask={ticker.ask})")
                 self.ib.cancelMktData(contract)
                 return None
                 
             self.ib.cancelMktData(contract)
             
-            # Capture Greeks if available
             greeks = ticker.modelGreeks
             if greeks:
                 if name == 'short_put':
                     snapshot_data['delta_put'] = greeks.delta
                     snapshot_data['theta_put'] = greeks.theta
                     snapshot_data['gamma_put'] = greeks.gamma
-                    snapshot_data['iv_put'] = greeks.impliedVol # NEW
+                    snapshot_data['iv_put'] = greeks.impliedVol
                 elif name == 'short_call':
                     snapshot_data['delta_call'] = greeks.delta
                     snapshot_data['theta_call'] = greeks.theta
                     snapshot_data['gamma_call'] = greeks.gamma
-                    snapshot_data['iv_call'] = greeks.impliedVol # NEW
+                    snapshot_data['iv_call'] = greeks.impliedVol
 
-            
-        # Calculate Net Credit (using Mids for Limit Price estimation)
-        # Note: We use Mid for execution limit, but logic checks against conservative if needed
+        # Calculate Net Credit
         credit_put_spread = prices['short_put'] - prices['long_put']
         credit_call_spread = prices['short_call'] - prices['long_call']
         total_credit = credit_put_spread + credit_call_spread
         
-        snapshot_json_str = json.dumps(snapshot_data)
-        
         if total_credit <= 0:
-            print(f"❌ Invalid credit: ${total_credit:.2f}")
+            self.logger.error(f"❌ Invalid credit: ${total_credit:.2f}")
             return None
             
-        print(f"📊 Calculated Mid Credit: ${total_credit:.2f} per contract")
+        self.logger.info(f"📊 Calculated Mid Credit: ${total_credit:.2f} per contract")
         
-        # 1. Prepare Combo Legs
-        # Convention: We BUY the Strategy. Value = Net Credit (Negative Price)
-        # To match the strategy payoff:
-        # - Short Put: SELL
-        # - Long Put: BUY 
-        # - Short Call: SELL
-        # - Long Call: BUY
+        # 1. Prepare BAG (Combo) Contract
+        bag = Contract()
+        bag.symbol = 'XSP'
+        bag.secType = 'BAG'
+        bag.currency = 'USD'
+        bag.exchange = 'SMART'
+        bag.comboLegs = []
         
-        legs = [
-            {'contract': c_short_put, 'ratio': 1, 'action': 'SELL'},
-            {'contract': c_long_put,  'ratio': 1, 'action': 'BUY'},
-            {'contract': c_short_call,'ratio': 1, 'action': 'SELL'},
-            {'contract': c_long_call, 'ratio': 1, 'action': 'BUY'}
+        # Actions: Long Put (BUY), Short Put (SELL), Short Call (SELL), Long Call (BUY)
+        legs_setup = [
+            (c_long_put, 'BUY'), (c_short_put, 'SELL'),
+            (c_short_call, 'SELL'), (c_long_call, 'BUY')
         ]
         
-        bag_contract = self.build_combo_contract(legs)
-        
-        # 2. Create Limit Order
-        # IBKR Convention: For Credit Strategies (like Iron Condor), using BUY with Negative Limit Price 
-        # is the robust standard to ensure execution as a package (Debit of negative amount = Credit).
-        # We stick to this to avoid ambiguity.
+        for contract, action in legs_setup:
+            leg = ComboLeg()
+            leg.conId = contract.conId
+            leg.ratio = 1
+            leg.action = action
+            leg.exchange = 'SMART'
+            bag.comboLegs.append(leg)
+            
+        # 2. Margin Guard (What-If)
         limit_price = -round(total_credit, 2)
+        test_order = LimitOrder('BUY', self.MAX_QTY, limit_price)
         
-        print(f"📦 Combo Constructed: BUY 1 BAG @ ${limit_price} (Credit)")
-        order = LimitOrder('BUY', self.MAX_QTY, limit_price)
-        order.tif = 'DAY'
-        
-        # 3. Margin Guard (What-If)
-        print("🛡️ Checking Margin Impact...")
         try:
-            state = self.ib.whatIfOrder(bag_contract, order)
-            if isinstance(state, list):
-                # ib_insync sometimes returns a list for BAG orders
-                if not state:
-                    print("⚠️ Margin Check returned empty list. Aborting trade.")
-                    return None
-                state = state[0]
-                
-            init_margin = float(state.initMarginChange)
-            
-            print(f"   💵 Init Margin Change: ${init_margin:.2f}")
-            
-            # Max accepted margin: ~$100 (risk) + buffer = $250
-            MAX_MARGIN_ACCEPTED = 250.0
-            
-            if init_margin > MAX_MARGIN_ACCEPTED:
-                print(f"⚠️ MARGIN REJECT: Expected < ${MAX_MARGIN_ACCEPTED}, Got ${init_margin:.2f}")
+            state = self.ib.whatIfOrder(bag, test_order)
+            init_margin = float(state.initMarginChange if not isinstance(state, list) else state[0].initMarginChange)
+            if init_margin > self.MAX_MARGIN_ACCEPTED:
+                self.logger.warning(f"   ⚠️ MARGIN REJECT: Expected < ${self.MAX_MARGIN_ACCEPTED}, Got ${init_margin:.2f}")
                 return None
-                
-            print("   ✅ Margin Check Passed")
+            self.logger.info(f"   ✅ Margin Check Passed: ${init_margin:.2f}")
             
         except Exception as e:
-            print(f"⚠️ Margin Check Failed: {e}")
-            return None # Conservative: Don't trade if check fails
-            
-        # 4. Execute
-        try:
-            print(f"🚀 Sending Combo Order...")
-            trade = self.ib.placeOrder(bag_contract, order)
-            # WAIT FOR FILL (Fixes duplicate logging bug)
-            # CHASE LOGIC (Aggressive Limit Update)
-            # We assume order is a BUY with Negative Limit Price (Credit Strategy)
-            # Chase means accepting LESS credit (Price closer to 0 or more positive)
-            
-            for chase in range(self.CHASE_TICKS + 1):
-                if chase > 0:
-                    # Modify Order Price
-                    # To chase a credit buy (e.g. -0.20), we must bid closer to 0 (e.g. -0.19)
-                    limit_price += self.TICK_SIZE 
-                    # Ensure we don't flip to Debit if unauthorized (though small debit might be valid for closing, here it's opening)
-                    if limit_price > 0:
-                        limit_price = 0.0 # Cap at 0 (Free trade) if desired, or let it slide to debit?
-                        # For an Iron Condor, paying debit to open is non-standard but possible if desperate.
-                        # Let's keep it negative or zero for now.
-                    
-                    order.lmtPrice = round(limit_price, 2)
-                    print(f"   🔄 Chase #{chase}: Updating Limit to ${limit_price:.2f} (giving up credit)")
-                    # Update the order (Modify in place)
-                    trade = self.ib.placeOrder(bag_contract, order)
-                
-                start_wait = time_module.time()
-                # 15s wait per attempt
-                while (time_module.time() - start_wait) < 15:
-                    self.ib.sleep(1)
-                    if trade.orderStatus.status == 'Filled':
-                        filled = True
-                        break
-                    if trade.orderStatus.status in ['Cancelled', 'Inactive', 'ApiCancelled']:
-                        print(f"❌ Order Cancelled/Inactive during chase: {trade.orderStatus.status}")
-                        return None
-                
-                if filled:
-                    break
-                
-                # If not filled, loop continues and updates price.
-            
-            if not filled:
-                print(f"⚠️ Order timeout after chase (Status: {trade.orderStatus.status}). Cancelling...")
-                self.ib.cancelOrder(order)
-                return None
-            
-            # Success - Record Position
-            print(f"📋 Order Filled! Exec Price: {trade.orderStatus.avgFillPrice}")
-            
-            max_profit = total_credit * self.MAX_QTY * 100
-            max_loss = (self.WING_WIDTH - total_credit) * self.MAX_QTY * 100
-            
-            # Extract Greeks from snapshot (safely)
-            delta_put = snapshot_data.get('delta_put', 0.0) or 0.0
-            delta_call = snapshot_data.get('delta_call', 0.0) or 0.0
-            
-            # Sum up theta/gamma from short legs (dominant)
-            theta_total = (snapshot_data.get('theta_put', 0.0) or 0.0) + (snapshot_data.get('theta_call', 0.0) or 0.0)
-            gamma_total = (snapshot_data.get('gamma_put', 0.0) or 0.0) + (snapshot_data.get('gamma_call', 0.0) or 0.0)
-            
-            # Determine Method (Heuristic)
-            method = "DELTA_TARGET" if delta_net != 0.0 else "OTM_DISTANCE_PCT"
-            
-            # Capture IV: Prefer Options IV, fallback to VIX/100
-            iv_est = vix / 100.0
-            iv_from_options = snapshot_data.get('iv_put') or snapshot_data.get('iv_call')
-            if iv_from_options and iv_from_options > 0:
-                iv_est = iv_from_options
-            
-            # Log to Journal if available
-            trade_id = 0
-            if self.journal:
-                trade_id = self.journal.log_trade_open(
-                    spot_price=spot,
-                    vix_value=vix,
-                    short_put_strike=short_put,
-                    short_call_strike=short_call,
-                    wing_width=self.WING_WIDTH,
-                    entry_credit=total_credit,
-                    initial_credit=total_credit,
-                    iv_entry_atm=iv_est, # Log estimated IV
-                    max_profit_usd=max_profit,
-                    max_loss_usd=max_loss,
-                    delta_net=delta_put + delta_call,
-                    delta_put=delta_put,
-                    delta_call=delta_call,
-                    theta=theta_total,
-                    gamma=gamma_total,
-                    selection_method=method,
-                    target_delta=0.10,
-                    otm_distance_pct="1.5%" if method == "OTM_DISTANCE_PCT" else "N/A",
-                    snapshot_json=snapshot_json_str,
-                    reasoning=f"Auto-Execution (VIX={vix:.1f})"
-                )
-            
-            self.active_position = IronCondorPosition(
-                trade_id=trade_id,
-                entry_time=datetime.now(),
-                short_put_strike=short_put,
-                long_put_strike=long_put,
-                short_call_strike=short_call,
-                long_call_strike=long_call,
-                entry_credit=total_credit,
-                qty=self.MAX_QTY,
-                max_profit=max_profit,
-                max_loss=max_loss,
-                spot_at_entry=spot,
-                vix_at_entry=vix,
-                delta_net=delta_net,
-                snapshot_json=snapshot_json_str,
-                order_ids=[trade.order.orderId],
-                # New Greeks
-                delta_put=delta_put,
-                delta_call=delta_call,
-                theta=theta_total,
-                gamma=gamma_total
-            )
-            print("✅ Iron Condor Opened (Combo) & Filled")
-            return self.active_position
-
-                
-        except Exception as e:
-            print(f"❌ Execution Error: {e}")
+            self.logger.error(f"⚠️ Margin Check Failed: {e}")
             return None
+            
+        # 3. CHASE LOOP (FIX 1, FIX 6b)
+        filled = False   # FIX 1: Initialized
+        trade = None
+        
+        for chase in range(self.CHASE_TICKS + 1):
+            if chase > 0:
+                # FIX 6b: Cancel previous to avoid Error 105
+                self.logger.info(f"   🔄 Chase #{chase}: Cancelling previous order...")
+                if trade:
+                    self.ib.cancelOrder(trade.order)
+                    self.ib.sleep(1)
+                
+                # Adjust Price: Less negative = easier fill
+                limit_price += self.TICK_SIZE
+                if limit_price > 0: limit_price = 0.0
+                
+                # FIX 6b: Create NEW object (never modify existing lmtPrice)
+                order = LimitOrder('BUY', self.MAX_QTY, round(limit_price, 2))
+                order.tif = 'DAY'
+            else:
+                # First attempt
+                order = test_order
+                order.tif = 'DAY'
+            
+            self.logger.info(f"   📡 Placing order at ${limit_price:.2f} (Chase {chase})")
+            trade = self.ib.placeOrder(bag, order)
+            
+            # Wait for fill with timeout
+            start_wait = time_module.time()
+            while (time_module.time() - start_wait) < 15:
+                self.ib.sleep(1)
+                if trade.orderStatus.status == 'Filled':
+                    filled = True
+                    break
+                if trade.orderStatus.status in ['Cancelled', 'Inactive', 'ApiCancelled']:
+                    break
+            
+            if filled:
+                break
+        
+        if not filled:
+            self.logger.warning("❌ Timeout after chase. Cancelling.")
+            if trade:
+                self.ib.cancelOrder(trade.order)
+                self.ib.sleep(1)
+            return None
+            
+        # Success - Record Position
+        credit_received = abs(trade.order.lmtPrice)
+        max_profit = credit_received * self.MAX_QTY * 100
+        max_loss = (self.WING_WIDTH - credit_received) * self.MAX_QTY * 100
+        
+        delta_put = snapshot_data.get('delta_put', 0.0) or 0.0
+        delta_call = snapshot_data.get('delta_call', 0.0) or 0.0
+        theta_total = (snapshot_data.get('theta_put', 0.0) or 0.0) + (snapshot_data.get('theta_call', 0.0) or 0.0)
+        gamma_total = (snapshot_data.get('gamma_put', 0.0) or 0.0) + (snapshot_data.get('gamma_call', 0.0) or 0.0)
+        
+        method = "DELTA_TARGET" if delta_net != 0.0 else "OTM_DISTANCE_PCT"
+        iv_est = snapshot_data.get('iv_put') or snapshot_data.get('iv_call') or (vix / 100.0)
+        
+        # Log to Journal
+        trade_id = 0
+        if self.journal:
+            trade_id = self.journal.log_trade_open(
+                spot_price=spot, vix_value=vix,
+                short_put_strike=short_put, short_call_strike=short_call,
+                wing_width=self.WING_WIDTH, entry_credit=credit_received,
+                initial_credit=credit_received, iv_entry_atm=iv_est,
+                max_profit_usd=max_profit, max_loss_usd=max_loss,
+                delta_net=delta_put + delta_call, delta_put=delta_put, delta_call=delta_call,
+                theta=theta_total, gamma=gamma_total, selection_method=method,
+                target_delta=0.10, otm_distance_pct="1.5%" if method == "OTM_DISTANCE_PCT" else "N/A",
+                snapshot_json=json.dumps(snapshot_data), reasoning=f"Auto-Execution (VIX={vix:.1f})"
+            )
+        
+        self.active_position = IronCondorPosition(
+            trade_id=trade_id, entry_time=datetime.now(),
+            short_put_strike=short_put, long_put_strike=long_put_strike,
+            short_call_strike=short_call, long_call_strike=long_call_strike,
+            entry_credit=credit_received, qty=self.MAX_QTY,
+            max_profit=max_profit, max_loss=max_loss,
+            spot_at_entry=spot, vix_at_entry=vix, delta_net=delta_net,
+            snapshot_json=json.dumps(snapshot_data),
+            legs=[
+                {'conId': c_long_put.conId, 'action': 'BUY', 'strike': c_long_put.strike, 'right': 'P'},
+                {'conId': c_short_put.conId, 'action': 'SELL', 'strike': c_short_put.strike, 'right': 'P'},
+                {'conId': c_short_call.conId, 'action': 'SELL', 'strike': c_short_call.strike, 'right': 'C'},
+                {'conId': c_long_call.conId, 'action': 'BUY', 'strike': c_long_call.strike, 'right': 'C'},
+            ],
+            delta_put=delta_put, delta_call=delta_call, theta=theta_total, gamma=gamma_total
+        )
+        
+        self.save_state()
+        self.logger.info(f"✅ Iron Condor Opened [ID:{trade_id}] and State Saved")
+        return self.active_position
+
+    def close_position_atomic(self) -> bool:
+        """Cerrar Iron Condor como combo atómico (BAG order) (FIX 4)"""
+        if not self.active_position or not self.active_position.legs:
+            self.logger.warning("No active position legs found for atomic closure")
+            return False
+        
+        self.logger.info("📉 Attempting atomic closure (BAG order)...")
+        
+        # Construir combo inverso
+        close_combo = Contract()
+        close_combo.symbol = "XSP"
+        close_combo.secType = "BAG"
+        close_combo.currency = "USD"
+        close_combo.exchange = "SMART"
+        close_combo.comboLegs = []
+        
+        for leg_info in self.active_position.legs:
+            leg = ComboLeg()
+            leg.conId = leg_info['conId']
+            leg.ratio = 1
+            # DO NOT INVERT ACTION HERE. 
+            # IBKR Logic: Sell Order on Strategy(Buy A, Sell B) -> Sell A, Buy B.
+            leg.action = leg_info['action'] 
+            leg.exchange = "SMART"
+            close_combo.comboLegs.append(leg)
+        
+        # Para cierre: usar market order o limit agresivo
+        close_order = MarketOrder(action='SELL', totalQuantity=self.active_position.qty)
+        
+        trade = self.ib.placeOrder(close_combo, close_order)
+        
+        # Esperar fill
+        start = time_module.time()
+        while (time_module.time() - start) < 30:
+            self.ib.sleep(1)
+            if trade.orderStatus.status == 'Filled':
+                self.logger.info("✅ BAG order filled successfully.")
+                self.active_position = None
+                self.save_state()
+                return True
+            if trade.orderStatus.status in ['Cancelled', 'Inactive', 'ApiCancelled']:
+                break
+        
+        # Si BAG falla, ENTONCES intentar legs individuales como fallback
+        self.logger.warning("BAG close failed, attempting individual legs fallback")
+        return self.close_position_individual_fallback()
+
+    def close_position_individual_fallback(self) -> bool:
+        """Cierre de patas individuales si falla el BAG order (FIX 4)"""
+        self.logger.info("📉 Fallback: Closing individual legs...")
+        positions = self.ib.positions()
+        xsp_positions = [p for p in positions if p.contract.symbol == 'XSP' and p.position != 0]
+        
+        if not xsp_positions:
+            self.active_position = None
+            self.save_state()
+            return True
+
+        all_filled = True
+        for pos in xsp_positions:
+            contract = pos.contract
+            contract.exchange = 'SMART'
+            self.ib.qualifyContracts(contract)
+            
+            action = 'SELL' if pos.position > 0 else 'BUY'
+            order = MarketOrder(action, abs(pos.position))
+            trade = self.ib.placeOrder(contract, order)
+            
+            # Wait for fill with timeout
+            start_wait = time_module.time()
+            while (time_module.time() - start_wait) < 20:
+                self.ib.sleep(1)
+                if trade.orderStatus.status == 'Filled':
+                    break
+            
+            if trade.orderStatus.status != 'Filled':
+                self.logger.error(f"❌ Failed to close leg {contract.strike}{contract.right}")
+                all_filled = False
+        
+        if all_filled:
+            self.active_position = None
+            self.save_state()
+            return True
+        return False
     
     def get_position_pnl(self) -> Optional[float]:
+
         """Get current PnL for active position."""
         if not self.active_position:
             return None
@@ -768,87 +860,34 @@ class LiveExecutor:
         if not self.active_position:
             return True
         
-        print(f"\n🔴 CLOSING POSITION: {reason} | RV: {rv_duration:.2f}%")
+        self.logger.info(f"\n🔴 CLOSING POSITION: {reason} | RV: {rv_duration:.2f}%")
         
         # Get final PnL estimate
         final_pnl = self.get_position_pnl() or 0.0
         
-        # Close all XSP positions
-        positions = self.ib.positions()
-        xsp_positions = [p for p in positions if p.contract.symbol == 'XSP' and p.position != 0]
+        # Use Atomic Closure (BAG Order)
+        success = self.close_position_atomic()
         
-        if not xsp_positions:
-            print("   ⚠️ No positions found at broker. Marking closed.")
-            self.active_position = None
-            return True
-            
-        closing_trades = []
-        print(f"   📉 Placing closing orders for {len(xsp_positions)} legs...")
-        
-        for pos in xsp_positions:
-            # [FIX 321] Force Exchange to SMART for closing orders
-            contract = pos.contract
-            contract.exchange = 'SMART'
-            
-            # [FIX 321 part 2] Qualify contract to auto-fill details (currency, multiplier)
-            self.ib.qualifyContracts(contract)
-            
-            action = 'SELL' if pos.position > 0 else 'BUY'
-            qty = abs(pos.position)
-            
-            # Use Market Order explicitly
-            order = MarketOrder(action, qty) 
-            
-            trade = self.ib.placeOrder(contract, order)
-            closing_trades.append(trade)
-        
-        # BLOQUEO HASTA LLENADO (Wait Loop)
-        print("   ⏳ Waiting for fills (max 30s)...")
-        start_wait = time_module.time()
-        all_filled = False
-        
-        while (time_module.time() - start_wait) < 30:
-            self.ib.sleep(1)
-            
-            # Check status of all trades
-            pending = [t for t in closing_trades if t.orderStatus.status != 'Filled']
-            if not pending:
-                all_filled = True
-                break
-        
-        if all_filled:
-            print(f"✅ EXIT CONFIRMED. Final PnL: ${final_pnl:.2f}")
-            
-            # Log Close
-            if self.journal and self.active_position and self.active_position.trade_id > 0:
+        if success:
+            self.logger.info(f"✅ EXIT CONFIRMED via Atomic BAG. Final PnL: ${final_pnl:.2f}")
+             # Final Journal Update
+            if self.journal and self.active_position:
                 self.journal.log_trade_close(
                     trade_id=self.active_position.trade_id,
+                    exit_price=0.0, 
+                    exit_pnl_usd=final_pnl,
                     exit_reason=reason,
-                    final_pnl_usd=final_pnl,
-                    entry_timestamp=self.active_position.entry_time,
-                    max_spread_val=max_spread_val,
-                    rv_duration=rv_duration
+                    max_spread=max_spread_val,
+                    rv_at_exit=rv_duration
                 )
-            
             self.active_position = None
+            self.save_state()
             return True
         else:
-            print("❌ EXIT FAILED - TIMEOUT or PARTIAL CLOSE. Position remains open (Unsafe).")
-            
-            # Verify exactly what happened
-            filled_count = len([t for t in closing_trades if t.orderStatus.status == 'Filled'])
-            print(f"   ⚠️ Filled {filled_count}/{len(closing_trades)} legs.")
-            
-            if filled_count > 0:
-                print("   🚨 CRITICAL: PARTIAL CLOSE DETECTED. DO NOT CLEAR STATE.")
-                # We do NOT set self.active_position = None here.
-                # The user must intervene or the bot will retry on next loop (risky if naked).
-            
-            print("   ⚠️ Cancelling pending orders...")
-            for t in closing_trades:
-                if t.orderStatus.status not in ['Filled', 'Cancelled']:
-                    self.ib.cancelOrder(t.order)
+            self.logger.error("❌ EXIT FAILED - Atomic Closure failed. Position might be partially open.")
             return False
+
+
     
     def monitor_position(self, check_interval: float = 10.0):
         """
@@ -968,4 +1007,20 @@ class LiveExecutor:
                     self.ib.sleep(1)
             
             self.ib.sleep(check_interval)
+
+"""
+IBKR Combo Order Price Convention (from official docs):
+https://www.ibkrguides.com/traderworkstation/notes-on-combination-orders.htm
+
+| Operation                    | action | lmtPrice   | Meaning                    |
+|------------------------------|--------|------------|----------------------------|
+| Open Iron Condor (credit)    | BUY    | negative   | Buy combo, receive credit  |
+| Chase (easier fill)          | BUY    | += TICK    | Less negative = less credit|
+| Close Iron Condor (debit)    | SELL   | negative   | Sell combo, pay debit      |
+| Close Iron Condor (residual) | SELL   | positive   | Sell combo, receive cash   |
+
+Chase direction for BUY credit: += TICK_SIZE (less negative = easier fill)
+DO NOT modify combo order lmtPrice — Error 105. Cancel + new order.
+DO NOT qualifyContracts() on BAG — Error 321. Build from qualified legs.
+"""
 

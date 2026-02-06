@@ -342,6 +342,14 @@ def main():
             return
         
         print(f"✅ {msg}")
+        
+        # FIX 7: TWS Setting Reminder
+        print("\n" + "!" * 60)
+        print("⚠️  FIX 7: VERIFY TWS SETTINGS!")
+        print("   TWS → Global Configuration → API → Settings")
+        print("   ☑️ 'Download open orders on connection' MUST BE ENABLED")
+        print("!" * 60 + "\n")
+        
         capital = connector.get_account_value()
         print(f"💰 Account Value: ${capital:,.2f}")
         
@@ -351,7 +359,11 @@ def main():
         # Initialize executor
         executor = LiveExecutor(connector, journal)
         
+        # FIX 2: Startup Reconciliation
+        executor.startup_reconciliation()
+        
         # ATTEMPT RECOVERY OF EXISTING POSITIONS via IBKR
+        # (Already handled by load_state in __init__, but we can call it if we want manual sync)
         executor.recover_active_position()
         
         # Main loop
