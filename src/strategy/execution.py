@@ -757,6 +757,9 @@ class LiveExecutor:
         print(f"   📉 Placing closing orders for {len(xsp_positions)} legs...")
         
         for pos in xsp_positions:
+            # FIX: Ensure exchange is set for closing
+            pos.contract.exchange = 'SMART'
+            
             action = 'SELL' if pos.position > 0 else 'BUY'
             qty = abs(pos.position)
             

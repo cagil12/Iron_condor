@@ -386,6 +386,14 @@ def main():
                          pass # Don't crash on transient data issues
 
                 # -----------------------------------------------------------
+                # ACTIVE POSITION CHECK: Monitor existing trades FIRST
+                # -----------------------------------------------------------
+                if executor.has_active_position():
+                    print("📊 Active position - monitoring exits...")
+                    executor.monitor_position(check_interval=10)
+                    continue
+
+                # -----------------------------------------------------------
                 # TIME GATE: No trading before start_time (10:00 AM ET)
                 # -----------------------------------------------------------
                 start_time_str = config.get('start_time', config.get('entry_time', '10:00'))
@@ -409,11 +417,6 @@ def main():
                     time.sleep(60)
                     continue
                 
-                # Skip if we have an active position
-                if executor.has_active_position():
-                    print("📊 Active position - monitoring exits...")
-                    executor.monitor_position(check_interval=10)
-                    continue
                 
                 # Get VIX
                 vix_value = vix_loader.get_vix(datetime.now().date())
