@@ -474,6 +474,12 @@ class LiveExecutor:
         try:
             state = self.ib.whatIfOrder(contract, order)
             
+            if isinstance(state, list):
+                if not state:
+                    self.logger.warning("⚠️ Margin Check returned empty list. Data unavailable.")
+                    return False
+                state = state[0]
+            
             # Initial Margin Change
             init_margin = float(state.initMarginChange)
             
@@ -605,7 +611,13 @@ class LiveExecutor:
         
         try:
             state = self.ib.whatIfOrder(bag, test_order)
-            init_margin = float(state.initMarginChange if not isinstance(state, list) else state[0].initMarginChange)
+            if isinstance(state, list):
+                if not state:
+                    self.logger.error("⚠️ Margin Check returned empty list. Data unavailable.")
+                    return None
+                state = state[0]
+                
+            init_margin = float(state.initMarginChange)
             if init_margin > self.MAX_MARGIN_ACCEPTED:
                 self.logger.warning(f"   ⚠️ MARGIN REJECT: Expected < ${self.MAX_MARGIN_ACCEPTED}, Got ${init_margin:.2f}")
                 return None
