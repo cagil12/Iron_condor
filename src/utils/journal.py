@@ -243,7 +243,7 @@ class TradeJournal:
                 row['final_pnl_usd'] = round(final_pnl_usd, 2)
                 row['max_adverse_excursion'] = round(max_adverse_excursion, 2)
                 row['max_spread_val'] = max_spread_val
-                row['rv_duration'] = round(rv_duration, 2) # NEW
+                row['rv_duration'] = round(rv_duration, 6) # NEW
                 
                 # Calculate hold duration
                 duration_mins = ''

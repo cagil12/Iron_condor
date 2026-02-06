@@ -73,7 +73,7 @@ LIVE_CONFIG = {
     'ibkr': {
         'host': '127.0.0.1',
         'paper_port': 7497,  # TWS Paper Trading
-        'live_port': 7496,   # TWS Live Trading
+        'live_port': 7497,   # TWS Live Trading (User Override)
         'client_id': 777,
         'timeout': 30,
     },

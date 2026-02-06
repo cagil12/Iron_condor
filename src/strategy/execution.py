@@ -556,6 +556,13 @@ class LiveExecutor:
         print("🛡️ Checking Margin Impact...")
         try:
             state = self.ib.whatIfOrder(bag_contract, order)
+            if isinstance(state, list):
+                # ib_insync sometimes returns a list for BAG orders
+                if not state:
+                    print("⚠️ Margin Check returned empty list. Aborting trade.")
+                    return None
+                state = state[0]
+                
             init_margin = float(state.initMarginChange)
             
             print(f"   💵 Init Margin Change: ${init_margin:.2f}")
@@ -578,22 +585,44 @@ class LiveExecutor:
             print(f"🚀 Sending Combo Order...")
             trade = self.ib.placeOrder(bag_contract, order)
             # WAIT FOR FILL (Fixes duplicate logging bug)
-            print(f"⏳ Waiting for fill (max 45s)...")
-            start_wait = time.time()
-            filled = False
+            # CHASE LOGIC (Aggressive Limit Update)
+            # We assume order is a BUY with Negative Limit Price (Credit Strategy)
+            # Chase means accepting LESS credit (Price closer to 0 or more positive)
             
-            while (time.time() - start_wait) < 45:
-                self.ib.sleep(1)
-                status = trade.orderStatus.status
-                if status == 'Filled':
-                    filled = True
+            for chase in range(self.CHASE_TICKS + 1):
+                if chase > 0:
+                    # Modify Order Price
+                    # To chase a credit buy (e.g. -0.20), we must bid closer to 0 (e.g. -0.19)
+                    limit_price += self.TICK_SIZE 
+                    # Ensure we don't flip to Debit if unauthorized (though small debit might be valid for closing, here it's opening)
+                    if limit_price > 0:
+                        limit_price = 0.0 # Cap at 0 (Free trade) if desired, or let it slide to debit?
+                        # For an Iron Condor, paying debit to open is non-standard but possible if desperate.
+                        # Let's keep it negative or zero for now.
+                    
+                    order.lmtPrice = round(limit_price, 2)
+                    print(f"   🔄 Chase #{chase}: Updating Limit to ${limit_price:.2f} (giving up credit)")
+                    # Update the order (Modify in place)
+                    trade = self.ib.placeOrder(bag_contract, order)
+                
+                start_wait = time_module.time()
+                # 15s wait per attempt
+                while (time_module.time() - start_wait) < 15:
+                    self.ib.sleep(1)
+                    if trade.orderStatus.status == 'Filled':
+                        filled = True
+                        break
+                    if trade.orderStatus.status in ['Cancelled', 'Inactive', 'ApiCancelled']:
+                        print(f"❌ Order Cancelled/Inactive during chase: {trade.orderStatus.status}")
+                        return None
+                
+                if filled:
                     break
-                if status in ['Cancelled', 'Inactive', 'ApiCancelled']:
-                    print(f"❌ Order Cancelled/Inactive: {status}")
-                    return None
+                
+                # If not filled, loop continues and updates price.
             
             if not filled:
-                print(f"⚠️ Order timeout (Status: {trade.orderStatus.status}). Cancelling...")
+                print(f"⚠️ Order timeout after chase (Status: {trade.orderStatus.status}). Cancelling...")
                 self.ib.cancelOrder(order)
                 return None
             

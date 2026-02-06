@@ -135,7 +135,7 @@ def get_next_friday_expiry() -> str:
     from datetime import date, timedelta
     today = date.today()
     days_ahead = 4 - today.weekday()  # Friday = 4
-    if days_ahead <= 0:
+    if days_ahead < 0: # Fixed: Only skip if today is PAST Friday (Sat/Sun)
         days_ahead += 7
     next_friday = today + timedelta(days=days_ahead)
     return next_friday.strftime('%Y%m%d')
@@ -389,6 +389,17 @@ def main():
                 # ACTIVE POSITION CHECK: Monitor existing trades FIRST
                 # -----------------------------------------------------------
                 if executor.has_active_position():
+                    # Robustness Check: If we detect positions on IBKR but don't have internal state
+                    if not executor.active_position:
+                        print("⚠️ Detected unmanaged positions. Attempting recovery...")
+                        executor.recover_active_position()
+                        
+                        if not executor.active_position:
+                            print("❌ Recovery failed or inconsistent state. Pausing 60s to avoid spam...")
+                            print("   (Please check TWS manually if this persists)")
+                            time.sleep(60)
+                            continue
+                    
                     print("📊 Active position - monitoring exits...")
                     executor.monitor_position(check_interval=10)
                     continue

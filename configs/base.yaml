@@ -5,6 +5,14 @@ ticker: "XSP"
 timezone: "US/Eastern"
 currency: "USD"
 
+# --- IBKR Connection Settings ---
+ibkr:
+  host: "127.0.0.1"
+  paper_port: 7497    # Standard Paper Port
+  live_port: 7497     # User specified 7497 for Live TWS
+  client_id: 1
+  timeout: 30
+
 # --- Strategy Parameters ---
 strategy:
   entry_time: "10:00"      # HH:MM (Strict Ingresarios Start)
@@ -12,7 +20,7 @@ strategy:
   width: 1.0               # Spread width (XSP Standard)
   
   # Liquidity Gates
-  min_credit: 0.10         # Minimum credit to enter
+  min_credit: 0.05         # Minimum credit to enter (Lowered for Paper Data)
   min_ror: 0.05            # Minimum Return on Risk
   max_spread_pct: 5.00     # Max relative spread
   max_spread_abs: 5.00     # Max absolute spread
