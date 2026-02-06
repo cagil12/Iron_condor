@@ -7,9 +7,12 @@ Handles order placement, position monitoring, and exit management.
 SAFETY: Hardcoded limits for small account ($200 capital).
 """
 import time as time_module
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 import json
 from typing import Optional, Dict, Any, List
+import argparse
+import sys
+import numpy as np # NEW: For RV calculation
 from dataclasses import dataclass
 
 from ib_insync import IB, Option, Order, LimitOrder, Trade as IBTrade, Contract, ComboLeg
@@ -721,13 +724,14 @@ class LiveExecutor:
         
         return None
     
-    def close_position(self, reason: str, max_spread_val: float = 0.0) -> bool:
+    def close_position(self, reason: str, max_spread_val: float = 0.0, rv_duration: float = 0.0) -> bool:
         """
         Close the active position with blocking confirmation.
         
         Args:
             reason: Reason for closing
             max_spread_val: Max observed spread value (for journal)
+            rv_duration: Realized Volatility annualized (for journal)
             
         Returns:
             True if closed successfully, False if failed/timeout
@@ -786,7 +790,8 @@ class LiveExecutor:
                     exit_reason=reason,
                     final_pnl_usd=final_pnl,
                     entry_timestamp=self.active_position.entry_time,
-                    max_spread_val=max_spread_val 
+                    max_spread_val=max_spread_val,
+                    rv_duration=rv_duration
                 )
             
             self.active_position = None
@@ -819,6 +824,7 @@ class LiveExecutor:
         market_close = dt_time(16, 0)
         
         max_spread_val = 0.0
+        spot_prices = [] # NEW: for RV calc
         
         while self.active_position:
             # Update Max Spread Value (Tail Risk)
@@ -832,6 +838,8 @@ class LiveExecutor:
             
             # Get current spot
             spot = self.connector.get_live_price('XSP') or 0.0
+            if spot > 0:
+                spot_prices.append(spot)
             
             # Get VIX
             vix = self.connector.get_live_price('VIX') or 0.0
@@ -892,7 +900,21 @@ class LiveExecutor:
             
             exit_reason = self.check_exit_conditions()
             if exit_reason:
-                success = self.close_position(exit_reason, max_spread_val)
+                # Calculate Realized Volatility (RV)
+                rv_duration = 0.0
+                if len(spot_prices) > 2:
+                     try:
+                        prices_arr = np.array(spot_prices)
+                        log_returns = np.log(prices_arr[1:] / prices_arr[:-1])
+                        std_dev = np.std(log_returns)
+                        # Annualize: sqrt(252 trading days * 6.5 hours * 3600 seconds / interval)
+                        # We use the actual sampling interval (check_interval)
+                        annualization_factor = np.sqrt(252 * 6.5 * 3600 / check_interval)
+                        rv_duration = std_dev * annualization_factor
+                     except Exception as e:
+                        print(f"⚠️ RV Calc Error: {e}")
+                
+                success = self.close_position(exit_reason, max_spread_val, rv_duration)
                 if success:
                     break
                 else:

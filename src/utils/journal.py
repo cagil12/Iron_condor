@@ -212,6 +212,7 @@ class TradeJournal:
         entry_timestamp: datetime,
         max_adverse_excursion: float = 0.0,
         max_spread_val: float = 0.0,        # NEW
+        rv_duration: float = 0.0,           # NEW
         exit_snapshot_json: str = ""        
     ):
         """
@@ -241,10 +242,11 @@ class TradeJournal:
                 row['exit_reason'] = exit_reason
                 row['final_pnl_usd'] = round(final_pnl_usd, 2)
                 row['max_adverse_excursion'] = round(max_adverse_excursion, 2)
-                row['max_spread_val'] = round(max_spread_val, 2) # NEW
-                row['exit_snapshot_json'] = exit_snapshot_json
+                row['max_spread_val'] = max_spread_val
+                row['rv_duration'] = round(rv_duration, 2) # NEW
                 
                 # Calculate hold duration
+                duration_mins = ''
                 try:
                     entry_dt = datetime.fromisoformat(row['timestamp'])
                     exit_dt = datetime.now()
