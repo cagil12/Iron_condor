@@ -15,7 +15,7 @@ import sys
 import numpy as np # NEW: For RV calculation
 from dataclasses import dataclass
 
-from ib_insync import IB, Option, Order, LimitOrder, Trade as IBTrade, Contract, ComboLeg
+from ib_insync import IB, Option, Order, LimitOrder, MarketOrder, Trade as IBTrade, Contract, ComboLeg
 
 from src.data.ib_connector import IBConnector
 from src.utils.config import get_live_config
@@ -739,7 +739,7 @@ class LiveExecutor:
         if not self.active_position:
             return True
         
-        print(f"\n🔴 CLOSING POSITION: {reason}")
+        print(f"\n🔴 CLOSING POSITION: {reason} | RV: {rv_duration:.2f}%")
         
         # Get final PnL estimate
         final_pnl = self.get_position_pnl() or 0.0
@@ -757,16 +757,20 @@ class LiveExecutor:
         print(f"   📉 Placing closing orders for {len(xsp_positions)} legs...")
         
         for pos in xsp_positions:
-            # FIX: Ensure exchange is set for closing
-            pos.contract.exchange = 'SMART'
+            # [FIX 321] Force Exchange to SMART for closing orders
+            contract = pos.contract
+            contract.exchange = 'SMART'
+            
+            # [FIX 321 part 2] Qualify contract to auto-fill details (currency, multiplier)
+            self.ib.qualifyContracts(contract)
             
             action = 'SELL' if pos.position > 0 else 'BUY'
             qty = abs(pos.position)
             
-            # Market order to close
-            order = LimitOrder(action, qty, 0) 
-            order.orderType = 'MKT'
-            trade = self.ib.placeOrder(pos.contract, order)
+            # Use Market Order explicitly
+            order = MarketOrder(action, qty) 
+            
+            trade = self.ib.placeOrder(contract, order)
             closing_trades.append(trade)
         
         # BLOQUEO HASTA LLENADO (Wait Loop)
@@ -800,7 +804,17 @@ class LiveExecutor:
             self.active_position = None
             return True
         else:
-            print("❌ EXIT FAILED - TIMEOUT. Position remains open (Unsafe).")
+            print("❌ EXIT FAILED - TIMEOUT or PARTIAL CLOSE. Position remains open (Unsafe).")
+            
+            # Verify exactly what happened
+            filled_count = len([t for t in closing_trades if t.orderStatus.status == 'Filled'])
+            print(f"   ⚠️ Filled {filled_count}/{len(closing_trades)} legs.")
+            
+            if filled_count > 0:
+                print("   🚨 CRITICAL: PARTIAL CLOSE DETECTED. DO NOT CLEAR STATE.")
+                # We do NOT set self.active_position = None here.
+                # The user must intervene or the bot will retry on next loop (risky if naked).
+            
             print("   ⚠️ Cancelling pending orders...")
             for t in closing_trades:
                 if t.orderStatus.status not in ['Filled', 'Cancelled']:
