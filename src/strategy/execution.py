@@ -760,8 +760,6 @@ class LiveExecutor:
             self.ib.sleep(1)
             if trade.orderStatus.status == 'Filled':
                 self.logger.info("✅ BAG order filled successfully.")
-                self.active_position = None
-                self.save_state()
                 return True
             if trade.orderStatus.status in ['Cancelled', 'Inactive', 'ApiCancelled']:
                 break
@@ -777,8 +775,6 @@ class LiveExecutor:
         xsp_positions = [p for p in positions if p.contract.symbol == 'XSP' and p.position != 0]
         
         if not xsp_positions:
-            self.active_position = None
-            self.save_state()
             return True
 
         all_filled = True
@@ -803,8 +799,6 @@ class LiveExecutor:
                 all_filled = False
         
         if all_filled:
-            self.active_position = None
-            self.save_state()
             return True
         return False
     
