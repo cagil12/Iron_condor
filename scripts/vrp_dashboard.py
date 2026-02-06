@@ -173,7 +173,7 @@ def print_summary(df, stats_text):
     print("═" * 40 + "\n")
 
 if __name__ == "__main__":
-    print("🧪 Generatng VRP Dashboard...")
+    print("🧪 Generating VRP Dashboard...")
     df = load_data()
     stats = plot_vrp_analysis(df)
     print_summary(df, stats)

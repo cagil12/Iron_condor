@@ -886,11 +886,11 @@ class LiveExecutor:
             if self.journal and self.active_position:
                 self.journal.log_trade_close(
                     trade_id=self.active_position.trade_id,
-                    exit_price=0.0, 
-                    exit_pnl_usd=final_pnl,
                     exit_reason=reason,
-                    max_spread=max_spread_val,
-                    rv_at_exit=rv_duration
+                    final_pnl_usd=final_pnl,
+                    entry_timestamp=self.active_position.entry_time,
+                    max_spread_val=max_spread_val,
+                    rv_duration=rv_duration
                 )
             self.active_position = None
             self.save_state()

@@ -444,7 +444,10 @@ def main():
                 # Get VIX
                 vix_value = vix_loader.get_vix(datetime.now().date())
                 if vix_value is None:
-                    vix_value = 15.0  # Default fallback
+                    now_str = datetime.now().strftime("%H:%M:%S")
+                    print(f"[{now_str}] ⚠️ VIX UNAVAILABLE - Cannot trade without VIX visibility. Retrying next cycle.")
+                    time.sleep(scan_interval)
+                    continue
                 
                 # VIX SAFETY CHECK (HARD LIMIT)
                 max_vix = config.get('max_vix', 25.0)
