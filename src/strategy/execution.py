@@ -842,6 +842,9 @@ class LiveExecutor:
             dist_put = spot - short_put
             dist_call = short_call - spot
             
+            # Danger zone detection (Global scope)
+            min_distance = min(dist_put, dist_call)
+            
             # Calculate percentages
             max_profit = self.active_position.max_profit
             max_loss = self.active_position.max_loss
@@ -871,7 +874,7 @@ class LiveExecutor:
                 sl_pct = (pnl / sl_target) * 100 if sl_target < 0 else 0
                 
                 # Danger zone detection
-                min_distance = min(dist_put, dist_call)
+                # min_distance = min(dist_put, dist_call) # Moved up
                 current_spread_cost = self.active_position.entry_credit - (pnl / (100 * self.active_position.qty))
                 if current_spread_cost > max_spread_val:
                     max_spread_val = current_spread_cost
