@@ -699,7 +699,8 @@ class LiveExecutor:
                 delta_net=delta_put + delta_call, delta_put=delta_put, delta_call=delta_call,
                 theta=theta_total, gamma=gamma_total, selection_method=method,
                 target_delta=0.10, otm_distance_pct="1.5%" if method == "OTM_DISTANCE_PCT" else "N/A",
-                snapshot_json=json.dumps(snapshot_data), reasoning=f"Auto-Execution (VIX={vix:.1f})"
+                snapshot_json=json.dumps(snapshot_data), 
+                reasoning=f"Method: {method} | VIX: {vix:.1f} | Delta: P{delta_put:.2f}/C{delta_call:.2f} | Credit: ${credit_received:.2f}"
             )
         
         self.active_position = IronCondorPosition(
@@ -838,16 +839,16 @@ class LiveExecutor:
         
         # 1. Take Profit
         if pnl >= take_profit_target:
-            return f"TP_50"
+            return f"TP_50 [PnL ${pnl:.0f} >= ${take_profit_target:.0f}]"
         
         # 2. Stop Loss
         if pnl <= stop_loss_target:
-            return f"SL_{int(self.STOP_LOSS_MULT)}X"
+            return f"SL_{int(self.STOP_LOSS_MULT)}X [PnL ${pnl:.0f} <= ${stop_loss_target:.0f}]"
         
         # 3. EOD Force Close (time of day cutoff)
         now_time = datetime.now().time()
         if now_time >= self.FORCE_CLOSE_TIME:
-            return f"EOD_TIME"
+            return f"EOD_TIME [Time {now_time.strftime('%H:%M')} >= {self.FORCE_CLOSE_TIME}]"
         
         return None
     
