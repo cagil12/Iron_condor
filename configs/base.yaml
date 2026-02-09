@@ -15,12 +15,12 @@ ibkr:
 
 # --- Strategy Parameters ---
 strategy:
-  entry_time: "10:00"      # HH:MM (Strict Ingresarios Start)
+  entry_time: "09:30"      # HH:MM (Market Open)
   target_delta: 0.10       # Target delta (OTM)
-  width: 1.0               # Spread width (XSP Standard)
+  width: 2.0               # Spread width (2-point wings)
   
   # Liquidity Gates
-  min_credit: 0.05         # Minimum credit to enter (Lowered for Paper Data)
+  min_credit: 0.20         # Minimum credit to enter (Increased for 2-wide)
   min_ror: 0.05            # Minimum Return on Risk
   max_spread_pct: 5.00     # Max relative spread
   max_spread_abs: 5.00     # Max absolute spread
@@ -52,7 +52,7 @@ data:
 filters:
   min_vix: 10.0              # Skip days with VIX below this (low vol = poor premium)
   max_vix: 25.0              # KILL SWITCH: Skip days with VIX above 25.0 (extreme risk)
-  start_time: "10:00"        # TIME GATE: No trading before 10:00 AM ET
+  start_time: "09:30"        # TIME GATE: No trading before 09:30 AM ET
   
 risk:
   min_account_value: 1400.0  # HARD STOP: Si Equity < $1400, apagar sistema.

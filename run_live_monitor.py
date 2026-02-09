@@ -109,6 +109,7 @@ def is_market_open() -> bool:
     
     current_time = now.time()
     return market_open <= current_time <= market_close
+    # return True # FOR TESTING ONLY
 
 
 def is_entry_time_reached(entry_time_str: str = "10:00") -> bool:
@@ -204,11 +205,10 @@ def find_trade_opportunity(
                 
                 # Find best delta matches
                 best_put_strike = None
-                best_call_strike = None
-                best_put_delta = None
-                best_call_delta = None
-                min_put_diff = 999
-                min_call_diff = 999
+                target_delta = config.get('target_delta', 0.10)
+                min_credit = config.get('min_credit', 0.20)
+                
+                logger.info(f"   🎯 Finding strikes with Delta ~{target_delta}...")
                 
                 for t in tickers:
                     if t.modelGreeks and t.modelGreeks.delta is not None:
@@ -430,6 +430,7 @@ def main():
                         print(f"[{now_str}] ⏳ MARKET WARMUP: Waiting until {start_time_str} AM... (Current: {now_str[:5]})")
                         time.sleep(60)
                         continue
+                        # pass
                 except Exception:
                     pass  # Fallback if parsing fails
 

@@ -44,7 +44,7 @@ LIVE_CONFIG = {
     'trading_mode': 'PAPER',  # 'PAPER' or 'LIVE'
     'account_id': 'DUO988990', # Explicit Paper Trading Account
     'port': 7497,             # Default to Paper Port
-    'entry_time': '10:00',    # Entry Time (ET) - Updated
+    'entry_time': '09:30',    # Entry Time (ET) - Updated for Open
 
     # Instrument Settings
     'symbol': 'XSP',

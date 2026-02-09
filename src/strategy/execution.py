@@ -70,7 +70,7 @@ class LiveExecutor:
     """
     
     # HARDCODED SAFETY LIMITS
-    WING_WIDTH = 1.0       # Fixed wing width for small account
+    WING_WIDTH = 2.0       # 2-point wings for better credit/risk ratio
     MAX_QTY = 1            # Only 1 contract at a time
     TAKE_PROFIT_PCT = 0.50 # 50% of max profit
     # STOP_LOSS_MULT removed from hardcoded constants - loaded from config
@@ -79,7 +79,7 @@ class LiveExecutor:
     TICK_SIZE = 0.01       # XSP option tick size
     FORCE_CLOSE_TIME = time(15, 45)  # Hard EOD exit at 3:45 PM
     STATE_FILE = Path("state.json")
-    MAX_MARGIN_ACCEPTED = 250.0     # Maximum initial margin for 1 contract
+    MAX_MARGIN_ACCEPTED = 300.0     # Maximum initial margin for 1 contract
     
     def __init__(self, connector: IBConnector, journal: Optional[TradeJournal] = None):
         self.connector = connector
@@ -609,23 +609,39 @@ class LiveExecutor:
         limit_price = -round(total_credit, 2)
         test_order = LimitOrder('BUY', self.MAX_QTY, limit_price)
         
+        # Detect paper mode: paper port is typically 7497, live is 7496
+        # Also check account ID pattern if needed, but port is a good proxy here based on config
+        is_paper = self.ib.client.port == 7497
+        
         try:
             state = self.ib.whatIfOrder(bag, test_order)
             if isinstance(state, list):
                 if not state:
-                    self.logger.error("⚠️ Margin Check returned empty list. Data unavailable.")
+                    if is_paper:
+                        self.logger.warning("⚠️ Margin Check empty (Paper mode) — BYPASSING. Would block in LIVE.")
+                    else:
+                        self.logger.error("⚠️ Margin Check returned empty list. ABORTING (Live mode).")
+                        return None
+                else:
+                    state = state[0]
+                    init_margin = float(state.initMarginChange)
+                    if init_margin > self.MAX_MARGIN_ACCEPTED:
+                        self.logger.warning(f"   ⚠️ MARGIN REJECT: Expected < ${self.MAX_MARGIN_ACCEPTED}, Got ${init_margin:.2f}")
+                        return None
+                    self.logger.info(f"   ✅ Margin Check Passed: ${init_margin:.2f}")
+            else:
+                init_margin = float(state.initMarginChange)
+                if init_margin > self.MAX_MARGIN_ACCEPTED:
+                    self.logger.warning(f"   ⚠️ MARGIN REJECT: Expected < ${self.MAX_MARGIN_ACCEPTED}, Got ${init_margin:.2f}")
                     return None
-                state = state[0]
-                
-            init_margin = float(state.initMarginChange)
-            if init_margin > self.MAX_MARGIN_ACCEPTED:
-                self.logger.warning(f"   ⚠️ MARGIN REJECT: Expected < ${self.MAX_MARGIN_ACCEPTED}, Got ${init_margin:.2f}")
-                return None
-            self.logger.info(f"   ✅ Margin Check Passed: ${init_margin:.2f}")
+                self.logger.info(f"   ✅ Margin Check Passed: ${init_margin:.2f}")
             
         except Exception as e:
-            self.logger.error(f"⚠️ Margin Check Failed: {e}")
-            return None
+            if is_paper:
+                self.logger.warning(f"⚠️ Margin Check Failed (Paper mode): {e} — BYPASSING.")
+            else:
+                self.logger.error(f"⚠️ Margin Check Failed: {e}")
+                return None
             
         # 3. CHASE LOOP (FIX 1, FIX 6b)
         filled = False   # FIX 1: Initialized
