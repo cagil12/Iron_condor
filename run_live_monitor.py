@@ -227,12 +227,7 @@ def find_trade_opportunity(
                 tickers = [connector.ib.reqMktData(c, '', False, False) for c in contracts]
                 connector.ib.sleep(3)
                 
-                # Find best delta matches
-                best_put_strike = None
-                target_delta = config.get('target_delta', 0.10)
-                min_credit = config.get('min_credit', 0.20)
-                
-                logger.info(f"   🎯 Finding strikes with Delta ~{target_delta}...")
+                # Find best delta matches (using variables initialized at top of function)
                 
                 for t in tickers:
                     if t.modelGreeks and t.modelGreeks.delta is not None:
