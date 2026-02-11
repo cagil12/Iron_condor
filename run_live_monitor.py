@@ -131,15 +131,29 @@ def is_entry_time_reached(entry_time_str: str = "10:00") -> bool:
         return True  # Default to allow if parsing fails
 
 
-def get_next_friday_expiry() -> str:
-    """Get the next Friday expiration in YYYYMMDD format."""
+def get_0dte_expiry() -> str:
+    """
+    Get TODAY's expiration for 0DTE trading.
+    
+    SPX/XSP have daily expirations (Mon-Fri).
+    For 0DTE strategy, expiry is ALWAYS today.
+    
+    Safety: If called on weekend (should never happen due to market_open check),
+    returns next Monday.
+    
+    Returns:
+        Expiry string in YYYYMMDD format
+    """
     from datetime import date, timedelta
     today = date.today()
-    days_ahead = 4 - today.weekday()  # Friday = 4
-    if days_ahead < 0: # Fixed: Only skip if today is PAST Friday (Sat/Sun)
-        days_ahead += 7
-    next_friday = today + timedelta(days=days_ahead)
-    return next_friday.strftime('%Y%m%d')
+    weekday = today.weekday()
+    
+    if weekday == 5:  # Saturday -> next Monday
+        return (today + timedelta(days=2)).strftime('%Y%m%d')
+    elif weekday == 6:  # Sunday -> next Monday
+        return (today + timedelta(days=1)).strftime('%Y%m%d')
+    else:
+        return today.strftime('%Y%m%d')  # Mon-Fri: TODAY
 
 
 def find_trade_opportunity(
@@ -152,6 +166,16 @@ def find_trade_opportunity(
     
     Returns trade setup dict if found, None otherwise.
     """
+    # Fix 4: Initialize missing variables
+    best_put_strike = None
+    best_call_strike = None
+    best_put_delta = -0.10
+    best_call_delta = 0.10
+    min_put_diff = 999.0
+    min_call_diff = 999.0
+    target_delta = config.get('target_delta', 0.10)
+    min_credit = config.get('min_credit', 0.20)
+
     # Get current XSP spot price
     spot = connector.get_live_price('XSP')
     if not spot or spot <= 0:
@@ -167,7 +191,7 @@ def find_trade_opportunity(
         return None
     
     # Get expiry first
-    expiry = get_next_friday_expiry()
+    expiry = get_0dte_expiry()
     
     # Use Delta-based strike selection (NEW)
     target_delta = config.get('target_delta', 0.10)
@@ -260,7 +284,7 @@ def find_trade_opportunity(
     
     # Get option quotes to estimate NET credit
     # We need to account for the cost of the Long Wings
-    WING_WIDTH = 1.0
+    WING_WIDTH = config.get('wing_width', 2.0)
     long_put = short_put - WING_WIDTH
     long_call = short_call + WING_WIDTH
     
@@ -283,7 +307,7 @@ def find_trade_opportunity(
     net_credit_est = gross_credit - protection_cost
     
     # Minimum credit filter
-    min_credit = config.get('min_credit', 0.10)
+    min_credit = config.get('min_credit', 0.20)
     if net_credit_est < min_credit:
         print(f"⚠️ Credit too low: ${net_credit_est:.2f} < ${min_credit:.2f}")
         return None

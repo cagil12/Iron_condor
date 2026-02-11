@@ -4,6 +4,7 @@
 ticker: "XSP"
 timezone: "US/Eastern"
 currency: "USD"
+wing_width: 2.0  # Shared Wing Width for Scanner & Executor
 
 # --- IBKR Connection Settings ---
 ibkr:

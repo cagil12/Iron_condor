@@ -70,13 +70,13 @@ class LiveExecutor:
     """
     
     # HARDCODED SAFETY LIMITS
-    WING_WIDTH = 2.0       # 2-point wings for better credit/risk ratio
+    WING_WIDTH = 2.0       # 2-point wings (Default, overwritten by config)
     MAX_QTY = 1            # Only 1 contract at a time
     TAKE_PROFIT_PCT = 0.50 # 50% of max profit
     # STOP_LOSS_MULT removed from hardcoded constants - loaded from config
     ORDER_TIMEOUT = 10     # Seconds to wait for fill
-    CHASE_TICKS = 3        # Number of times to chase price
-    TICK_SIZE = 0.01       # XSP option tick size
+    CHASE_TICKS = 8        # Number of times to chase price (FIX 3)
+    TICK_SIZE = 0.05       # Combo tick size (aggressive for BAG orders) (FIX 3)
     FORCE_CLOSE_TIME = time(15, 45)  # Hard EOD exit at 3:45 PM
     STATE_FILE = Path("state.json")
     MAX_MARGIN_ACCEPTED = 300.0     # Maximum initial margin for 1 contract
@@ -98,7 +98,8 @@ class LiveExecutor:
         
         # Load dynamic settings
         self.STOP_LOSS_MULT = self.config.get('stop_loss_mult', 3.0)
-        self.logger.info(f"🔧 Executor Config: SL={self.STOP_LOSS_MULT}x")
+        self.WING_WIDTH = self.config.get('wing_width', 2.0)  # FIX 1
+        self.logger.info(f"🔧 Executor Config: SL={self.STOP_LOSS_MULT}x | Width={self.WING_WIDTH}")
         
         # FIX 3: Load state at startup
         self.load_state()
@@ -577,11 +578,16 @@ class LiveExecutor:
         credit_call_spread = prices['short_call'] - prices['long_call']
         total_credit = credit_put_spread + credit_call_spread
         
+        min_credit_required = self.config.get('min_credit', 0.20)
         if total_credit <= 0:
             self.logger.error(f"❌ Invalid credit: ${total_credit:.2f}")
             return None
+        
+        if total_credit < min_credit_required:
+            self.logger.warning(f"⚠️ Credit too low at execution: ${total_credit:.2f} < ${min_credit_required:.2f}. ABORT.")
+            return None
             
-        self.logger.info(f"📊 Calculated Mid Credit: ${total_credit:.2f} per contract")
+        self.logger.info(f"📊 Calculated Mid Credit: ${total_credit:.2f} per contract (min: ${min_credit_required:.2f})")
         
         # 1. Prepare BAG (Combo) Contract
         bag = Contract()
@@ -657,6 +663,14 @@ class LiveExecutor:
                 
                 # Adjust Price: Less negative = easier fill
                 limit_price += self.TICK_SIZE
+                min_credit_floor = self.config.get('min_credit', 0.20)
+                if abs(limit_price) < min_credit_floor:
+                    self.logger.warning(f"   🛑 Chase stopped: credit ${abs(limit_price):.2f} < floor ${min_credit_floor}. Aborting.")
+                    if trade:
+                        self.ib.cancelOrder(trade.order)
+                        self.ib.sleep(1)
+                    return None
+                    
                 if limit_price > 0: limit_price = 0.0
                 
                 # FIX 6b: Create NEW object (never modify existing lmtPrice)
