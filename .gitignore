@@ -70,6 +70,7 @@ artifacts/
 data/raw/
 data/processed/
 logs/
+outputs/backtest_results*/
 
 # Secrets
 *.key

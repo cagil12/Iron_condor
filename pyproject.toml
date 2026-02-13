@@ -15,6 +15,7 @@ dependencies = [
     "polars", 
     "pyarrow",
     "matplotlib",
+    "yfinance",
     "seaborn",
     "tqdm"
 ]

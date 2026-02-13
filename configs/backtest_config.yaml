@@ -1,0 +1,46 @@
+data:
+  start_date: "2020-01-01"
+  end_date: "2026-02-13"
+  cache_file: "data/spx_vix_daily.csv"
+
+entry_filters:
+  min_vix: 14.0
+  max_vix: 35.0
+
+strike_selection:
+  target_delta: 0.10
+  strike_step: 1.0
+
+structure:
+  wing_width: 2.0
+
+credit_filters:
+  min_credit: 0.20
+  max_risk_reward: 6.0
+
+costs:
+  commission_per_trade: 5.00
+  bid_ask_haircut: 0.25
+
+timing:
+  entry_hour: 10.0
+  risk_free_rate: 0.05
+  vix_source: "previous_close"
+
+exit_rules:
+  take_profit_pct: 0.50
+  stop_loss_mult: 3.0
+
+capital:
+  starting_capital: 1580.0
+  max_daily_risk_pct: 0.02
+
+random_seed: 42
+
+sweep:
+  wing_width: [1.0, 2.0, 3.0, 5.0]
+  target_delta: [0.05, 0.08, 0.10, 0.12, 0.15]
+  min_credit: [0.10, 0.15, 0.20, 0.30, 0.40]
+  bid_ask_haircut: [0.15, 0.25, 0.35]
+  take_profit_pct: [0.40, 0.50, 0.65, 0.75, 1.00]
+  stop_loss_mult: [2.0, 3.0, 4.0, 5.0]
