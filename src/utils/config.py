@@ -59,9 +59,9 @@ LIVE_CONFIG = {
     'min_days_expiry': 0, # 0DTE
     
     # Risk Management
-    'max_capital': 200.0,  # $200 USD initial capital
+    'max_capital': 2000.0,  # $2,000 USD account size
     'max_contracts': 1,    # Conservative start
-    'max_daily_loss': 50.0,  # $50 daily loss limit
+    'max_daily_loss': 200.0,  # $200 daily loss limit (10% of account)
     'max_vix': 25.0,       # KILL SWITCH: No trading if VIX > 25
     'min_account_value': 1400.0, # HARD SWITCH: Equity Floor ($1400)
     

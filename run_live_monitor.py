@@ -9,11 +9,13 @@ Usage:
     python run_live_monitor.py          # Paper trading
     python run_live_monitor.py --live   # Live trading (USE WITH CAUTION)
 """
+import os
 import sys
 import time
 import argparse
 from datetime import datetime, time as dt_time
 from typing import Optional
+from pathlib import Path
 
 # Add project root to path
 sys.path.insert(0, '.')
@@ -24,6 +26,57 @@ from src.strategy.condor_builder import CondorBuilder
 from src.strategy.execution import LiveExecutor, IronCondorPosition
 from src.utils.journal import TradeJournal
 from src.utils.config import get_live_config
+
+
+LOCK_FILE = Path("bot.lock")
+
+
+def acquire_instance_lock():
+    """
+    Prevent multiple bot instances from running simultaneously (FIX 10).
+    Uses file-based locking. On Windows uses msvcrt, on Unix uses fcntl.
+    Returns the lock file descriptor (must be kept alive).
+    """
+    existing_pid = "unknown"
+    lock_fd = None
+    try:
+        lock_fd = open(LOCK_FILE, "a+")
+        lock_fd.seek(0)
+        existing_pid = (lock_fd.read() or "").strip() or "unknown"
+        lock_fd.seek(0)
+
+        if sys.platform == "win32":
+            import msvcrt
+
+            msvcrt.locking(lock_fd.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+        lock_fd.seek(0)
+        lock_fd.truncate()
+        lock_fd.write(str(os.getpid()))
+        lock_fd.flush()
+        print(f"🔒 Acquired Instance Lock (PID {os.getpid()})")
+        return lock_fd
+
+    except (IOError, OSError):
+        try:
+            existing_pid = LOCK_FILE.read_text().strip() or existing_pid
+        except Exception:
+            pass
+        finally:
+            try:
+                if lock_fd:
+                    lock_fd.close()
+            except Exception:
+                pass
+        print(f"❌ ABORT: Another bot instance is already running (PID {existing_pid})!")
+        print("   Kill it first:")
+        print(f"     Windows: taskkill /F /PID {existing_pid}")
+        print(f"     Linux:   kill {existing_pid}")
+        sys.exit(1)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -325,6 +378,9 @@ def find_trade_opportunity(
 
 
 def main():
+    # FIX 10: Single instance enforcement — MUST be first thing
+    lock_fd = acquire_instance_lock()
+
     parser = argparse.ArgumentParser(description='XSP Iron Condor Live Monitor')
     parser.add_argument('--live', action='store_true', 
                         help='Connect to live trading (default: paper)')
@@ -536,6 +592,12 @@ def main():
         connector.disconnect()
         journal.print_summary()
         print("🔌 Disconnected from TWS")
+        # Release instance lock
+        try:
+            lock_fd.close()
+            LOCK_FILE.unlink(missing_ok=True)
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
