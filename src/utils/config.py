@@ -53,9 +53,9 @@ LIVE_CONFIG = {
     'contract_multiplier': 100,  # XSP is also x100
     
     # Strategy Parameters (Scaled for XSP)
-    'wing_width': 1.0,  # Equivalent to 10 pts in SPX
+    'wing_width': 2.0,  # 2-point wings (matched to base.yaml)
     'target_delta': 0.10,
-    'min_credit': 0.10,  # $10 min credit per contract
+    'min_credit': 0.20,  # $20 min credit per contract (ratio 4:1 max)
     'min_days_expiry': 0, # 0DTE
     
     # Risk Management
