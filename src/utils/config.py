@@ -65,9 +65,11 @@ LIVE_CONFIG = {
     'max_vix': 25.0,       # KILL SWITCH: No trading if VIX > 25
     'min_account_value': 1400.0, # HARD SWITCH: Equity Floor ($1400)
     
-    # Exit Parameters
-    'take_profit_pct': 0.50,  # 50% of premium
-    'stop_loss_mult': 3.0,    # Updated to 3x based on recent tests
+    # Exit Parameters (Phase 1)
+    'take_profit_pct': 1.00,  # Hold winners to expiry (skip TP close orders)
+    'stop_loss_mult': 2.0,    # Cut losers at 2x collected credit
+    'commission_per_leg': 0.65,  # IBKR fixed pricing per contract-leg
+    'legs_per_ic': 4,            # Iron condor = 4 legs
     
     # IBKR Connection
     'ibkr': {

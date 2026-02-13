@@ -72,7 +72,7 @@ class LiveExecutor:
     # HARDCODED SAFETY LIMITS
     WING_WIDTH = 2.0       # 2-point wings (Default, overwritten by config)
     MAX_QTY = 1            # Only 1 contract at a time
-    TAKE_PROFIT_PCT = 0.50 # 50% of max profit
+    TAKE_PROFIT_PCT = 1.00 # Default: hold winners to expiry (overwritten by config)
     # STOP_LOSS_MULT removed from hardcoded constants - loaded from config
     ORDER_TIMEOUT = 10     # Seconds to wait for fill
     CHASE_TICKS = 8        # Number of times to chase price (FIX 3)
@@ -97,9 +97,47 @@ class LiveExecutor:
         self.journal = journal
         
         # Load dynamic settings
-        self.STOP_LOSS_MULT = self.config.get('stop_loss_mult', 3.0)
-        self.WING_WIDTH = self.config.get('wing_width', 2.0)  # FIX 1
-        self.logger.info(f"🔧 Executor Config: SL={self.STOP_LOSS_MULT}x | Width={self.WING_WIDTH}")
+        self.TAKE_PROFIT_PCT = float(self.config.get('take_profit_pct', self.TAKE_PROFIT_PCT))
+        self.STOP_LOSS_MULT = float(self.config.get('stop_loss_mult', 2.0))
+        self.WING_WIDTH = float(self.config.get('wing_width', 2.0))  # FIX 1
+        self.HOLD_TO_EXPIRY_MODE = self.TAKE_PROFIT_PCT >= 1.00
+
+        # Commission expectations (IBKR Fixed defaults: 0.65/leg x 4 legs).
+        self.COMMISSION_PER_LEG = float(self.config.get('commission_per_leg', 0.65))
+        self.LEGS_PER_IC = int(self.config.get('legs_per_ic', 4))
+        self.OPEN_COMMISSION = self.COMMISSION_PER_LEG * self.LEGS_PER_IC
+        self.ROUND_TRIP_COMMISSION = self.OPEN_COMMISSION * 2.0
+
+        # Hold-to-expiry mode pays opening fee on wins, round-trip on active closes.
+        if self.HOLD_TO_EXPIRY_MODE:
+            self.expected_commission_win = self.OPEN_COMMISSION
+            self.expected_commission_loss = self.ROUND_TRIP_COMMISSION
+        else:
+            self.expected_commission_win = self.ROUND_TRIP_COMMISSION
+            self.expected_commission_loss = self.ROUND_TRIP_COMMISSION
+
+        if self.HOLD_TO_EXPIRY_MODE and abs(self.STOP_LOSS_MULT - 2.0) < 1e-9:
+            self.exit_strategy_label = "hold_to_expiry_sl2x"
+        else:
+            tp_label = int(round(self.TAKE_PROFIT_PCT * 100))
+            sl_label = f"{self.STOP_LOSS_MULT:g}".replace(".", "p")
+            self.exit_strategy_label = f"tp{tp_label}_sl{sl_label}x"
+
+        self.logger.info(
+            f"🔧 Executor Config: TP={self.TAKE_PROFIT_PCT:.2f} | "
+            f"SL={self.STOP_LOSS_MULT:.1f}x | Width={self.WING_WIDTH:.1f} | "
+            f"ExitStrategy={self.exit_strategy_label}"
+        )
+        self.logger.info(
+            f"💸 Expected commissions: win=${self.expected_commission_win:.2f} | "
+            f"loss=${self.expected_commission_loss:.2f} | "
+            f"open=${self.OPEN_COMMISSION:.2f} | round_trip=${self.ROUND_TRIP_COMMISSION:.2f}"
+        )
+        if self.HOLD_TO_EXPIRY_MODE:
+            self.logger.info(
+                "📌 TP mode is hold-to-expiry (tp_pct >= 1.00): skipping TP close orders; "
+                "only SL/EOD can trigger active close."
+            )
         
         # FIX 3: Load state at startup
         self.load_state()
@@ -742,8 +780,14 @@ class LiveExecutor:
                 delta_net=delta_put + delta_call, delta_put=delta_put, delta_call=delta_call,
                 theta=theta_total, gamma=gamma_total, selection_method=method,
                 target_delta=0.10, otm_distance_pct="1.5%" if method == "OTM_DISTANCE_PCT" else "N/A",
-                snapshot_json=json.dumps(snapshot_data), 
-                reasoning=f"Method: {method} | VIX: {vix:.1f} | Delta: P{delta_put:.2f}/C{delta_call:.2f} | Credit: ${credit_received:.2f}"
+                snapshot_json=json.dumps(snapshot_data),
+                commissions_est=self.expected_commission_win,
+                reasoning=(
+                    f"Method: {method} | ExitStrategy: {self.exit_strategy_label} | "
+                    f"VIX: {vix:.1f} | Delta: P{delta_put:.2f}/C{delta_call:.2f} | "
+                    f"Credit: ${credit_received:.2f} | "
+                    f"EstComm(win/loss): ${self.expected_commission_win:.2f}/${self.expected_commission_loss:.2f}"
+                )
             )
         
         self.active_position = IronCondorPosition(
@@ -901,9 +945,10 @@ class LiveExecutor:
         take_profit_target = max_profit * self.TAKE_PROFIT_PCT
         stop_loss_target = -self.active_position.entry_credit * 100 * self.STOP_LOSS_MULT
         
-        # 1. Take Profit
-        if pnl >= take_profit_target:
-            return f"TP_50 [PnL ${pnl:.0f} >= ${take_profit_target:.0f}]"
+        # 1. Take Profit (disabled in hold-to-expiry mode to avoid phantom closes)
+        if not self.HOLD_TO_EXPIRY_MODE and pnl >= take_profit_target:
+            tp_label = int(round(self.TAKE_PROFIT_PCT * 100))
+            return f"TP_{tp_label} [PnL ${pnl:.0f} >= ${take_profit_target:.0f}]"
         
         # 2. Stop Loss
         if pnl <= stop_loss_target:
@@ -912,6 +957,14 @@ class LiveExecutor:
         # 3. EOD Force Close (time of day cutoff)
         now_time = datetime.now().time()
         if now_time >= self.FORCE_CLOSE_TIME:
+            if self.HOLD_TO_EXPIRY_MODE:
+                # In hold-to-expiry mode, avoid closing nearly worthless winners.
+                # PnL formula inversion:
+                # current_spread_cost = entry_credit - (pnl / (100 * qty))
+                qty = max(self.active_position.qty, 1)
+                current_spread_cost = self.active_position.entry_credit - (pnl / (100 * qty))
+                if current_spread_cost <= self.TICK_SIZE:
+                    return None
             return f"EOD_TIME [Time {now_time.strftime('%H:%M')} >= {self.FORCE_CLOSE_TIME}]"
         
         return None
@@ -1052,7 +1105,7 @@ class LiveExecutor:
             max_pct = (pnl_val / max_profit * 100)
             
             base_output = f"[{now_str}] XSP: {spot:.2f} | VIX: {vix:.1f} | PnL: ${pnl_val:.2f} ({max_pct:.0f}%Max) | TP:{tp_pct:.0f}% SL:{sl_pct:.0f}% | {short_put:.0f}P({dist_put:+.0f}) {short_call:.0f}C({dist_call:+.0f}) | Hold:{hold_time:.0f}m | MaxSprd:{max_spread_val:.2f}"
-            print(f"{danger} {base_output}" if danger else base_output, end="\r")
+            print(f"{danger} {base_output}" if danger else base_output, flush=True)
             
             exit_reason = self.check_exit_conditions()
             if exit_reason:
@@ -1076,6 +1129,24 @@ class LiveExecutor:
                 else:
                     print("⚠️ Exit failed. Retrying monitoring loop...")
                     self.ib.sleep(1)
+
+            # Hold-to-expiry path: no TP close order; mark as expired at market close.
+            if self.HOLD_TO_EXPIRY_MODE and now.time() >= market_close:
+                self.logger.info(
+                    "✅ Market close reached in hold-to-expiry mode; no TP close order sent."
+                )
+                if self.journal and self.active_position:
+                    self.journal.log_trade_close(
+                        trade_id=self.active_position.trade_id,
+                        exit_reason="EXPIRED_HOLD_TO_EXPIRY",
+                        final_pnl_usd=pnl_val,
+                        entry_timestamp=self.active_position.entry_time,
+                        max_spread_val=max_spread_val,
+                        rv_duration=0.0
+                    )
+                self.active_position = None
+                self.save_state()
+                break
             
             self.ib.sleep(check_interval)
 

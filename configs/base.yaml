@@ -28,8 +28,8 @@ strategy:
 
 # --- Exit Parameters ---
 exit:
-  take_profit_pct: 0.50    # Take Profit at 50% (Speed)
-  stop_loss_mult: 3.0      # Stop Loss 3x Credit
+  take_profit_pct: 1.00    # Phase 1: hold winners to expiry (no active TP close)
+  stop_loss_mult: 2.0      # Phase 1: tighter stop at 2x credit
   hold_duration_min: 45    # Max Hold 45 mins (Sniper)
   eod_time: "16:15"        # Force exit
 
