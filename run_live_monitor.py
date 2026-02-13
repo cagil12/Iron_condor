@@ -426,14 +426,14 @@ def main():
                         executor.recover_active_position()
                         
                         if not executor.active_position:
-                            print("❌ Recovery failed or inconsistent state. Pausing 60s to avoid spam...")
-                            print("   (Please check TWS manually if this persists)")
-                            time.sleep(60)
-                            continue
-                    
-                    print("📊 Active position - monitoring exits...")
-                    executor.monitor_position(check_interval=10)
-                    continue
+                            # FIX 9: If recovery fails, these are foreign positions.
+                            # Log warning and continue scanning — don't pause the bot.
+                            print("⚠️ Foreign positions detected (not ours). Continuing to scan...")
+                            # Fall through to scanning
+                    else:
+                        print("📊 Active position - monitoring exits...")
+                        executor.monitor_position(check_interval=10)
+                        continue
 
                 # -----------------------------------------------------------
                 # TIME GATE: No trading before start_time (10:00 AM ET)

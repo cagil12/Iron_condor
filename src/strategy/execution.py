@@ -173,6 +173,14 @@ class LiveExecutor:
         positions = self.ib.positions()
         xsp_positions = [p for p in positions if p.contract.symbol == 'XSP' and p.position != 0]
         
+        # POSITION ISOLATION (FIX 9): Filter out foreign positions
+        # Our IC always trades qty=1/-1. Any position with abs(qty) > 1 is foreign.
+        orphan_positions = [p for p in xsp_positions if abs(p.position) > 1]
+        if orphan_positions:
+            for op in orphan_positions:
+                self.logger.warning(f"   ⚠️ Ignoring foreign position: {op.contract.strike} {op.contract.right} qty={op.position}")
+        xsp_positions = [p for p in xsp_positions if abs(p.position) == 1]
+        
         if not xsp_positions:
             self.logger.info("   ✅ No existing positions found. Ready for new entries.")
             return
@@ -270,14 +278,17 @@ class LiveExecutor:
             self.logger.error(f"   ❌ Recovery Failed: {e}")
 
     def has_active_position(self) -> bool:
-        """Check if there's an active position."""
-        # Check our internal tracking
+        """Check if there's an active position managed by us (FIX 9)."""
+        # Check our internal tracking (primary source of truth)
         if self.active_position is not None:
             return True
         
-        # Also verify with IBKR
+        # Also verify with IBKR — but only count positions with qty=1/-1
+        # Foreign positions (manual trades, orphans) have different quantities
         positions = self.ib.positions()
-        xsp_positions = [p for p in positions if p.contract.symbol == 'XSP']
+        xsp_positions = [p for p in positions 
+                        if p.contract.symbol == 'XSP' 
+                        and abs(p.position) == 1]
         return len(xsp_positions) > 0
     
     def build_option_contract(self, strike: float, right: str, expiry: str) -> Option:
@@ -509,8 +520,10 @@ class LiveExecutor:
         Execute an Iron Condor order using IBKR BAG (Combo).
         Includes Chase Logic (FIX 1, 6b) and Stores Leg Info (FIX 4).
         """
-        # SAFETY CHECK: No pyramiding
-        if self.has_active_position():
+        # SAFETY CHECK: No pyramiding (FIX 9)
+        # Relies on internal state, not IBKR portfolio queries.
+        # This prevents foreign/orphan positions from blocking new trades.
+        if self.active_position:
             self.logger.warning("⚠️ ABORT: Active position exists. No pyramiding allowed.")
             return None
         
@@ -800,10 +813,22 @@ class LiveExecutor:
         return self.close_position_individual_fallback()
 
     def close_position_individual_fallback(self) -> bool:
-        """Cierre de patas individuales si falla el BAG order (FIX 4)"""
+        """Cierre de patas individuales si falla el BAG order (FIX 4 + FIX 9)"""
         self.logger.info("📉 Fallback: Closing individual legs...")
+        
+        # POSITION ISOLATION (FIX 9): ONLY close legs matching our IC's conIds
+        # NEVER close unfiltered positions — this caused cascade contamination
+        if not (self.active_position and self.active_position.legs):
+            self.logger.error("❌ ABORT fallback: No active position legs to reference. Refusing to close blindly.")
+            return False
+        
+        ic_conids = {leg['conId'] for leg in self.active_position.legs}
         positions = self.ib.positions()
-        xsp_positions = [p for p in positions if p.contract.symbol == 'XSP' and p.position != 0]
+        xsp_positions = [p for p in positions 
+                       if p.contract.symbol == 'XSP' 
+                       and p.position != 0 
+                       and p.contract.conId in ic_conids]
+        self.logger.info(f"   Filtered to {len(xsp_positions)} IC legs (ignored {len([p for p in positions if p.contract.symbol == 'XSP' and p.position != 0]) - len(xsp_positions)} foreign)")
         
         if not xsp_positions:
             return True
@@ -841,11 +866,20 @@ class LiveExecutor:
         
         # Get current portfolio PnL from IBKR
         portfolio = self.ib.portfolio()
-        xsp_pnl = sum(
-            item.unrealizedPNL 
-            for item in portfolio 
-            if item.contract.symbol == 'XSP'
-        )
+        
+        # POSITION ISOLATION (FIX 9): Only sum PnL for legs belonging to our IC
+        # Prevents foreign positions from contaminating PnL and triggering false SL/TP
+        if self.active_position.legs:
+            ic_conids = {leg['conId'] for leg in self.active_position.legs}
+            xsp_pnl = sum(
+                item.unrealizedPNL 
+                for item in portfolio 
+                if item.contract.symbol == 'XSP' and item.contract.conId in ic_conids
+            )
+        else:
+            # No legs available — return 0 to avoid false triggers
+            self.logger.warning("⚠️ PnL: No IC legs to reference. Returning $0 (safe default).")
+            xsp_pnl = 0.0
         
         return xsp_pnl
     
