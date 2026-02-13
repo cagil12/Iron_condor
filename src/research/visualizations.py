@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,11 +32,15 @@ def plot_equity_curves(results: pd.DataFrame, output_dir: str, start: str, end: 
     hold_eq = df["outcome_hold_to_expiry"].fillna(0.0).cumsum()
     worst_eq = df["outcome_worst_case"].fillna(0.0).cumsum()
     tp_eq = df["outcome_tp50_or_expiry"].fillna(0.0).cumsum()
+    has_tp_sl = "outcome_tp50_sl_capped" in df.columns
+    tp_sl_eq = df["outcome_tp50_sl_capped"].fillna(0.0).cumsum() if has_tp_sl else None
 
     fig, ax = plt.subplots(figsize=(13, 6))
     ax.plot(df["date"], hold_eq, label="Hold to Expiry", color="#1f77b4", linewidth=1.8)
     ax.plot(df["date"], worst_eq, label="Worst Case", color="#d62728", linewidth=1.4)
     ax.plot(df["date"], tp_eq, label="TP50 or Expiry", color="#2ca02c", linewidth=1.6)
+    if has_tp_sl and tp_sl_eq is not None:
+        ax.plot(df["date"], tp_sl_eq, label="TP50 + SL Capped", color="#ff7f0e", linewidth=1.6, linestyle="-.")
     ax.fill_between(df["date"], worst_eq, hold_eq, color="#9ecae1", alpha=0.25, label="Uncertainty Band")
     ax.axhline(0, color="black", linewidth=1.0, linestyle="--")
     ax.set_title(f"Synthetic IC Backtest: Equity Curves ({start} to {end})")
@@ -63,8 +67,14 @@ def plot_monthly_pnl_heatmap(results: pd.DataFrame, output_dir: str) -> Path:
         ("outcome_hold_to_expiry", "Hold"),
         ("outcome_worst_case", "Worst"),
         ("outcome_tp50_or_expiry", "TP50"),
+        ("outcome_tp50_sl_capped", "TP50+SL"),
     ]
-    fig, axes = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
+    scenarios = [(col, title) for col, title in scenarios if col in df.columns]
+    if not scenarios:
+        return out / "monthly_pnl_heatmap.png"
+
+    fig, axes = plt.subplots(1, len(scenarios), figsize=(6 * len(scenarios), 6), sharey=True)
+    axes = np.atleast_1d(axes)
 
     for ax, (col, title) in zip(axes, scenarios):
         monthly = df.groupby(["year", "month"])[col].sum().unstack(fill_value=0.0)
@@ -92,9 +102,11 @@ def plot_monthly_pnl_heatmap(results: pd.DataFrame, output_dir: str) -> Path:
     return file_path
 
 
-def plot_winrate_by_vix_regime(results: pd.DataFrame, output_dir: str, scenario_col: str = "outcome_tp50_or_expiry") -> Path:
+def plot_winrate_by_vix_regime(results: pd.DataFrame, output_dir: str, scenario_col: str = "outcome_tp50_sl_capped") -> Path:
     out = _ensure_dir(output_dir)
     df = results.copy()
+    if scenario_col not in df.columns:
+        scenario_col = "outcome_tp50_or_expiry"
     df = df[(~df["skipped"]) & df[scenario_col].notna()].copy()
     if df.empty:
         return out / "winrate_by_vix_regime.png"
@@ -125,8 +137,10 @@ def plot_winrate_by_vix_regime(results: pd.DataFrame, output_dir: str, scenario_
     return file_path
 
 
-def plot_pnl_distribution(results: pd.DataFrame, output_dir: str, scenario_col: str = "outcome_tp50_or_expiry") -> Path:
+def plot_pnl_distribution(results: pd.DataFrame, output_dir: str, scenario_col: str = "outcome_tp50_sl_capped") -> Path:
     out = _ensure_dir(output_dir)
+    if scenario_col not in results.columns:
+        scenario_col = "outcome_tp50_or_expiry"
     pnl = results.loc[(~results["skipped"]) & results[scenario_col].notna(), scenario_col].astype(float)
     if pnl.empty:
         return out / "pnl_distribution.png"
@@ -161,10 +175,12 @@ def plot_pnl_distribution(results: pd.DataFrame, output_dir: str, scenario_col: 
     return file_path
 
 
-def plot_drawdown_chart(results: pd.DataFrame, output_dir: str, starting_capital: float, scenario_col: str = "outcome_tp50_or_expiry") -> Path:
+def plot_drawdown_chart(results: pd.DataFrame, output_dir: str, starting_capital: float, scenario_col: str = "outcome_tp50_sl_capped") -> Path:
     out = _ensure_dir(output_dir)
     df = results.copy()
     df["date"] = pd.to_datetime(df["date"])
+    if scenario_col not in df.columns:
+        scenario_col = "outcome_tp50_or_expiry"
     pnl = df[scenario_col].fillna(0.0).astype(float)
     equity = starting_capital + pnl.cumsum()
     peak = equity.cummax()
@@ -189,8 +205,10 @@ def plot_drawdown_chart(results: pd.DataFrame, output_dir: str, starting_capital
     return file_path
 
 
-def plot_parameter_sweep_heatmaps(sweep_df: pd.DataFrame, output_dir: str, metric_col: str = "tp50_or_expiry_total_pnl_usd") -> Optional[Path]:
+def plot_parameter_sweep_heatmaps(sweep_df: pd.DataFrame, output_dir: str, metric_col: str = "tp50_sl_capped_total_pnl_usd") -> Optional[Path]:
     out = _ensure_dir(output_dir)
+    if metric_col not in sweep_df.columns:
+        metric_col = "tp50_or_expiry_total_pnl_usd"
     if sweep_df.empty or metric_col not in sweep_df.columns:
         return None
 
@@ -272,11 +290,19 @@ def plot_breakeven_analysis(config: Dict, output_dir: str) -> Path:
 
 def plot_commission_impact(sweep_df: pd.DataFrame, output_dir: str) -> Optional[Path]:
     out = _ensure_dir(output_dir)
+    scenario_key = "tp50_sl_capped"
     needed = {
-        "tp50_or_expiry_total_pnl_usd",
-        "tp50_or_expiry_pnl_before_commissions",
-        "tp50_or_expiry_pnl_after_commissions",
+        f"{scenario_key}_total_pnl_usd",
+        f"{scenario_key}_pnl_before_commissions",
+        f"{scenario_key}_pnl_after_commissions",
     }
+    if not needed.issubset(set(sweep_df.columns)):
+        scenario_key = "tp50_or_expiry"
+        needed = {
+            f"{scenario_key}_total_pnl_usd",
+            f"{scenario_key}_pnl_before_commissions",
+            f"{scenario_key}_pnl_after_commissions",
+        }
     if sweep_df.empty or not needed.issubset(set(sweep_df.columns)):
         return None
 
@@ -288,18 +314,18 @@ def plot_commission_impact(sweep_df: pd.DataFrame, output_dir: str) -> Optional[
     if valid.empty:
         return None
 
-    top = valid.sort_values("tp50_or_expiry_total_pnl_usd", ascending=False).head(5).copy()
+    top = valid.sort_values(f"{scenario_key}_total_pnl_usd", ascending=False).head(5).copy()
     labels = [f"Cfg {i+1}" for i in range(len(top))]
     x = np.arange(len(top))
     width = 0.35
 
     fig, ax = plt.subplots(figsize=(10, 5))
-    ax.bar(x - width / 2, top["tp50_or_expiry_pnl_before_commissions"], width, label="Before commissions")
-    ax.bar(x + width / 2, top["tp50_or_expiry_pnl_after_commissions"], width, label="After commissions")
+    ax.bar(x - width / 2, top[f"{scenario_key}_pnl_before_commissions"], width, label="Before commissions")
+    ax.bar(x + width / 2, top[f"{scenario_key}_pnl_after_commissions"], width, label="After commissions")
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.set_ylabel("PnL (USD)")
-    ax.set_title("Commission Impact on Top 5 Configurations")
+    ax.set_title(f"Commission Impact on Top 5 Configurations ({scenario_key})")
     ax.legend(loc="best")
     ax.grid(axis="y", alpha=0.2)
     fig.tight_layout()

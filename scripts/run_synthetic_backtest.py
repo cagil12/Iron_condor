@@ -55,110 +55,61 @@ def _print_config_summary(params: Dict[str, Any]) -> None:
     )
     print(
         f"   TP: {params['take_profit_pct']:.0%} | SL: {params['stop_loss_mult']:.1f}x | "
-        f"Commission: ${params['commission_per_trade']:.2f}/trade"
+        f"Commission Model: {params['commission_model']}"
+    )
+    print(
+        f"   Open Comm: ${params['open_commission']:.2f} | "
+        f"Round-trip Comm: ${params['round_trip_commission']:.2f} | "
+        f"Pricing Plan: {params['pricing_plan']}"
     )
     print(f"   Bid/Ask Haircut: {params['bid_ask_haircut']:.0%}")
 
 
 def _print_metrics_table(metrics: Dict[str, Dict[str, float]]) -> None:
     """Print scenario comparison table."""
-    order = ["hold_to_expiry", "worst_case", "tp50_or_expiry"]
+    order = ["hold_to_expiry", "worst_case", "tp50_or_expiry", "tp50_sl_capped"]
     labels = {
         "hold_to_expiry": "Hold-to-Expiry",
         "worst_case": "Worst Case",
         "tp50_or_expiry": "TP50/Expiry",
+        "tp50_sl_capped": "TP50+SL Cap",
     }
+    scenario_order = [s for s in order if s in metrics]
 
     def col(s: str, key: str) -> float:
-        return metrics[s].get(key, np.nan)
+        return metrics.get(s, {}).get(key, np.nan)
+
+    def format_int(value: float) -> str:
+        if value is None or (isinstance(value, float) and not np.isfinite(value)):
+            return "N/A"
+        return str(int(value))
+
+    def format_num(value: float) -> str:
+        if value is None or (isinstance(value, float) and not np.isfinite(value)):
+            return "N/A"
+        return f"{value:.2f}"
+
+    def print_row(metric_label: str, metric_key: str, formatter) -> None:
+        values = [formatter(col(s, metric_key)) for s in scenario_order]
+        print(f"{metric_label:24} " + " ".join(f"{v:>14}" for v in values))
 
     print("\n📈 RESULTS BY SCENARIO")
-    print(f"{'':24} {'Hold-to-Expiry':>16} {'Worst Case':>14} {'TP50/Expiry':>14}")
-    print("   " + "─" * 64)
-    print(
-        f"{'Trades Executed:':24} "
-        f"{int(col(order[0], 'total_trades')):>16} "
-        f"{int(col(order[1], 'total_trades')):>14} "
-        f"{int(col(order[2], 'total_trades')):>14}"
-    )
-    print(
-        f"{'Trades Skipped:':24} "
-        f"{int(col(order[0], 'total_skipped')):>16} "
-        f"{int(col(order[1], 'total_skipped')):>14} "
-        f"{int(col(order[2], 'total_skipped')):>14}"
-    )
-    print(
-        f"{'Win Rate:':24} "
-        f"{_fmt_pct(col(order[0], 'win_rate')):>16} "
-        f"{_fmt_pct(col(order[1], 'win_rate')):>14} "
-        f"{_fmt_pct(col(order[2], 'win_rate')):>14}"
-    )
-    print(
-        f"{'Breakeven WR:':24} "
-        f"{_fmt_pct(col(order[0], 'breakeven_winrate')):>16} "
-        f"{_fmt_pct(col(order[1], 'breakeven_winrate')):>14} "
-        f"{_fmt_pct(col(order[2], 'breakeven_winrate')):>14}"
-    )
-    print(
-        f"{'WR Margin:':24} "
-        f"{_fmt_pct(col(order[0], 'winrate_margin')):>16} "
-        f"{_fmt_pct(col(order[1], 'winrate_margin')):>14} "
-        f"{_fmt_pct(col(order[2], 'winrate_margin')):>14}"
-    )
-    print(
-        f"{'Total PnL:':24} "
-        f"{_fmt_money(col(order[0], 'total_pnl_usd')):>16} "
-        f"{_fmt_money(col(order[1], 'total_pnl_usd')):>14} "
-        f"{_fmt_money(col(order[2], 'total_pnl_usd')):>14}"
-    )
-    print(
-        f"{'Avg PnL/Trade:':24} "
-        f"{_fmt_money(col(order[0], 'avg_pnl_per_trade_usd')):>16} "
-        f"{_fmt_money(col(order[1], 'avg_pnl_per_trade_usd')):>14} "
-        f"{_fmt_money(col(order[2], 'avg_pnl_per_trade_usd')):>14}"
-    )
-    print(
-        f"{'Sharpe (daily):':24} "
-        f"{col(order[0], 'sharpe_daily'):>16.2f} "
-        f"{col(order[1], 'sharpe_daily'):>14.2f} "
-        f"{col(order[2], 'sharpe_daily'):>14.2f}"
-    )
-    print(
-        f"{'Max Drawdown:':24} "
-        f"{_fmt_money(col(order[0], 'max_drawdown_usd')):>16} "
-        f"{_fmt_money(col(order[1], 'max_drawdown_usd')):>14} "
-        f"{_fmt_money(col(order[2], 'max_drawdown_usd')):>14}"
-    )
-    print(
-        f"{'Max DD % of Capital:':24} "
-        f"{col(order[0], 'max_drawdown_pct'):>15.1f}% "
-        f"{col(order[1], 'max_drawdown_pct'):>13.1f}% "
-        f"{col(order[2], 'max_drawdown_pct'):>13.1f}%"
-    )
-    print(
-        f"{'Worst Day:':24} "
-        f"{_fmt_money(col(order[0], 'worst_day_usd')):>16} "
-        f"{_fmt_money(col(order[1], 'worst_day_usd')):>14} "
-        f"{_fmt_money(col(order[2], 'worst_day_usd')):>14}"
-    )
-    print(
-        f"{'CVaR 95%:':24} "
-        f"{_fmt_money(col(order[0], 'cvar_95_usd')):>16} "
-        f"{_fmt_money(col(order[1], 'cvar_95_usd')):>14} "
-        f"{_fmt_money(col(order[2], 'cvar_95_usd')):>14}"
-    )
-    print(
-        f"{'Total Commissions:':24} "
-        f"{_fmt_money(col(order[0], 'total_commissions_usd')):>16} "
-        f"{_fmt_money(col(order[1], 'total_commissions_usd')):>14} "
-        f"{_fmt_money(col(order[2], 'total_commissions_usd')):>14}"
-    )
-    print(
-        f"{'Commission % Gross:':24} "
-        f"{_fmt_pct(col(order[0], 'commission_pct_of_gross')):>16} "
-        f"{_fmt_pct(col(order[1], 'commission_pct_of_gross')):>14} "
-        f"{_fmt_pct(col(order[2], 'commission_pct_of_gross')):>14}"
-    )
+    print(f"{'':24} " + " ".join(f"{labels[s]:>14}" for s in scenario_order))
+    print("   " + "─" * (24 + 15 * len(scenario_order)))
+    print_row("Trades Executed:", "total_trades", format_int)
+    print_row("Trades Skipped:", "total_skipped", format_int)
+    print_row("Win Rate:", "win_rate", _fmt_pct)
+    print_row("Breakeven WR:", "breakeven_winrate", _fmt_pct)
+    print_row("WR Margin:", "winrate_margin", _fmt_pct)
+    print_row("Total PnL:", "total_pnl_usd", _fmt_money)
+    print_row("Avg PnL/Trade:", "avg_pnl_per_trade_usd", _fmt_money)
+    print_row("Sharpe (daily):", "sharpe_daily", format_num)
+    print_row("Max Drawdown:", "max_drawdown_usd", _fmt_money)
+    print_row("Max DD % of Capital:", "max_drawdown_pct", lambda v: f"{v:.1f}%" if np.isfinite(v) else "N/A")
+    print_row("Worst Day:", "worst_day_usd", _fmt_money)
+    print_row("CVaR 95%:", "cvar_95_usd", _fmt_money)
+    print_row("Total Commissions:", "total_commissions_usd", _fmt_money)
+    print_row("Commission % Gross:", "commission_pct_of_gross", _fmt_pct)
 
 
 def _single_run_verdict(metrics: Dict[str, Dict[str, float]]) -> str:
@@ -166,10 +117,11 @@ def _single_run_verdict(metrics: Dict[str, Dict[str, float]]) -> str:
     hold = metrics["hold_to_expiry"]["total_pnl_usd"] > 0
     worst = metrics["worst_case"]["total_pnl_usd"] > 0
     tp = metrics["tp50_or_expiry"]["total_pnl_usd"] > 0
+    tp_sl = metrics.get("tp50_sl_capped", {}).get("total_pnl_usd", -np.inf) > 0
 
-    if hold and worst and tp:
+    if hold and worst and tp and tp_sl:
         return "✅ VERDICT: STRATEGY HAS EDGE (all scenarios positive)"
-    if not hold and not worst and not tp:
+    if not hold and not worst and not tp and not tp_sl:
         return "❌ VERDICT: NO EDGE FOUND (all scenarios negative)"
     return "⚠️ VERDICT: MARGINAL EDGE (scenario-dependent)"
 
@@ -191,8 +143,9 @@ def _sweep_verdict(sweep_df: pd.DataFrame) -> str:
         "hold_to_expiry_total_pnl_usd",
         "worst_case_total_pnl_usd",
         "tp50_or_expiry_total_pnl_usd",
-        "tp50_or_expiry_sharpe_daily",
-        "tp50_or_expiry_winrate_margin",
+        "tp50_sl_capped_total_pnl_usd",
+        "tp50_sl_capped_sharpe_daily",
+        "tp50_sl_capped_winrate_margin",
     ]
     missing = [c for c in needed if c not in valid.columns]
     if missing:
@@ -202,8 +155,9 @@ def _sweep_verdict(sweep_df: pd.DataFrame) -> str:
         (valid["hold_to_expiry_total_pnl_usd"] > 0)
         & (valid["worst_case_total_pnl_usd"] > 0)
         & (valid["tp50_or_expiry_total_pnl_usd"] > 0)
-        & (valid["tp50_or_expiry_sharpe_daily"] > 0.5)
-        & (valid["tp50_or_expiry_winrate_margin"] > 0)
+        & (valid["tp50_sl_capped_total_pnl_usd"] > 0)
+        & (valid["tp50_sl_capped_sharpe_daily"] > 0.5)
+        & (valid["tp50_sl_capped_winrate_margin"] > 0)
     ]
 
     if len(viable) >= 3:
@@ -235,8 +189,10 @@ def main() -> None:
     config = _load_config(config_path)
 
     if args.start:
+        config.setdefault("dates", {})["start"] = args.start
         config.setdefault("data", {})["start_date"] = args.start
     if args.end:
+        config.setdefault("dates", {})["end"] = args.end
         config.setdefault("data", {})["end_date"] = args.end
 
     seed = int(config.get("random_seed", 42))
@@ -287,14 +243,19 @@ def main() -> None:
         print("\n🔁 Running parameter sweep (this may take several minutes)...")
         sweep_grid = config.get("sweep", {})
         sweep_df = run_parameter_sweep(config, sweep_grid, data=data)
-        sweep_csv = output_dir / "parameter_sweep_results.csv"
+        sweep_csv = output_dir / "sweep_results.csv"
         sweep_df.to_csv(sweep_csv, index=False)
         sweep_charts = generate_sweep_charts(sweep_df, config, str(output_dir))
         print("\n" + _sweep_verdict(sweep_df))
         print(f"Sweep CSV saved to: {sweep_csv}")
         if not sweep_df.empty:
-            print("\nTop 10 viable configurations (by TP50 PnL):")
-            valid = sweep_df[sweep_df["combo_skipped"] == False].head(10)  # noqa: E712
+            sort_col = "tp50_sl_capped_total_pnl_usd" if "tp50_sl_capped_total_pnl_usd" in sweep_df.columns else "tp50_or_expiry_total_pnl_usd"
+            label = "TP50+SL Capped PnL" if sort_col == "tp50_sl_capped_total_pnl_usd" else "TP50 PnL"
+            print(f"\nTop 10 viable configurations (by {label}):")
+            valid = sweep_df[sweep_df["combo_skipped"] == False]  # noqa: E712
+            if sort_col in valid.columns:
+                valid = valid.sort_values(sort_col, ascending=False)
+            valid = valid.head(10)
             print(valid.to_string(index=False))
         for name, file_path in sweep_charts.items():
             if file_path:

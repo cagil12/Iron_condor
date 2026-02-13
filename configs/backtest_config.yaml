@@ -1,46 +1,70 @@
+# Synthetic 0DTE Iron Condor Backtester - Configuration V2
+# Fixed: conditional commissions, expanded grid, full date range
+
+dates:
+  start: "2020-01-01"
+  end: "2026-02-13"
+
+# Legacy cache path retained for data loader compatibility.
 data:
-  start_date: "2020-01-01"
-  end_date: "2026-02-13"
   cache_file: "data/spx_vix_daily.csv"
 
+# Optional filters retained to keep behavior explicit and reproducible.
 entry_filters:
   min_vix: 14.0
   max_vix: 35.0
 
 strike_selection:
-  target_delta: 0.10
   strike_step: 1.0
 
-structure:
-  wing_width: 2.0
-
 credit_filters:
-  min_credit: 0.20
   max_risk_reward: 6.0
 
-costs:
-  commission_per_trade: 5.00
-  bid_ask_haircut: 0.25
-
 timing:
-  entry_hour: 10.0
   risk_free_rate: 0.05
   vix_source: "previous_close"
 
-exit_rules:
-  take_profit_pct: 0.50
-  stop_loss_mult: 3.0
-
 capital:
   starting_capital: 1580.0
-  max_daily_risk_pct: 0.02
+
+# Default single-run parameters (matches live bot config)
+default:
+  wing_width: 2.0
+  delta_target: 0.10
+  min_credit: 0.20
+  bid_ask_haircut: 0.25
+  tp_pct: 0.50              # Take profit at 50% of credit
+  sl_mult: 3.0              # Stop loss at 3x credit
+  entry_hour: 10.0          # 10:00 AM ET entry
+  multiplier: 100           # XSP = $100 multiplier
+
+commissions:
+  pricing_plan: "fixed"     # CHECK YOUR IBKR ACCOUNT: "fixed" or "tiered"
+  fixed:
+    per_contract: 0.65      # IBKR Fixed: $0.65/contract
+  tiered:
+    per_contract: 1.05      # IBKR Tiered: ~$1.05/contract (base + exchange fees)
+  legs_per_ic: 4
+  model: "conditional"      # "conditional" (scenario-aware) or "flat" (legacy $5)
+  flat_amount: 5.00         # Only used if model == "flat"
+
+# Parameter sweep grid
+sweep:
+  wing_width: [1, 2, 3, 4, 5]
+  delta_target: [0.06, 0.08, 0.10, 0.12, 0.15, 0.20]
+  min_credit: [0.15, 0.40]
+  bid_ask_haircut: [0.20, 0.30]
+  tp_pct: [0.50, 0.75, 1.00]
+  sl_mult: [2.0, 3.0, 5.0]
+
+# Scenarios to simulate (all provide bounds on reality)
+scenarios:
+  - hold_to_expiry
+  - worst_case
+  - tp50_expiry
+
+sweep_filters:
+  max_credit_to_wing_ratio: 0.60
+  max_margin_per_contract: 500
 
 random_seed: 42
-
-sweep:
-  wing_width: [1.0, 2.0, 3.0, 5.0]
-  target_delta: [0.05, 0.08, 0.10, 0.12, 0.15]
-  min_credit: [0.10, 0.15, 0.20, 0.30, 0.40]
-  bid_ask_haircut: [0.15, 0.25, 0.35]
-  take_profit_pct: [0.40, 0.50, 0.65, 0.75, 1.00]
-  stop_loss_mult: [2.0, 3.0, 4.0, 5.0]

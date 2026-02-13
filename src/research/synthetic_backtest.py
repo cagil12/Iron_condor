@@ -5,7 +5,7 @@ from __future__ import annotations
 import copy
 import itertools
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -33,12 +33,21 @@ SCENARIO_COLUMNS = {
     "hold_to_expiry": "outcome_hold_to_expiry",
     "worst_case": "outcome_worst_case",
     "tp50_or_expiry": "outcome_tp50_or_expiry",
+    "tp50_sl_capped": "outcome_tp50_sl_capped",
 }
 
 PRE_COMMISSION_COLUMNS = {
     "hold_to_expiry": "hold_to_expiry_pre_commission",
     "worst_case": "worst_case_pre_commission",
     "tp50_or_expiry": "tp50_or_expiry_pre_commission",
+    "tp50_sl_capped": "tp50_sl_capped_pre_commission",
+}
+
+COMMISSION_COLUMNS = {
+    "hold_to_expiry": "commission_hold_to_expiry",
+    "worst_case": "commission_worst_case",
+    "tp50_or_expiry": "commission_tp50_or_expiry",
+    "tp50_sl_capped": "commission_tp50_sl_capped",
 }
 
 
@@ -68,6 +77,7 @@ class TradeResult:
     outcome_hold_to_expiry: float
     outcome_worst_case: float
     outcome_tp50_or_expiry: float
+    outcome_tp50_sl_capped: float
     risk_reward_ratio: float
     selection_method: str
     commission_usd: float
@@ -378,27 +388,97 @@ def _settlement_pnl_per_share(
     return (put_credit - put_spread_value) + (call_credit - call_spread_value)
 
 
+def _commission_params(config: Dict[str, Any]) -> Dict[str, Any]:
+    """Resolve commission model settings from v2 or legacy config layouts."""
+    comm_cfg = _cfg(config, "commissions", default={})
+    if isinstance(comm_cfg, dict) and comm_cfg:
+        pricing_plan = str(comm_cfg.get("pricing_plan", "fixed")).lower()
+        plan_cfg = comm_cfg.get(pricing_plan, {})
+        if not isinstance(plan_cfg, dict):
+            plan_cfg = {}
+
+        per_contract = float(plan_cfg.get("per_contract", comm_cfg.get("per_contract", 0.65)))
+        legs_per_ic = int(comm_cfg.get("legs_per_ic", 4))
+        model = str(comm_cfg.get("model", "conditional")).lower()
+        if model not in {"conditional", "flat"}:
+            model = "conditional"
+        flat_amount = float(comm_cfg.get("flat_amount", 5.00))
+
+        open_commission = per_contract * legs_per_ic
+        round_trip_commission = open_commission * 2.0
+        commission_per_trade = flat_amount if model == "flat" else round_trip_commission
+        return {
+            "commission_model": model,
+            "pricing_plan": pricing_plan,
+            "per_contract_commission": per_contract,
+            "legs_per_ic": legs_per_ic,
+            "open_commission": open_commission,
+            "round_trip_commission": round_trip_commission,
+            "flat_commission_amount": flat_amount,
+            # Backward-compatible aggregate value for existing callers.
+            "commission_per_trade": commission_per_trade,
+        }
+
+    # Legacy fallback path.
+    legacy_commission = float(_cfg(config, "costs", "commission_per_trade", default=5.0))
+    return {
+        "commission_model": "flat",
+        "pricing_plan": "legacy",
+        "per_contract_commission": legacy_commission / 8.0,
+        "legs_per_ic": 4,
+        "open_commission": legacy_commission / 2.0,
+        "round_trip_commission": legacy_commission,
+        "flat_commission_amount": legacy_commission,
+        "commission_per_trade": legacy_commission,
+    }
+
+
 def _backtest_params(config: Dict[str, Any]) -> Dict[str, Any]:
     """Flatten nested backtest config into a runtime parameter map."""
+    commission = _commission_params(config)
+
+    def finite_or_nan(value: Any) -> float:
+        try:
+            parsed = float(value)
+        except (TypeError, ValueError):
+            return np.nan
+        return parsed if np.isfinite(parsed) else np.nan
+
+    start_date = _cfg(config, "dates", "start", default=_cfg(config, "data", "start_date", default="2020-01-01"))
+    end_date = _cfg(config, "dates", "end", default=_cfg(config, "data", "end_date", default="2026-02-13"))
+    target_delta = _cfg(config, "default", "delta_target", default=_cfg(config, "strike_selection", "target_delta", default=0.10))
+    wing_width = _cfg(config, "default", "wing_width", default=_cfg(config, "structure", "wing_width", default=2.0))
+    min_credit = _cfg(config, "default", "min_credit", default=_cfg(config, "credit_filters", "min_credit", default=0.20))
+    bid_ask_haircut = _cfg(config, "default", "bid_ask_haircut", default=_cfg(config, "costs", "bid_ask_haircut", default=0.25))
+    take_profit_pct = _cfg(config, "default", "tp_pct", default=_cfg(config, "exit_rules", "take_profit_pct", default=0.50))
+    stop_loss_mult = _cfg(config, "default", "sl_mult", default=_cfg(config, "exit_rules", "stop_loss_mult", default=3.0))
+    entry_hour = _cfg(config, "default", "entry_hour", default=_cfg(config, "timing", "entry_hour", default=10.0))
+
+    max_credit_to_wing_ratio = _cfg(config, "sweep_filters", "max_credit_to_wing_ratio", default=np.nan)
+    max_margin_per_contract = _cfg(config, "sweep_filters", "max_margin_per_contract", default=np.nan)
+
     return {
-        "start_date": _cfg(config, "data", "start_date", default="2020-01-01"),
-        "end_date": _cfg(config, "data", "end_date", default="2026-02-13"),
+        "start_date": str(start_date),
+        "end_date": str(end_date),
         "cache_file": _cfg(config, "data", "cache_file", default="data/spx_vix_daily.csv"),
         "min_vix": float(_cfg(config, "entry_filters", "min_vix", default=14.0)),
         "max_vix": float(_cfg(config, "entry_filters", "max_vix", default=35.0)),
-        "target_delta": float(_cfg(config, "strike_selection", "target_delta", default=0.10)),
+        "target_delta": float(target_delta),
         "strike_step": float(_cfg(config, "strike_selection", "strike_step", default=1.0)),
-        "wing_width": float(_cfg(config, "structure", "wing_width", default=2.0)),
-        "min_credit": float(_cfg(config, "credit_filters", "min_credit", default=0.20)),
+        "wing_width": float(wing_width),
+        "min_credit": float(min_credit),
         "max_risk_reward": float(_cfg(config, "credit_filters", "max_risk_reward", default=6.0)),
-        "commission_per_trade": float(_cfg(config, "costs", "commission_per_trade", default=5.0)),
-        "bid_ask_haircut": float(_cfg(config, "costs", "bid_ask_haircut", default=0.25)),
-        "entry_hour": float(_cfg(config, "timing", "entry_hour", default=10.0)),
+        "bid_ask_haircut": float(bid_ask_haircut),
+        "entry_hour": float(entry_hour),
         "risk_free_rate": float(_cfg(config, "timing", "risk_free_rate", default=0.05)),
         "vix_source": str(_cfg(config, "timing", "vix_source", default="previous_close")).lower(),
-        "take_profit_pct": float(_cfg(config, "exit_rules", "take_profit_pct", default=0.50)),
-        "stop_loss_mult": float(_cfg(config, "exit_rules", "stop_loss_mult", default=3.0)),
+        "take_profit_pct": float(take_profit_pct),
+        "stop_loss_mult": float(stop_loss_mult),
         "starting_capital": float(_cfg(config, "capital", "starting_capital", default=1580.0)),
+        "xsp_multiplier": float(_cfg(config, "default", "multiplier", default=XSP_MULTIPLIER)),
+        "max_credit_to_wing_ratio": finite_or_nan(max_credit_to_wing_ratio),
+        "max_margin_per_contract": finite_or_nan(max_margin_per_contract),
+        **commission,
     }
 
 
@@ -477,6 +557,16 @@ def _simulate_dataframe(data: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFr
         np.minimum(settlement_pre_commission, tp_cap_usd),
         settlement_pre_commission,
     )
+    sl_cap_usd = params["stop_loss_mult"] * entry_credit_usd
+    tp50_sl_capped_pre_commission = np.where(
+        touched_short,
+        np.maximum(settlement_pre_commission, -sl_cap_usd),
+        np.where(
+            settlement_pre_commission > 0,
+            np.minimum(settlement_pre_commission, tp_cap_usd),
+            settlement_pre_commission,
+        ),
+    )
 
     reason = np.full(len(frame), "", dtype=object)
 
@@ -492,11 +582,34 @@ def _simulate_dataframe(data: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFr
     set_reason(high < low, "invalid_ohlc")
 
     skipped = reason != ""
-    commission = params["commission_per_trade"]
+    open_commission = float(params["open_commission"])
+    round_trip_commission = float(params["round_trip_commission"])
 
-    outcome_hold = np.where(skipped, np.nan, settlement_pre_commission - commission)
-    outcome_worst = np.where(skipped, np.nan, worst_pre_commission - commission)
-    outcome_tp = np.where(skipped, np.nan, tp_pre_commission - commission)
+    if params["commission_model"] == "flat":
+        flat_commission = float(params["flat_commission_amount"])
+        commission_hold = np.full(len(frame), flat_commission, dtype=float)
+        commission_worst = np.full(len(frame), flat_commission, dtype=float)
+        commission_tp = np.full(len(frame), flat_commission, dtype=float)
+        commission_tp_sl_capped = np.full(len(frame), flat_commission, dtype=float)
+    else:
+        # Hold-to-expiry wins (both shorts OTM at settlement) can expire worthless:
+        # only opening commission is paid. All other outcomes are modeled as active
+        # closes and pay round-trip commission.
+        hold_expired_worthless = np.isfinite(short_put) & np.isfinite(short_call) & (close >= short_put) & (close <= short_call)
+        commission_hold = np.where(hold_expired_worthless, open_commission, round_trip_commission)
+        commission_worst = np.full(len(frame), round_trip_commission, dtype=float)
+        commission_tp = np.full(len(frame), round_trip_commission, dtype=float)
+        commission_tp_sl_capped = np.full(len(frame), round_trip_commission, dtype=float)
+
+    commission_hold = np.where(skipped, 0.0, commission_hold)
+    commission_worst = np.where(skipped, 0.0, commission_worst)
+    commission_tp = np.where(skipped, 0.0, commission_tp)
+    commission_tp_sl_capped = np.where(skipped, 0.0, commission_tp_sl_capped)
+
+    outcome_hold = np.where(skipped, np.nan, settlement_pre_commission - commission_hold)
+    outcome_worst = np.where(skipped, np.nan, worst_pre_commission - commission_worst)
+    outcome_tp = np.where(skipped, np.nan, tp_pre_commission - commission_tp)
+    outcome_tp_sl_capped = np.where(skipped, np.nan, tp50_sl_capped_pre_commission - commission_tp_sl_capped)
 
     result = pd.DataFrame(
         {
@@ -528,12 +641,21 @@ def _simulate_dataframe(data: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFr
             "hold_to_expiry_pre_commission": settlement_pre_commission,
             "worst_case_pre_commission": worst_pre_commission,
             "tp50_or_expiry_pre_commission": tp_pre_commission,
+            "tp50_sl_capped_pre_commission": tp50_sl_capped_pre_commission,
             "settlement_pnl_usd": outcome_hold,
             "outcome_hold_to_expiry": outcome_hold,
             "outcome_worst_case": outcome_worst,
             "outcome_tp50_or_expiry": outcome_tp,
+            "outcome_tp50_sl_capped": outcome_tp_sl_capped,
+            "commission_open_usd": np.where(skipped, 0.0, open_commission),
+            "commission_round_trip_usd": np.where(skipped, 0.0, round_trip_commission),
+            "commission_hold_to_expiry": commission_hold,
+            "commission_worst_case": commission_worst,
+            "commission_tp50_or_expiry": commission_tp,
+            "commission_tp50_sl_capped": commission_tp_sl_capped,
             "selection_method": np.where(skipped, "", "DELTA"),
-            "commission_usd": np.where(skipped, 0.0, commission),
+            # Legacy commission field kept for compatibility with existing consumers.
+            "commission_usd": commission_hold,
             "skipped": skipped,
             "skip_reason": reason,
         }
@@ -550,7 +672,9 @@ def simulate_day(row: pd.Series, config: Dict[str, Any]) -> TradeResult:
         else:
             raise ValueError("Row must include a 'date' column or timestamp index")
     result = _simulate_dataframe(row_df, config).iloc[0].to_dict()
-    return TradeResult(**result)
+    allowed = {item.name for item in fields(TradeResult)}
+    filtered = {key: result[key] for key in allowed if key in result}
+    return TradeResult(**filtered)
 
 
 def run_backtest(config: Dict[str, Any], data: Optional[pd.DataFrame] = None) -> pd.DataFrame:
@@ -675,6 +799,11 @@ def compute_metrics(results: pd.DataFrame, config: Dict[str, Any]) -> Dict[str, 
         pnl = tradable[outcome_col].astype(float) if not tradable.empty else pd.Series(dtype=float)
         pnl_pre = tradable[pre_col].astype(float) if not tradable.empty else pd.Series(dtype=float)
         daily_pnl = results[outcome_col].fillna(0.0).astype(float)
+        commission_col = COMMISSION_COLUMNS.get(scenario_name, "")
+        if commission_col and commission_col in tradable.columns:
+            scenario_commission = tradable[commission_col].astype(float)
+        else:
+            scenario_commission = pd.Series(np.full(len(tradable), commission, dtype=float), index=tradable.index)
 
         total_trades = int(len(tradable))
         win_rate = float((pnl > 0).mean()) if total_trades else 0.0
@@ -734,9 +863,19 @@ def compute_metrics(results: pd.DataFrame, config: Dict[str, Any]) -> Dict[str, 
         scenario_be = be["hold_to_expiry"] if scenario_name == "hold_to_expiry" else be["with_tp_sl"]
         winrate_margin = win_rate - scenario_be if np.isfinite(scenario_be) else np.nan
 
-        total_commissions = total_trades * commission
-        gross_profit_pre = float(pnl_pre[pnl_pre > 0].sum()) if total_trades else 0.0
-        commission_pct = (total_commissions / gross_profit_pre) if gross_profit_pre > 0 else np.nan
+        total_commissions = float(scenario_commission.sum()) if total_trades else 0.0
+        if params["commission_model"] == "conditional" and total_trades:
+            total_open_commissions = float(total_trades * params["open_commission"])
+            close_count = int((scenario_commission > (params["open_commission"] + 1e-9)).sum())
+            total_close_commissions = float(close_count * params["open_commission"])
+        else:
+            total_open_commissions = 0.0
+            total_close_commissions = 0.0
+            close_count = 0
+
+        gross_pnl = float(pnl_pre.sum()) if total_trades else 0.0
+        commission_pct = (total_commissions / abs(gross_pnl)) if gross_pnl != 0 else np.inf
+        avg_commission_per_trade = (total_commissions / total_trades) if total_trades else 0.0
 
         risk_of_ruin = _estimate_risk_of_ruin(
             win_rate=win_rate,
@@ -770,8 +909,12 @@ def compute_metrics(results: pd.DataFrame, config: Dict[str, Any]) -> Dict[str, 
             "actual_winrate": win_rate,
             "winrate_margin": winrate_margin,
             "total_commissions_usd": total_commissions,
+            "total_open_commissions_usd": total_open_commissions,
+            "total_close_commissions_usd": total_close_commissions,
+            "active_closes": close_count,
+            "avg_commission_per_trade_usd": avg_commission_per_trade,
             "commission_pct_of_gross": commission_pct,
-            "pnl_before_commissions": float(pnl_pre.sum()) if total_trades else 0.0,
+            "pnl_before_commissions": gross_pnl,
             "pnl_after_commissions": total_pnl,
             "starting_capital": starting_capital,
             "ending_capital": ending_capital,
@@ -808,6 +951,8 @@ def run_parameter_sweep(
         return pd.DataFrame()
 
     param_names = list(param_grid.keys())
+    total_combos = int(np.prod([len(param_grid[name]) for name in param_names]))
+    print(f"Sweep combinations (raw grid): {total_combos:,}")
     rows: List[Dict[str, Any]] = []
 
     for combo in itertools.product(*(param_grid[name] for name in param_names)):
@@ -815,8 +960,8 @@ def run_parameter_sweep(
 
         wing = float(combo_params.get("wing_width", params_base["wing_width"]))
         min_credit = float(combo_params.get("min_credit", params_base["min_credit"]))
-        tp_pct = float(combo_params.get("take_profit_pct", params_base["take_profit_pct"]))
-        sl_mult = float(combo_params.get("stop_loss_mult", params_base["stop_loss_mult"]))
+        tp_pct = float(combo_params.get("tp_pct", combo_params.get("take_profit_pct", params_base["take_profit_pct"])))
+        sl_mult = float(combo_params.get("sl_mult", combo_params.get("stop_loss_mult", params_base["stop_loss_mult"])))
         commission = params_base["commission_per_trade"]
 
         row_base = dict(combo_params)
@@ -828,7 +973,23 @@ def run_parameter_sweep(
             rows.append(row_base)
             continue
 
-        # Invalid combo 2: structurally impossible required win rate.
+        # Invalid combo 2: user-defined max credit/wing feasibility filter.
+        ratio_limit = params_base.get("max_credit_to_wing_ratio", np.nan)
+        if np.isfinite(ratio_limit) and (min_credit > (wing * ratio_limit)):
+            row_base["combo_skipped"] = True
+            row_base["combo_skip_reason"] = "min_credit_exceeds_wing_ratio_limit"
+            rows.append(row_base)
+            continue
+
+        # Invalid combo 3: account-level margin cap filter.
+        margin_limit = params_base.get("max_margin_per_contract", np.nan)
+        if np.isfinite(margin_limit) and (wing * XSP_MULTIPLIER > margin_limit):
+            row_base["combo_skipped"] = True
+            row_base["combo_skip_reason"] = "margin_above_limit"
+            rows.append(row_base)
+            continue
+
+        # Invalid combo 4: structurally impossible required win rate.
         be_tp = breakeven_winrate(min_credit, wing, commission, tp_pct, sl_mult)["with_tp_sl"]
         if be_tp > 0.95:
             row_base["combo_skipped"] = True
@@ -838,17 +999,23 @@ def run_parameter_sweep(
 
         cfg = copy.deepcopy(base_config)
         if "wing_width" in combo_params:
-            cfg.setdefault("structure", {})["wing_width"] = float(combo_params["wing_width"])
+            cfg.setdefault("default", {})["wing_width"] = float(combo_params["wing_width"])
+        if "delta_target" in combo_params:
+            cfg.setdefault("default", {})["delta_target"] = float(combo_params["delta_target"])
         if "target_delta" in combo_params:
-            cfg.setdefault("strike_selection", {})["target_delta"] = float(combo_params["target_delta"])
+            cfg.setdefault("default", {})["delta_target"] = float(combo_params["target_delta"])
         if "min_credit" in combo_params:
-            cfg.setdefault("credit_filters", {})["min_credit"] = float(combo_params["min_credit"])
+            cfg.setdefault("default", {})["min_credit"] = float(combo_params["min_credit"])
         if "bid_ask_haircut" in combo_params:
-            cfg.setdefault("costs", {})["bid_ask_haircut"] = float(combo_params["bid_ask_haircut"])
+            cfg.setdefault("default", {})["bid_ask_haircut"] = float(combo_params["bid_ask_haircut"])
+        if "tp_pct" in combo_params:
+            cfg.setdefault("default", {})["tp_pct"] = float(combo_params["tp_pct"])
         if "take_profit_pct" in combo_params:
-            cfg.setdefault("exit_rules", {})["take_profit_pct"] = float(combo_params["take_profit_pct"])
+            cfg.setdefault("default", {})["tp_pct"] = float(combo_params["take_profit_pct"])
+        if "sl_mult" in combo_params:
+            cfg.setdefault("default", {})["sl_mult"] = float(combo_params["sl_mult"])
         if "stop_loss_mult" in combo_params:
-            cfg.setdefault("exit_rules", {})["stop_loss_mult"] = float(combo_params["stop_loss_mult"])
+            cfg.setdefault("default", {})["sl_mult"] = float(combo_params["stop_loss_mult"])
 
         results = run_backtest(cfg, data=data)
         metrics = compute_metrics(results, cfg)
@@ -862,12 +1029,15 @@ def run_parameter_sweep(
         rows.append(out)
 
     sweep_df = pd.DataFrame(rows)
-    if not sweep_df.empty and "tp50_or_expiry_total_pnl_usd" in sweep_df.columns:
-        sweep_df = sweep_df.sort_values("tp50_or_expiry_total_pnl_usd", ascending=False).reset_index(drop=True)
+    sweep_metric_col = "tp50_sl_capped_total_pnl_usd"
+    if sweep_metric_col not in sweep_df.columns:
+        sweep_metric_col = "tp50_or_expiry_total_pnl_usd"
+    if not sweep_df.empty and sweep_metric_col in sweep_df.columns:
+        sweep_df = sweep_df.sort_values(sweep_metric_col, ascending=False).reset_index(drop=True)
 
     if not sweep_df.empty and "combo_skipped" in sweep_df.columns:
         valid = sweep_df[sweep_df["combo_skipped"] == False]  # noqa: E712
-        if not valid.empty and "tp50_or_expiry_total_pnl_usd" in valid.columns:
+        if not valid.empty and sweep_metric_col in valid.columns:
             print("\nTop 10 configurations:")
             print(valid.head(10).to_string(index=False))
             print("\nBottom 10 configurations:")
