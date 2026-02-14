@@ -44,7 +44,7 @@ LIVE_CONFIG = {
     'trading_mode': 'PAPER',  # 'PAPER' or 'LIVE'
     'account_id': 'DUO988990', # Explicit Paper Trading Account
     'port': 7497,             # Default to Paper Port
-    'entry_time': '09:30',    # Entry Time (ET) - Updated for Open
+    'entry_time': '10:00',    # Entry Time (ET) - Aligned with backtest entry_hour=10.0
 
     # Instrument Settings
     'symbol': 'XSP',
@@ -75,7 +75,7 @@ LIVE_CONFIG = {
     'ibkr': {
         'host': '127.0.0.1',
         'paper_port': 7497,  # TWS Paper Trading
-        'live_port': 7497,   # TWS Live Trading (User Override)
+        'live_port': 7497,   # ⚠️ CHANGE TO 7496 BEFORE LIVE MIGRATION (standard TWS live port)
         'client_id': 777,
         'timeout': 30,
     },

@@ -79,7 +79,7 @@ class LiveExecutor:
     TICK_SIZE = 0.05       # Combo tick size (aggressive for BAG orders) (FIX 3)
     FORCE_CLOSE_TIME = time(15, 45)  # Hard EOD exit at 3:45 PM
     STATE_FILE = Path("state.json")
-    MAX_MARGIN_ACCEPTED = 300.0     # Maximum initial margin for 1 contract
+    MAX_MARGIN_ACCEPTED = 400.0     # Maximum initial margin for 1 contract (wing=2 theoretical=$200, buffer for IBKR haircuts)
     
     def __init__(self, connector: IBConnector, journal: Optional[TradeJournal] = None):
         self.connector = connector
@@ -779,7 +779,7 @@ class LiveExecutor:
                 max_profit_usd=max_profit, max_loss_usd=max_loss,
                 delta_net=delta_put + delta_call, delta_put=delta_put, delta_call=delta_call,
                 theta=theta_total, gamma=gamma_total, selection_method=method,
-                target_delta=0.10, otm_distance_pct="1.5%" if method == "OTM_DISTANCE_PCT" else "N/A",
+                target_delta=self.config.get('target_delta', 0.10), otm_distance_pct="1.5%" if method == "OTM_DISTANCE_PCT" else "N/A",
                 snapshot_json=json.dumps(snapshot_data),
                 commissions_est=self.expected_commission_win,
                 reasoning=(
@@ -969,7 +969,13 @@ class LiveExecutor:
         
         return None
     
-    def close_position(self, reason: str, max_spread_val: float = 0.0, rv_duration: float = 0.0) -> bool:
+    def close_position(
+        self,
+        reason: str,
+        max_spread_val: float = 0.0,
+        rv_duration: float = 0.0,
+        max_adverse_excursion: float = 0.0,
+    ) -> bool:
         """
         Close the active position with blocking confirmation.
         
@@ -977,6 +983,7 @@ class LiveExecutor:
             reason: Reason for closing
             max_spread_val: Max observed spread value (for journal)
             rv_duration: Realized Volatility annualized (for journal)
+            max_adverse_excursion: Lowest PnL observed during trade
             
         Returns:
             True if closed successfully, False if failed/timeout
@@ -1002,7 +1009,8 @@ class LiveExecutor:
                     final_pnl_usd=final_pnl,
                     entry_timestamp=self.active_position.entry_time,
                     max_spread_val=max_spread_val,
-                    rv_duration=rv_duration
+                    rv_duration=rv_duration,
+                    max_adverse_excursion=max_adverse_excursion,
                 )
             self.active_position = None
             self.save_state()
@@ -1033,6 +1041,7 @@ class LiveExecutor:
         market_close = dt_time(16, 0)
         
         max_spread_val = 0.0
+        min_pnl_observed = 0.0  # Track MAE (Max Adverse Excursion)
         spot_prices = [] # NEW: for RV calc
         
         while self.active_position:
@@ -1044,6 +1053,8 @@ class LiveExecutor:
                 current_spread_cost = self.active_position.entry_credit - (pnl / (100 * self.active_position.qty))
                 if current_spread_cost > max_spread_val:
                     max_spread_val = current_spread_cost
+                if pnl < min_pnl_observed:
+                    min_pnl_observed = pnl
             
             # Get current spot
             spot = self.connector.get_live_price('XSP') or 0.0
@@ -1095,6 +1106,8 @@ class LiveExecutor:
                 current_spread_cost = self.active_position.entry_credit - (pnl / (100 * self.active_position.qty))
                 if current_spread_cost > max_spread_val:
                     max_spread_val = current_spread_cost
+                if pnl < min_pnl_observed:
+                    min_pnl_observed = pnl
             
             # Danger zone detection
             danger = "⚠️ DANGER" if min_distance < 5 else ""
@@ -1123,7 +1136,7 @@ class LiveExecutor:
                      except Exception as e:
                         print(f"⚠️ RV Calc Error: {e}")
                 
-                success = self.close_position(exit_reason, max_spread_val, rv_duration)
+                success = self.close_position(exit_reason, max_spread_val, rv_duration, min_pnl_observed)
                 if success:
                     break
                 else:
@@ -1142,7 +1155,8 @@ class LiveExecutor:
                         final_pnl_usd=pnl_val,
                         entry_timestamp=self.active_position.entry_time,
                         max_spread_val=max_spread_val,
-                        rv_duration=0.0
+                        rv_duration=0.0,
+                        max_adverse_excursion=min_pnl_observed,
                     )
                 self.active_position = None
                 self.save_state()

@@ -262,11 +262,13 @@ class TradeJournal:
             print(f"⚠️ Trade #{trade_id} not found in journal")
             return
 
-        # Write all rows back
-        with open(self.journal_path, 'w', newline='', encoding='utf-8') as f:
+        # Atomic write: tmp file + rename to prevent data loss on crash
+        tmp_path = self.journal_path.with_suffix('.tmp')
+        with open(tmp_path, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=self.COLUMNS)
             writer.writeheader()
             writer.writerows(rows)
+        tmp_path.replace(self.journal_path)  # atomic on same filesystem
         
         print(f"📝 Trade #{trade_id} closed in journal (PnL: ${final_pnl_usd:.2f})")
     
