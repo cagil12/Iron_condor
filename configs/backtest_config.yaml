@@ -24,6 +24,12 @@ timing:
   risk_free_rate: 0.05
   vix_source: "previous_close"
 
+# VIX-to-IV calibration factor
+# sigma_0dte = VIX_close * iv_scaling_factor
+# Default 1.0 = no scaling (current behavior, preserves backward compatibility)
+# Calibrate empirically: compare synthetic credits vs real fills from live journal
+iv_scaling_factor: 1.0
+
 capital:
   starting_capital: 1580.0
 

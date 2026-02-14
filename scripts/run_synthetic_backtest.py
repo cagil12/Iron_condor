@@ -63,6 +63,7 @@ def _print_config_summary(params: Dict[str, Any]) -> None:
         f"Pricing Plan: {params['pricing_plan']}"
     )
     print(f"   Bid/Ask Haircut: {params['bid_ask_haircut']:.0%}")
+    print(f"   IV Scaling Factor (k): {params['iv_scaling_factor']:.3f}")
 
 
 def _print_metrics_table(metrics: Dict[str, Dict[str, float]]) -> None:
@@ -224,7 +225,7 @@ def main() -> None:
 
     results_csv = output_dir / "backtest_results.csv"
     results.to_csv(results_csv, index=False)
-    metrics_df = metrics_to_dataframe(metrics)
+    metrics_df = metrics_to_dataframe(metrics, config)
     metrics_csv = output_dir / "metrics_summary.csv"
     metrics_df.to_csv(metrics_csv, index=True)
 

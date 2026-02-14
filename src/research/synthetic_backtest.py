@@ -453,6 +453,9 @@ def _backtest_params(config: Dict[str, Any]) -> Dict[str, Any]:
     take_profit_pct = _cfg(config, "default", "tp_pct", default=_cfg(config, "exit_rules", "take_profit_pct", default=0.50))
     stop_loss_mult = _cfg(config, "default", "sl_mult", default=_cfg(config, "exit_rules", "stop_loss_mult", default=3.0))
     entry_hour = _cfg(config, "default", "entry_hour", default=_cfg(config, "timing", "entry_hour", default=10.0))
+    iv_scaling_factor = float(_cfg(config, "iv_scaling_factor", default=_cfg(config, "timing", "iv_scaling_factor", default=1.0)))
+    if (not np.isfinite(iv_scaling_factor)) or iv_scaling_factor <= 0.0:
+        raise ValueError("iv_scaling_factor must be a finite value > 0")
 
     max_credit_to_wing_ratio = _cfg(config, "sweep_filters", "max_credit_to_wing_ratio", default=np.nan)
     max_margin_per_contract = _cfg(config, "sweep_filters", "max_margin_per_contract", default=np.nan)
@@ -472,6 +475,7 @@ def _backtest_params(config: Dict[str, Any]) -> Dict[str, Any]:
         "entry_hour": float(entry_hour),
         "risk_free_rate": float(_cfg(config, "timing", "risk_free_rate", default=0.05)),
         "vix_source": str(_cfg(config, "timing", "vix_source", default="previous_close")).lower(),
+        "iv_scaling_factor": float(iv_scaling_factor),
         "take_profit_pct": float(take_profit_pct),
         "stop_loss_mult": float(stop_loss_mult),
         "starting_capital": float(_cfg(config, "capital", "starting_capital", default=1580.0)),
@@ -500,7 +504,8 @@ def _simulate_dataframe(data: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFr
         # Default: previous day close to avoid same-day look-ahead.
         entry_vix = frame["vix_close"].shift(1).to_numpy(dtype=float)
 
-    sigma = entry_vix / 100.0
+    # VIX is annualized implied vol in percent; scale to approximate 0DTE IV regime.
+    sigma = (entry_vix / 100.0) * params["iv_scaling_factor"]
     T = compute_time_to_expiry(params["entry_hour"])
 
     target = abs(params["target_delta"])
@@ -619,6 +624,8 @@ def _simulate_dataframe(data: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFr
             "spx_low": low,
             "spx_close": close,
             "vix": entry_vix,
+            "iv_scaling_factor": params["iv_scaling_factor"],
+            "sigma": sigma,
             "short_put": short_put,
             "short_call": short_call,
             "long_put": long_put,
@@ -926,9 +933,13 @@ def compute_metrics(results: pd.DataFrame, config: Dict[str, Any]) -> Dict[str, 
     return scenario_metrics
 
 
-def metrics_to_dataframe(metrics: Dict[str, Dict[str, float]]) -> pd.DataFrame:
+def metrics_to_dataframe(metrics: Dict[str, Dict[str, float]], config: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
     """Convert nested metrics dict to a display-friendly dataframe."""
-    return pd.DataFrame(metrics).T
+    df = pd.DataFrame(metrics).T
+    if config is not None:
+        params = _backtest_params(config)
+        df["iv_scaling_factor"] = float(params["iv_scaling_factor"])
+    return df
 
 
 def run_parameter_sweep(
@@ -965,6 +976,7 @@ def run_parameter_sweep(
         commission = params_base["commission_per_trade"]
 
         row_base = dict(combo_params)
+        row_base.setdefault("iv_scaling_factor", float(combo_params.get("iv_scaling_factor", params_base["iv_scaling_factor"])))
 
         # Invalid combo 1: impossible min credit relative to wing.
         if min_credit >= wing:
@@ -1016,11 +1028,14 @@ def run_parameter_sweep(
             cfg.setdefault("default", {})["sl_mult"] = float(combo_params["sl_mult"])
         if "stop_loss_mult" in combo_params:
             cfg.setdefault("default", {})["sl_mult"] = float(combo_params["stop_loss_mult"])
+        if "iv_scaling_factor" in combo_params:
+            cfg["iv_scaling_factor"] = float(combo_params["iv_scaling_factor"])
 
         results = run_backtest(cfg, data=data)
         metrics = compute_metrics(results, cfg)
 
         out = dict(combo_params)
+        out.setdefault("iv_scaling_factor", float(_backtest_params(cfg)["iv_scaling_factor"]))
         out["combo_skipped"] = False
         out["combo_skip_reason"] = ""
         for scenario_name, scenario_values in metrics.items():
