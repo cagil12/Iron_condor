@@ -235,12 +235,10 @@ def find_trade_opportunity(
         print("⏳ Waiting for spot price...")
         return None
     
-    # VIX filter
+    # VIX floor filter (L3 ceiling is enforced inside LiveExecutor)
     vix_min = config.get('min_vix', 10.0)
-    vix_max = config.get('max_vix', 25.0)
-    
-    if vix_value < vix_min or vix_value > vix_max:
-        print(f"⚠️ VIX ({vix_value:.1f}) outside range [{vix_min}-{vix_max}]")
+    if vix_value < vix_min:
+        print(f"⚠️ VIX ({vix_value:.1f}) below minimum ({vix_min:.1f})")
         return None
     
     # Get expiry first
@@ -524,15 +522,6 @@ def main():
                     print(f"[{now_str}] ⚠️ VIX UNAVAILABLE - Cannot trade without VIX visibility. Retrying next cycle.")
                     time.sleep(scan_interval)
                     continue
-                
-                # VIX SAFETY CHECK (HARD LIMIT)
-                max_vix = config.get('max_vix', 25.0)
-                if vix_value > max_vix:
-                    now_str = datetime.now().strftime("%H:%M:%S")
-                    print(f"[{now_str}] 🛑 MARKET DANGER: VIX ({vix_value:.2f}) > Limit ({max_vix}). System HALTED.")
-                    time.sleep(60)
-                    continue
-                
                 
                 # Scan for opportunity
                 now = datetime.now().strftime("%H:%M:%S")

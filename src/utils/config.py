@@ -62,8 +62,16 @@ LIVE_CONFIG = {
     'max_capital': 2000.0,  # $2,000 USD account size
     'max_contracts': 1,    # Conservative start
     'max_daily_loss': 200.0,  # $200 daily loss limit (10% of account)
-    'max_vix': 25.0,       # KILL SWITCH: No trading if VIX > 25
     'min_account_value': 1400.0, # HARD SWITCH: Equity Floor ($1400)
+    # Kill Switches (Phase 2 prerequisites)
+    'dd_max_pct': 0.15,              # L1: Max drawdown as % of max_capital
+    'dd_pause_days': 5,              # L1: Calendar days pause after DD breach
+    'dd_kill_enabled': True,         # L1: Portfolio drawdown kill switch
+    'vix_gate_threshold': 30.0,      # L3: Do not trade if VIX > this value
+    'vix_gate_enabled': True,        # L3: Volatility regime gate
+    'streak_max_losses': 3,          # L5: Pause after N consecutive losses
+    'streak_pause_days': 2,          # L5: Calendar days to pause after streak
+    'streak_stop_enabled': True,     # L5: Consecutive loss streak stop
     
     # Exit Parameters (Phase 1)
     'take_profit_pct': 1.00,  # Hold winners to expiry (skip TP close orders)

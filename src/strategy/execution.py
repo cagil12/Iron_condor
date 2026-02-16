@@ -95,12 +95,21 @@ class LiveExecutor:
         self.config = get_live_config()
         self.active_position: Optional[IronCondorPosition] = None
         self.journal = journal
+        self.consecutive_losses = 0
+        self.streak_pause_until = None
+        self.cumulative_pnl = 0.0
+        self.pnl_high_water_mark = 0.0
+        self.dd_pause_until = None
         
         # Load dynamic settings
         self.TAKE_PROFIT_PCT = float(self.config.get('take_profit_pct', self.TAKE_PROFIT_PCT))
         self.STOP_LOSS_MULT = float(self.config.get('stop_loss_mult', 2.0))
         self.WING_WIDTH = float(self.config.get('wing_width', 2.0))  # FIX 1
         self.HOLD_TO_EXPIRY_MODE = self.TAKE_PROFIT_PCT >= 1.00
+        self.logger.info(
+            f"HOLD_TO_EXPIRY_MODE={self.HOLD_TO_EXPIRY_MODE} "
+            f"(tp_pct={self.TAKE_PROFIT_PCT:.2f})"
+        )
 
         # Commission expectations (IBKR Fixed defaults: 0.65/leg x 4 legs).
         self.COMMISSION_PER_LEG = float(self.config.get('commission_per_leg', 0.65))
@@ -141,12 +150,30 @@ class LiveExecutor:
         
         # FIX 3: Load state at startup
         self.load_state()
+        self.logger.info(
+            f"🛡️ Kill Switches: "
+            f"L1={'ON' if self.config.get('dd_kill_enabled') else 'OFF'} "
+            f"(DD>{self.config.get('dd_max_pct', 0.15) * 100:.0f}%) | "
+            f"L3={'ON' if self.config.get('vix_gate_enabled') else 'OFF'} "
+            f"(VIX>{self.config.get('vix_gate_threshold', 30):.0f}) | "
+            f"L5={'ON' if self.config.get('streak_stop_enabled') else 'OFF'} "
+            f"({self.config.get('streak_max_losses', 3)} losses)"
+        )
+        if self.dd_pause_until:
+            self.logger.warning(f"⚠️ L1 ACTIVE: Trading halted until {self.dd_pause_until}")
+        if self.streak_pause_until:
+            self.logger.warning(f"⚠️ L5 ACTIVE: Streak pause until {self.streak_pause_until}")
 
     def save_state(self):
         """Persistir estado a disco para sobrevivir reinicios (FIX 3)"""
         try:
             state = {
                 'active_position': self.active_position.__dict__ if self.active_position else None,
+                'consecutive_losses': self.consecutive_losses,
+                'streak_pause_until': self.streak_pause_until,
+                'cumulative_pnl': self.cumulative_pnl,
+                'pnl_high_water_mark': self.pnl_high_water_mark,
+                'dd_pause_until': self.dd_pause_until,
                 'last_updated': datetime.now().isoformat()
             }
             # Handle non-serializable objects in __dict__ if any (delta/datetime handled by default str logic)
@@ -168,9 +195,61 @@ class LiveExecutor:
                     self.logger.info(f"Loaded active position from {state.get('last_updated')}")
                 else:
                     self.active_position = None
+                self.consecutive_losses = int(state.get('consecutive_losses', 0) or 0)
+                self.streak_pause_until = state.get('streak_pause_until', None)
+                self.cumulative_pnl = float(state.get('cumulative_pnl', 0.0) or 0.0)
+                self.pnl_high_water_mark = float(state.get('pnl_high_water_mark', 0.0) or 0.0)
+                self.dd_pause_until = state.get('dd_pause_until', None)
             except Exception as e:
                 self.logger.error(f"Failed to load state: {e}")
                 self.active_position = None
+                self.consecutive_losses = 0
+                self.streak_pause_until = None
+                self.cumulative_pnl = 0.0
+                self.pnl_high_water_mark = 0.0
+                self.dd_pause_until = None
+
+    def _update_kill_switch_trackers(self, final_pnl: float):
+        """Update L5 streak tracking and L1 drawdown tracking after a trade is closed."""
+        # === L5: STREAK TRACKING ===
+        if final_pnl < 0:
+            self.consecutive_losses += 1
+            self.logger.info(f"📉 L5 STREAK: Loss #{self.consecutive_losses}")
+            if self.consecutive_losses >= self.config.get('streak_max_losses', 3):
+                pause_days = self.config.get('streak_pause_days', 2)
+                pause_until = (datetime.now() + timedelta(days=pause_days)).strftime('%Y-%m-%d')
+                self.streak_pause_until = pause_until
+                self.logger.warning(
+                    f"🛑 L5 STREAK STOP: {self.consecutive_losses} consecutive losses. "
+                    f"Pausing until {pause_until}."
+                )
+        else:
+            if self.consecutive_losses > 0:
+                self.logger.info(f"✅ L5 STREAK RESET: Win after {self.consecutive_losses} losses")
+            self.consecutive_losses = 0
+            self.streak_pause_until = None
+
+        # === L1: DRAWDOWN TRACKING ===
+        self.cumulative_pnl += final_pnl
+        if self.cumulative_pnl > self.pnl_high_water_mark:
+            self.pnl_high_water_mark = self.cumulative_pnl
+
+        current_dd = self.pnl_high_water_mark - self.cumulative_pnl
+        max_capital = self.config.get('max_capital', 2000.0)
+        dd_threshold = max_capital * self.config.get('dd_max_pct', 0.15)
+        self.logger.info(
+            f"📊 L1 DD TRACKER: Cumulative=${self.cumulative_pnl:.2f}, "
+            f"HWM=${self.pnl_high_water_mark:.2f}, DD=${current_dd:.2f}/${dd_threshold:.0f}"
+        )
+        if self.config.get('dd_kill_enabled', True) and current_dd >= dd_threshold:
+            pause_days = self.config.get('dd_pause_days', 5)
+            pause_until = (datetime.now() + timedelta(days=pause_days)).strftime('%Y-%m-%d')
+            self.dd_pause_until = pause_until
+            self.logger.critical(
+                f"🚨 L1 PORTFOLIO KILL SWITCH: DD=${current_dd:.2f} >= ${dd_threshold:.0f} "
+                f"({self.config.get('dd_max_pct', 0.15) * 100:.0f}% of ${max_capital:.0f}). "
+                f"ALL TRADING HALTED until {pause_until}."
+            )
 
     def startup_reconciliation(self):
         """Cancelar órdenes huérfanas y reconciliar posiciones al iniciar (FIX 2)"""
@@ -558,12 +637,54 @@ class LiveExecutor:
         Execute an Iron Condor order using IBKR BAG (Combo).
         Includes Chase Logic (FIX 1, 6b) and Stores Leg Info (FIX 4).
         """
+        # === KILL SWITCH GATES (order matters: L1 > L5 > L3) ===
+        # L1: Portfolio drawdown pause gate
+        if self.config.get('dd_kill_enabled', True) and self.dd_pause_until:
+            pause_date = datetime.strptime(self.dd_pause_until, '%Y-%m-%d').date()
+            if datetime.now().date() < pause_date:
+                current_dd = self.pnl_high_water_mark - self.cumulative_pnl
+                self.logger.critical(
+                    f"🚨 L1 PORTFOLIO HALTED: DD=${current_dd:.2f}. "
+                    f"Resuming on {self.dd_pause_until}. No trading."
+                )
+                return None
+            self.logger.warning(
+                f"⚠️ L1 PAUSE EXPIRED. Resuming cautiously. "
+                f"DD was ${self.pnl_high_water_mark - self.cumulative_pnl:.2f}. "
+                f"Consider manual review before continuing."
+            )
+            self.dd_pause_until = None
+            self.save_state()
+
+        # L5: Consecutive losses pause gate
+        if self.config.get('streak_stop_enabled', True) and self.streak_pause_until:
+            pause_date = datetime.strptime(self.streak_pause_until, '%Y-%m-%d').date()
+            if datetime.now().date() < pause_date:
+                self.logger.warning(
+                    f"🛑 L5 STREAK PAUSED: {self.consecutive_losses} consecutive losses. "
+                    f"Resuming on {self.streak_pause_until}. No trade today."
+                )
+                return None
+            self.logger.info("✅ L5 STREAK PAUSE EXPIRED. Resuming trading.")
+            self.streak_pause_until = None
+            self.save_state()
+
         # SAFETY CHECK: No pyramiding (FIX 9)
         # Relies on internal state, not IBKR portfolio queries.
         # This prevents foreign/orphan positions from blocking new trades.
         if self.active_position:
             self.logger.warning("⚠️ ABORT: Active position exists. No pyramiding allowed.")
             return None
+
+        # === L3: VIX REGIME GATE ===
+        if self.config.get('vix_gate_enabled', True):
+            vix_threshold = self.config.get('vix_gate_threshold', 30.0)
+            if vix > vix_threshold:
+                self.logger.warning(
+                    f"🛑 L3 VIX GATE: VIX={vix:.1f} > {vix_threshold:.0f}. "
+                    f"Skipping today. High vol regime = elevated gamma risk."
+                )
+                return None
         
         # Calculate wing strikes
         long_put_strike = short_put - self.WING_WIDTH
@@ -1012,6 +1133,7 @@ class LiveExecutor:
                     rv_duration=rv_duration,
                     max_adverse_excursion=max_adverse_excursion,
                 )
+            self._update_kill_switch_trackers(final_pnl)
             self.active_position = None
             self.save_state()
             return True
@@ -1158,6 +1280,7 @@ class LiveExecutor:
                         rv_duration=0.0,
                         max_adverse_excursion=min_pnl_observed,
                     )
+                self._update_kill_switch_trackers(pnl_val)
                 self.active_position = None
                 self.save_state()
                 break
