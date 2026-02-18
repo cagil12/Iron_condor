@@ -876,8 +876,54 @@ class LiveExecutor:
                 self.ib.sleep(1)
             return None
             
-        # Success - Record Position
-        credit_received = abs(trade.order.lmtPrice)
+        # Success - Verify real credit from individual leg fills
+        combo_credit = abs(trade.order.lmtPrice)
+
+        # Attempt to get actual fill prices per leg from executions
+        verified_credit = None
+        try:
+            self.ib.sleep(2)  # Allow execution reports to propagate
+            fills = trade.fills
+            if fills and len(fills) > 0:
+                # Prefer per-leg option fills to avoid mixing combo-level BAG execution
+                leg_fills = [
+                    f for f in fills
+                    if getattr(getattr(f, 'contract', None), 'secType', '') in ('OPT', 'FOP')
+                ]
+                fills_to_sum = leg_fills if leg_fills else fills
+
+                # Sum credits: SELL legs contribute positive, BUY legs negative
+                leg_total = 0.0
+                for fill in fills_to_sum:
+                    # In a combo fill, each leg's execution has price and side
+                    exec_obj = fill.execution
+                    if exec_obj.side == 'SLD':
+                        leg_total += exec_obj.price * exec_obj.shares
+                    else:  # BOT
+                        leg_total -= exec_obj.price * exec_obj.shares
+
+                if leg_total > 0:
+                    raw_credit = leg_total / max(self.MAX_QTY, 1)
+                    # Some IB reports can express option shares with multiplier semantics.
+                    if raw_credit > (self.WING_WIDTH * 5):
+                        raw_credit /= 100.0
+                    verified_credit = round(raw_credit, 2)
+                    self.logger.info(
+                        f"✅ Credit verified from fills: ${verified_credit:.2f} "
+                        f"(combo price was ${combo_credit:.2f}, "
+                        f"delta=${abs(verified_credit - combo_credit):.2f})"
+                    )
+        except Exception as e:
+            self.logger.warning(f"⚠️ Could not verify credit from fills: {e}")
+
+        # Use verified credit if available, otherwise fall back to combo price
+        credit_received = verified_credit if verified_credit is not None else combo_credit
+        if verified_credit is not None and abs(verified_credit - combo_credit) > 0.02:
+            self.logger.warning(
+                f"⚠️ CREDIT DISCREPANCY: combo=${combo_credit:.2f} vs fills=${verified_credit:.2f}. "
+                f"Using fills value for all PnL/SL calculations."
+            )
+
         max_profit = credit_received * self.MAX_QTY * 100
         max_loss = (self.WING_WIDTH - credit_received) * self.MAX_QTY * 100
         
@@ -973,8 +1019,19 @@ class LiveExecutor:
             if trade.orderStatus.status in ['Cancelled', 'Inactive', 'ApiCancelled']:
                 break
         
-        # Si BAG falla, ENTONCES intentar legs individuales como fallback
-        self.logger.warning("BAG close failed, attempting individual legs fallback")
+        # BAG failed — MUST cancel explicitly and wait before fallback
+        self.logger.warning("BAG close failed. Cancelling order before fallback...")
+        try:
+            self.ib.cancelOrder(trade.order)
+        except Exception as e:
+            self.logger.warning(f"Cancel BAG order exception (may already be dead): {e}")
+        self.ib.sleep(2)
+
+        # Belt-and-suspenders: global cancel to clear any residual orders
+        self.ib.reqGlobalCancel()
+        self.ib.sleep(2)
+
+        self.logger.info("BAG order cancelled. Proceeding to individual leg fallback...")
         return self.close_position_individual_fallback()
 
     def close_position_individual_fallback(self) -> bool:
@@ -999,29 +1056,82 @@ class LiveExecutor:
             return True
 
         all_filled = True
+        FALLBACK_CHASE_STEPS = 3
+        FALLBACK_TICK = 0.05
+
         for pos in xsp_positions:
             contract = pos.contract
             contract.exchange = 'SMART'
             self.ib.qualifyContracts(contract)
-            
+
             action = 'SELL' if pos.position > 0 else 'BUY'
-            order = MarketOrder(action, abs(pos.position))
-            trade = self.ib.placeOrder(contract, order)
-            
-            # Wait for fill with timeout
-            start_wait = time_module.time()
-            while (time_module.time() - start_wait) < 20:
-                self.ib.sleep(1)
-                if trade.orderStatus.status == 'Filled':
+            qty = abs(pos.position)
+
+            # Get current market price for aggressive limit
+            ticker = self.ib.reqMktData(contract, '', False, False)
+            self.ib.sleep(1)
+
+            if action == 'BUY':
+                # Closing a short leg: pay the ask + buffer
+                base_price = ticker.ask if (ticker.ask and ticker.ask > 0) else 0.10
+                limit_price = round(base_price + FALLBACK_TICK, 2)
+            else:
+                # Closing a long leg: sell at bid - buffer (floor at 0.01)
+                base_price = ticker.bid if (ticker.bid and ticker.bid > 0) else 0.01
+                limit_price = round(max(base_price - FALLBACK_TICK, 0.01), 2)
+
+            self.ib.cancelMktData(contract)
+
+            leg_filled = False
+            trade = None
+
+            for chase in range(FALLBACK_CHASE_STEPS + 1):
+                if chase > 0:
+                    # Cancel previous order before re-submitting
+                    if trade:
+                        try:
+                            self.ib.cancelOrder(trade.order)
+                        except Exception:
+                            pass
+                        self.ib.sleep(1)
+                    # Widen price to be more aggressive
+                    if action == 'BUY':
+                        limit_price = round(limit_price + FALLBACK_TICK, 2)
+                    else:
+                        limit_price = round(max(limit_price - FALLBACK_TICK, 0.01), 2)
+
+                order = LimitOrder(action, qty, limit_price)
+                order.tif = 'DAY'
+                self.logger.info(
+                    f"   Fallback leg {contract.strike}{contract.right} "
+                    f"{action} @ ${limit_price:.2f} (chase {chase})"
+                )
+                trade = self.ib.placeOrder(contract, order)
+
+                start_wait = time_module.time()
+                while (time_module.time() - start_wait) < 10:
+                    self.ib.sleep(1)
+                    if trade.orderStatus.status == 'Filled':
+                        leg_filled = True
+                        break
+                    if trade.orderStatus.status in ['Cancelled', 'Inactive', 'ApiCancelled']:
+                        break
+
+                if leg_filled:
+                    self.logger.info(f"   ✅ Leg {contract.strike}{contract.right} filled @ ${limit_price:.2f}")
                     break
-            
-            if trade.orderStatus.status != 'Filled':
-                self.logger.error(f"❌ Failed to close leg {contract.strike}{contract.right}")
+
+            if not leg_filled:
+                self.logger.error(f"❌ Failed to close leg {contract.strike}{contract.right} after {FALLBACK_CHASE_STEPS + 1} attempts")
+                # Cancel any dangling order for this leg
+                if trade:
+                    try:
+                        self.ib.cancelOrder(trade.order)
+                    except Exception:
+                        pass
                 all_filled = False
-        
-        if all_filled:
-            return True
-        return False
+
+        return all_filled
     
     def get_position_pnl(self) -> Optional[float]:
 
@@ -1096,6 +1206,7 @@ class LiveExecutor:
         max_spread_val: float = 0.0,
         rv_duration: float = 0.0,
         max_adverse_excursion: float = 0.0,
+        max_favorable_excursion: float = 0.0,
     ) -> bool:
         """
         Close the active position with blocking confirmation.
@@ -1105,6 +1216,7 @@ class LiveExecutor:
             max_spread_val: Max observed spread value (for journal)
             rv_duration: Realized Volatility annualized (for journal)
             max_adverse_excursion: Lowest PnL observed during trade
+            max_favorable_excursion: Highest PnL observed during trade
             
         Returns:
             True if closed successfully, False if failed/timeout
@@ -1132,6 +1244,7 @@ class LiveExecutor:
                     max_spread_val=max_spread_val,
                     rv_duration=rv_duration,
                     max_adverse_excursion=max_adverse_excursion,
+                    max_favorable_excursion=max_favorable_excursion,
                 )
             self._update_kill_switch_trackers(final_pnl)
             self.active_position = None
@@ -1164,6 +1277,7 @@ class LiveExecutor:
         
         max_spread_val = 0.0
         min_pnl_observed = 0.0  # Track MAE (Max Adverse Excursion)
+        max_pnl_observed = 0.0  # Track MFE (Max Favorable Excursion)
         spot_prices = [] # NEW: for RV calc
         
         while self.active_position:
@@ -1177,6 +1291,8 @@ class LiveExecutor:
                     max_spread_val = current_spread_cost
                 if pnl < min_pnl_observed:
                     min_pnl_observed = pnl
+                if pnl > max_pnl_observed:
+                    max_pnl_observed = pnl
             
             # Get current spot
             spot = self.connector.get_live_price('XSP') or 0.0
@@ -1230,6 +1346,8 @@ class LiveExecutor:
                     max_spread_val = current_spread_cost
                 if pnl < min_pnl_observed:
                     min_pnl_observed = pnl
+                if pnl > max_pnl_observed:
+                    max_pnl_observed = pnl
             
             # Danger zone detection
             danger = "⚠️ DANGER" if min_distance < 5 else ""
@@ -1258,7 +1376,13 @@ class LiveExecutor:
                      except Exception as e:
                         print(f"⚠️ RV Calc Error: {e}")
                 
-                success = self.close_position(exit_reason, max_spread_val, rv_duration, min_pnl_observed)
+                success = self.close_position(
+                    exit_reason,
+                    max_spread_val,
+                    rv_duration,
+                    min_pnl_observed,
+                    max_pnl_observed,
+                )
                 if success:
                     break
                 else:
@@ -1279,6 +1403,7 @@ class LiveExecutor:
                         max_spread_val=max_spread_val,
                         rv_duration=0.0,
                         max_adverse_excursion=min_pnl_observed,
+                        max_favorable_excursion=max_pnl_observed,
                     )
                 self._update_kill_switch_trackers(pnl_val)
                 self.active_position = None

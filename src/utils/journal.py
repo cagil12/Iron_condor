@@ -211,6 +211,7 @@ class TradeJournal:
         final_pnl_usd: float,
         entry_timestamp: datetime,
         max_adverse_excursion: float = 0.0,
+        max_favorable_excursion: float = 0.0,
         max_spread_val: float = 0.0,        # NEW
         rv_duration: float = 0.0,           # NEW
         exit_snapshot_json: str = ""        
@@ -224,6 +225,7 @@ class TradeJournal:
             final_pnl_usd: Final PnL in dollars
             entry_timestamp: When the trade was opened
             max_adverse_excursion: Lowest PnL point
+            max_favorable_excursion: Highest PnL point
             max_spread_val: Max price of spread (Tail Risk)
             exit_snapshot_json: Final market state
         """
@@ -254,6 +256,15 @@ class TradeJournal:
                     row['hold_duration_mins'] = round(duration_mins, 1)
                 except:
                     row['hold_duration_mins'] = ''
+
+                # Store MFE note without changing journal schema
+                mfe_note = f"MFE=${max_favorable_excursion:.2f}"
+                existing_reasoning = (row.get('reasoning') or '').strip()
+                if existing_reasoning:
+                    if "MFE=" not in existing_reasoning:
+                        row['reasoning'] = f"{existing_reasoning} | {mfe_note}"
+                else:
+                    row['reasoning'] = mfe_note
                 
                 found = True
                 break
