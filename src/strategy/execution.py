@@ -906,6 +906,10 @@ class LiveExecutor:
                     raw_credit = leg_total / max(self.MAX_QTY, 1)
                     # Some IB reports can express option shares with multiplier semantics.
                     if raw_credit > (self.WING_WIDTH * 5):
+                        self.logger.info(
+                            f"📐 Credit scale correction detected: raw=${raw_credit:.2f} "
+                            f"-> adjusted=${(raw_credit / 100.0):.2f}"
+                        )
                         raw_credit /= 100.0
                     verified_credit = round(raw_credit, 2)
                     self.logger.info(
