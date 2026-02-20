@@ -78,6 +78,7 @@ class LiveExecutor:
     ORDER_TIMEOUT = 10     # Seconds to wait for fill
     CHASE_TICKS = 8        # Number of times to chase price (FIX 3)
     TICK_SIZE = 0.05       # Combo tick size (aggressive for BAG orders) (FIX 3)
+    TERMINAL_STATES = {"Filled", "Cancelled", "ApiCancelled", "Inactive", "ApiPending"}
     FORCE_CLOSE_TIME = time(15, 45)  # Hard EOD exit at 3:45 PM
     STATE_FILE = Path("state.json")
     MAX_MARGIN_ACCEPTED = 400.0     # Maximum initial margin for 1 contract (wing=2 theoretical=$200, buffer for IBKR haircuts)
@@ -94,6 +95,7 @@ class LiveExecutor:
             self.logger.addHandler(sh)
             
         self.config = get_live_config()
+        self.SYMBOL: str = str(self.config.get('symbol', 'XSP'))
         self.active_position: Optional[IronCondorPosition] = None
         self.journal = journal
         self.consecutive_losses = 0
@@ -105,6 +107,8 @@ class LiveExecutor:
         # re-recovery loops when IBKR still reports expired 0DTE option legs.
         self.expired_hold_signatures: List[str] = []
         self.last_expiry_cleanup_key: Optional[str] = None
+        # Tracks in-flight entry order ID to prevent chase re-submit races.
+        self.pending_entry_order_id: Optional[int] = None
         
         # Load dynamic settings
         self.TAKE_PROFIT_PCT = float(self.config.get('take_profit_pct', self.TAKE_PROFIT_PCT))
@@ -181,6 +185,7 @@ class LiveExecutor:
                 'dd_pause_until': self.dd_pause_until,
                 'expired_hold_signatures': self.expired_hold_signatures,
                 'last_expiry_cleanup_key': self.last_expiry_cleanup_key,
+                'pending_entry_order_id': self.pending_entry_order_id,
                 'last_updated': datetime.now().isoformat()
             }
             # Handle non-serializable objects in __dict__ if any (delta/datetime handled by default str logic)
@@ -213,6 +218,8 @@ class LiveExecutor:
                 else:
                     self.expired_hold_signatures = []
                 self.last_expiry_cleanup_key = state.get('last_expiry_cleanup_key', None)
+                pending = state.get('pending_entry_order_id', None)
+                self.pending_entry_order_id = int(pending) if pending not in (None, "", 0, "0") else None
             except Exception as e:
                 self.logger.error(f"Failed to load state: {e}")
                 self.active_position = None
@@ -223,6 +230,277 @@ class LiveExecutor:
                 self.dd_pause_until = None
                 self.expired_hold_signatures = []
                 self.last_expiry_cleanup_key = None
+                self.pending_entry_order_id = None
+
+    def _wait_for_terminal(self, order: Order, timeout: float = 10.0) -> str:
+        """
+        Poll until order reaches a terminal state.
+
+        Returns:
+            "Filled", "Cancelled", specific terminal state, or "Timeout".
+        """
+        order_id = int(getattr(order, 'orderId', 0) or 0)
+        if order_id <= 0:
+            return "Timeout"
+
+        deadline = time_module.time() + timeout
+        while time_module.time() < deadline:
+            try:
+                open_trades = self.ib.openTrades()
+            except Exception:
+                open_trades = []
+
+            tracked = None
+            for ot in open_trades:
+                if int(getattr(ot.order, 'orderId', 0) or 0) == order_id:
+                    tracked = ot
+                    break
+
+            if tracked is None:
+                try:
+                    fills = self.ib.fills()
+                except Exception:
+                    fills = []
+                for fill in fills:
+                    exec_obj = getattr(fill, 'execution', None)
+                    if exec_obj and int(getattr(exec_obj, 'orderId', 0) or 0) == order_id:
+                        return "Filled"
+                return "Cancelled"
+
+            status = str(getattr(tracked.orderStatus, 'status', '') or '')
+            if status in self.TERMINAL_STATES:
+                return "Filled" if status == "Filled" else status
+
+            self.ib.sleep(0.25)
+
+        return "Timeout"
+
+    def _register_fill_from_race(self, order: Order) -> None:
+        """
+        Recover active position when a cancel-targeted entry order fills.
+        """
+        order_id = int(getattr(order, 'orderId', 0) or 0)
+        target_symbol = str(getattr(self, 'SYMBOL', self.config.get('symbol', '')))
+
+        try:
+            fills = self.ib.fills()
+        except Exception:
+            fills = []
+        order_fills = [
+            f for f in fills
+            if int(getattr(getattr(f, 'execution', None), 'orderId', 0) or 0) == order_id
+            and getattr(getattr(f, 'contract', None), 'symbol', '') == target_symbol
+        ]
+        leg_fills = [
+            f for f in order_fills
+            if getattr(getattr(f, 'contract', None), 'secType', '') in ('OPT', 'FOP')
+        ]
+
+        legs_by_conid: Dict[int, Dict[str, Any]] = {}
+        for fill in leg_fills:
+            contract = fill.contract
+            exec_obj = fill.execution
+            side = str(getattr(exec_obj, 'side', '')).upper()
+            action = 'SELL' if side == 'SLD' else 'BUY'
+            legs_by_conid[int(contract.conId)] = {
+                'conId': int(contract.conId),
+                'action': action,
+                'strike': float(contract.strike),
+                'right': str(contract.right),
+            }
+
+        recovered_legs = list(legs_by_conid.values())
+        short_put = long_put = short_call = long_call = None
+        if recovered_legs:
+            sp = sorted([l for l in recovered_legs if l['right'] == 'P' and l['action'] == 'SELL'], key=lambda x: x['strike'])
+            lp = sorted([l for l in recovered_legs if l['right'] == 'P' and l['action'] == 'BUY'], key=lambda x: x['strike'])
+            sc = sorted([l for l in recovered_legs if l['right'] == 'C' and l['action'] == 'SELL'], key=lambda x: x['strike'])
+            lc = sorted([l for l in recovered_legs if l['right'] == 'C' and l['action'] == 'BUY'], key=lambda x: x['strike'])
+            if sp and lp and sc and lc:
+                short_put, long_put = sp[-1], lp[0]
+                short_call, long_call = sc[0], lc[-1]
+
+        if not (short_put and long_put and short_call and long_call):
+            # Fallback to live positions if leg fills are unavailable/incomplete.
+            positions = [
+                p for p in self.ib.positions()
+                if p.contract.symbol == target_symbol and p.contract.secType == 'OPT' and p.position != 0 and abs(p.position) == 1
+            ]
+            puts = sorted([p for p in positions if p.contract.right == 'P'], key=lambda p: p.contract.strike)
+            calls = sorted([p for p in positions if p.contract.right == 'C'], key=lambda p: p.contract.strike)
+            if len(puts) == 2 and len(calls) == 2:
+                long_put_p, short_put_p = puts[0], puts[1]
+                short_call_p, long_call_p = calls[0], calls[1]
+                short_put = {'conId': int(short_put_p.contract.conId), 'action': 'SELL', 'strike': float(short_put_p.contract.strike), 'right': 'P'}
+                long_put = {'conId': int(long_put_p.contract.conId), 'action': 'BUY', 'strike': float(long_put_p.contract.strike), 'right': 'P'}
+                short_call = {'conId': int(short_call_p.contract.conId), 'action': 'SELL', 'strike': float(short_call_p.contract.strike), 'right': 'C'}
+                long_call = {'conId': int(long_call_p.contract.conId), 'action': 'BUY', 'strike': float(long_call_p.contract.strike), 'right': 'C'}
+                recovered_legs = [long_put, short_put, short_call, long_call]
+            else:
+                self.pending_entry_order_id = None
+                self.save_state()
+                self.logger.error(
+                    f"🛑 Race fill registered: could not reconstruct 4-leg structure for order {order_id}."
+                )
+                return
+
+        qty = 1
+        if leg_fills:
+            try:
+                qty = max(int(abs(getattr(f.execution, 'shares', 1) or 1)) for f in leg_fills)
+            except Exception:
+                qty = 1
+        qty = max(qty, 1)
+
+        combo_credit = abs(float(getattr(order, 'lmtPrice', 0.0) or 0.0))
+        verified_credit = None
+        if leg_fills:
+            leg_total = 0.0
+            for fill in leg_fills:
+                exec_obj = fill.execution
+                shares = float(getattr(exec_obj, 'shares', 0.0) or 0.0)
+                price = float(getattr(exec_obj, 'price', 0.0) or 0.0)
+                if str(getattr(exec_obj, 'side', '')).upper() == 'SLD':
+                    leg_total += price * shares
+                else:
+                    leg_total -= price * shares
+            if leg_total > 0:
+                raw_credit = leg_total / qty
+                if raw_credit > (self.WING_WIDTH * 5):
+                    raw_credit /= 100.0
+                verified_credit = round(raw_credit, 2)
+
+        entry_credit = verified_credit if verified_credit is not None else combo_credit
+        if entry_credit <= 0:
+            entry_credit = combo_credit if combo_credit > 0 else 0.01
+
+        wing_width = max(float(short_put['strike']) - float(long_put['strike']), 0.01)
+        max_profit = entry_credit * qty * 100
+        max_loss = max((wing_width - entry_credit) * qty * 100, 0.0)
+
+        spot = 0.0
+        vix = 0.0
+        try:
+            spot = float(self.connector.get_live_price(target_symbol) or 0.0)
+        except Exception:
+            spot = 0.0
+        try:
+            vix = float(self.connector.get_live_price('VIX') or 0.0)
+        except Exception:
+            vix = 0.0
+
+        entry_time = datetime.now()
+        if order_fills:
+            try:
+                entry_time = min(f.time for f in order_fills).astimezone().replace(tzinfo=None)
+            except Exception:
+                entry_time = datetime.now()
+
+        method = "RACE_RECOVERY"
+        trade_id = 0
+        if self.journal:
+            try:
+                trade_id = self.journal.log_trade_open(
+                    spot_price=spot,
+                    vix_value=vix,
+                    short_put_strike=float(short_put['strike']),
+                    short_call_strike=float(short_call['strike']),
+                    wing_width=wing_width,
+                    entry_credit=entry_credit,
+                    initial_credit=entry_credit,
+                    iv_entry_atm=(vix / 100.0 if vix > 0 else 0.0),
+                    max_profit_usd=max_profit,
+                    max_loss_usd=max_loss,
+                    delta_net=0.0,
+                    delta_put=0.0,
+                    delta_call=0.0,
+                    theta=0.0,
+                    gamma=0.0,
+                    selection_method=method,
+                    target_delta=self.config.get('target_delta', 0.10),
+                    otm_distance_pct="N/A",
+                    snapshot_json=json.dumps({}),
+                    commissions_est=self.expected_commission_win,
+                    reasoning=(
+                        f"Method: {method} | ExitStrategy: {self.exit_strategy_label} | "
+                        f"RecoveredFromOrder: {order_id} | Credit: ${entry_credit:.2f}"
+                    ),
+                )
+            except Exception as e:
+                self.logger.warning(f"🛑 Race fill registered: failed to journal OPEN row ({e})")
+
+        self.active_position = IronCondorPosition(
+            trade_id=trade_id,
+            entry_time=entry_time,
+            short_put_strike=float(short_put['strike']),
+            long_put_strike=float(long_put['strike']),
+            short_call_strike=float(short_call['strike']),
+            long_call_strike=float(long_call['strike']),
+            entry_credit=entry_credit,
+            qty=qty,
+            max_profit=max_profit,
+            max_loss=max_loss,
+            spot_at_entry=spot,
+            vix_at_entry=vix,
+            delta_net=0.0,
+            snapshot_json=json.dumps({}),
+            legs=[long_put, short_put, short_call, long_call],
+            delta_put=0.0,
+            delta_call=0.0,
+            theta=0.0,
+            gamma=0.0,
+        )
+        self.pending_entry_order_id = None
+        self.save_state()
+        self.logger.warning(
+            f"🛑 Race fill registered: order {order_id} recovered as "
+            f"{self.active_position.short_put_strike:.0f}P/{self.active_position.short_call_strike:.0f}C "
+            f"credit=${entry_credit:.2f} qty={qty}"
+        )
+
+    def _resolve_stale_pending_entry_on_startup(self) -> None:
+        """Resolve stale in-flight entry order lock from previous run."""
+        if not self.pending_entry_order_id:
+            return
+
+        order_id = int(self.pending_entry_order_id)
+        resolved = "Cancelled"
+
+        # Check live open orders first.
+        try:
+            open_trade = next(
+                (t for t in self.ib.openTrades() if int(getattr(t.order, 'orderId', 0) or 0) == order_id),
+                None,
+            )
+        except Exception:
+            open_trade = None
+
+        if open_trade is not None:
+            resolved = self._wait_for_terminal(open_trade.order, timeout=10.0)
+        else:
+            try:
+                has_fill = any(
+                    int(getattr(getattr(f, 'execution', None), 'orderId', 0) or 0) == order_id
+                    for f in self.ib.fills()
+                )
+            except Exception:
+                has_fill = False
+            resolved = "Filled" if has_fill else "Cancelled"
+
+        if resolved == "Filled":
+            class _RecoveredOrder:
+                def __init__(self, oid: int):
+                    self.orderId = oid
+                    self.lmtPrice = 0.0
+
+            self._register_fill_from_race(_RecoveredOrder(order_id))
+        else:
+            self.pending_entry_order_id = None
+            self.save_state()
+
+        self.logger.warning(
+            f"⚠️ Stale pending_entry_order_id detected on startup: {order_id}. Resolved as {resolved}."
+        )
 
     def _build_positions_signature(self, positions: List[Any]) -> str:
         """Build deterministic signature for a set of live IBKR option positions."""
@@ -414,6 +692,9 @@ class LiveExecutor:
         """Cancelar órdenes huérfanas y reconciliar posiciones al iniciar (FIX 2)"""
         self.logger.info("REMINDER: Verify TWS setting 'Download open orders on connection' is enabled")
         self.logger.info("TWS → Global Configuration → API → Settings → ☑️ Download open orders")
+
+        if self.pending_entry_order_id:
+            self._resolve_stale_pending_entry_on_startup()
         
         # 1. Ver qué hay abierto
         open_orders = self.ib.reqAllOpenOrders()
@@ -1018,8 +1299,27 @@ class LiveExecutor:
                 # FIX 6b: Cancel previous to avoid Error 105
                 self.logger.info(f"   🔄 Chase #{chase}: Cancelling previous order...")
                 if trade:
-                    self.ib.cancelOrder(trade.order)
-                    self.ib.sleep(1)
+                    prev_order = trade.order
+                    self.ib.cancelOrder(prev_order)
+                    terminal_status = self._wait_for_terminal(prev_order, timeout=10.0)
+
+                    if terminal_status == "Filled":
+                        self.logger.warning(
+                            f"🛑 Chase race detected: order {prev_order.orderId} filled during cancel. "
+                            "Position already open. Aborting chase."
+                        )
+                        self._register_fill_from_race(prev_order)
+                        return self.active_position
+                    if terminal_status == "Timeout":
+                        self.logger.error(
+                            f"❌ Cancel timeout for order {prev_order.orderId} after 10s. "
+                            "Aborting chase — manual review required."
+                        )
+                        self.pending_entry_order_id = None
+                        self.save_state()
+                        return None
+                    self.pending_entry_order_id = None
+                    self.save_state()
                 
                 # Adjust Price: Less negative = easier fill
                 limit_price += self.TICK_SIZE
@@ -1027,8 +1327,18 @@ class LiveExecutor:
                 if abs(limit_price) < min_credit_floor:
                     self.logger.warning(f"   🛑 Chase stopped: credit ${abs(limit_price):.2f} < floor ${min_credit_floor}. Aborting.")
                     if trade:
-                        self.ib.cancelOrder(trade.order)
-                        self.ib.sleep(1)
+                        prev_order = trade.order
+                        self.ib.cancelOrder(prev_order)
+                        terminal_status = self._wait_for_terminal(prev_order, timeout=10.0)
+                        if terminal_status == "Filled":
+                            self.logger.warning(
+                                f"🛑 Chase race detected: order {prev_order.orderId} filled during cancel. "
+                                "Position already open. Aborting chase."
+                            )
+                            self._register_fill_from_race(prev_order)
+                            return self.active_position
+                    self.pending_entry_order_id = None
+                    self.save_state()
                     return None
                     
                 if limit_price > 0: limit_price = 0.0
@@ -1043,6 +1353,14 @@ class LiveExecutor:
             
             self.logger.info(f"   📡 Placing order at ${limit_price:.2f} (Chase {chase})")
             trade = self.ib.placeOrder(bag, order)
+            real_id = int(getattr(trade.order, 'orderId', 0) or 0)
+            if real_id > 0:
+                self.pending_entry_order_id = real_id
+                self.save_state()
+            else:
+                self.logger.warning(
+                    "⚠️ placeOrder returned orderId=0. pending_entry_order_id lock not set for this attempt."
+                )
             
             # Wait for fill with timeout
             start_wait = time_module.time()
@@ -1060,9 +1378,22 @@ class LiveExecutor:
         if not filled:
             self.logger.warning("❌ Timeout after chase. Cancelling.")
             if trade:
-                self.ib.cancelOrder(trade.order)
-                self.ib.sleep(1)
+                prev_order = trade.order
+                self.ib.cancelOrder(prev_order)
+                terminal_status = self._wait_for_terminal(prev_order, timeout=10.0)
+                if terminal_status == "Filled":
+                    self.logger.warning(
+                        f"🛑 Chase race detected: order {prev_order.orderId} filled during cancel. "
+                        "Position already open. Aborting chase."
+                    )
+                    self._register_fill_from_race(prev_order)
+                    return self.active_position
+            self.pending_entry_order_id = None
+            self.save_state()
             return None
+
+        self.pending_entry_order_id = None
+        self.save_state()
             
         # Success - Verify real credit from individual leg fills
         combo_credit = abs(trade.order.lmtPrice)
@@ -1217,6 +1548,8 @@ class LiveExecutor:
             self.ib.cancelOrder(trade.order)
         except Exception as e:
             self.logger.warning(f"Cancel BAG order exception (may already be dead): {e}")
+        # Close path: sleep(2) is acceptable here - duplicate close risk is lower than duplicate entry.
+        # _wait_for_terminal is intentionally only required on entry idempotency path.
         self.ib.sleep(2)
 
         # Belt-and-suspenders: global cancel to clear any residual orders
@@ -1285,6 +1618,7 @@ class LiveExecutor:
                             self.ib.cancelOrder(trade.order)
                         except Exception:
                             pass
+                        # Exit chase: sleep(1) is acceptable here; this is not an entry idempotency risk.
                         self.ib.sleep(1)
                     # Widen price to be more aggressive
                     if action == 'BUY':
