@@ -9,6 +9,7 @@ SAFETY: Hardcoded limits for small account ($200 capital).
 import time as time_module
 from datetime import datetime, time, timedelta
 import json
+import csv
 from typing import Optional, Dict, Any, List
 import argparse
 import sys
@@ -64,7 +65,7 @@ class LiveExecutor:
     Live execution engine for XSP Iron Condors.
     
     Safety Features:
-    - WING_WIDTH = 1.0 (hardcoded for $200 account)
+    - WING_WIDTH = 2.0 (default for current $200-risk profile, configurable)
     - QTY = 1 (no pyramiding)
     - Active position check before entry
     """
@@ -100,6 +101,10 @@ class LiveExecutor:
         self.cumulative_pnl = 0.0
         self.pnl_high_water_mark = 0.0
         self.dd_pause_until = None
+        # Track hold-to-expiry signatures already finalized today to prevent
+        # re-recovery loops when IBKR still reports expired 0DTE option legs.
+        self.expired_hold_signatures: List[str] = []
+        self.last_expiry_cleanup_key: Optional[str] = None
         
         # Load dynamic settings
         self.TAKE_PROFIT_PCT = float(self.config.get('take_profit_pct', self.TAKE_PROFIT_PCT))
@@ -174,6 +179,8 @@ class LiveExecutor:
                 'cumulative_pnl': self.cumulative_pnl,
                 'pnl_high_water_mark': self.pnl_high_water_mark,
                 'dd_pause_until': self.dd_pause_until,
+                'expired_hold_signatures': self.expired_hold_signatures,
+                'last_expiry_cleanup_key': self.last_expiry_cleanup_key,
                 'last_updated': datetime.now().isoformat()
             }
             # Handle non-serializable objects in __dict__ if any (delta/datetime handled by default str logic)
@@ -200,6 +207,12 @@ class LiveExecutor:
                 self.cumulative_pnl = float(state.get('cumulative_pnl', 0.0) or 0.0)
                 self.pnl_high_water_mark = float(state.get('pnl_high_water_mark', 0.0) or 0.0)
                 self.dd_pause_until = state.get('dd_pause_until', None)
+                signatures = state.get('expired_hold_signatures', []) or []
+                if isinstance(signatures, list):
+                    self.expired_hold_signatures = [str(s) for s in signatures if s]
+                else:
+                    self.expired_hold_signatures = []
+                self.last_expiry_cleanup_key = state.get('last_expiry_cleanup_key', None)
             except Exception as e:
                 self.logger.error(f"Failed to load state: {e}")
                 self.active_position = None
@@ -208,6 +221,152 @@ class LiveExecutor:
                 self.cumulative_pnl = 0.0
                 self.pnl_high_water_mark = 0.0
                 self.dd_pause_until = None
+                self.expired_hold_signatures = []
+                self.last_expiry_cleanup_key = None
+
+    def _build_positions_signature(self, positions: List[Any]) -> str:
+        """Build deterministic signature for a set of live IBKR option positions."""
+        if not positions:
+            return ""
+        parts = []
+        for p in positions:
+            c = p.contract
+            parts.append(
+                f"{int(getattr(c, 'conId', 0))}:{getattr(c, 'right', '')}:"
+                f"{float(getattr(c, 'strike', 0.0)):.1f}:{int(p.position)}"
+            )
+        return "|".join(sorted(parts))
+
+    def _build_legs_signature(self, legs: List[Dict[str, Any]]) -> str:
+        """Build deterministic signature for internally-tracked IC legs."""
+        if not legs:
+            return ""
+        parts = []
+        for leg in legs:
+            conid = int(leg.get('conId', 0) or 0)
+            right = str(leg.get('right', ''))
+            strike = float(leg.get('strike', 0.0) or 0.0)
+            action = str(leg.get('action', ''))
+            qty = -1 if action.upper() == 'SELL' else 1
+            parts.append(f"{conid}:{right}:{strike:.1f}:{qty}")
+        return "|".join(sorted(parts))
+
+    def _signature_day_key(self, signature: str, ts: Optional[datetime] = None) -> str:
+        """Attach date to a signature to prevent cross-day suppression."""
+        if not signature:
+            return ""
+        day = (ts or datetime.now()).strftime("%Y-%m-%d")
+        return f"{day}|{signature}"
+
+    def _is_expired_signature_blocked(self, signature: str, ts: Optional[datetime] = None) -> bool:
+        key = self._signature_day_key(signature, ts)
+        return bool(key) and key in self.expired_hold_signatures
+
+    def _register_expired_signature(self, signature: str, ts: Optional[datetime] = None):
+        key = self._signature_day_key(signature, ts)
+        if not key:
+            return
+        if key not in self.expired_hold_signatures:
+            self.expired_hold_signatures.append(key)
+            # Keep state bounded
+            if len(self.expired_hold_signatures) > 100:
+                self.expired_hold_signatures = self.expired_hold_signatures[-100:]
+
+    def _find_open_trade_id(
+        self,
+        short_put_strike: float,
+        short_call_strike: float,
+        wing_width: float,
+    ) -> int:
+        """
+        Resolve recovered position to an existing OPEN trade in journal.
+        Returns 0 when no matching OPEN row is found.
+        """
+        if not self.journal:
+            return 0
+        journal_path = getattr(self.journal, 'journal_path', None)
+        if not journal_path:
+            return 0
+        path_obj = Path(journal_path)
+        if not path_obj.exists():
+            return 0
+
+        try:
+            with open(path_obj, 'r', newline='', encoding='utf-8') as f:
+                rows = list(csv.DictReader(f))
+        except Exception as e:
+            self.logger.warning(f"Could not read journal for recovery trade_id lookup: {e}")
+            return 0
+
+        for row in reversed(rows):
+            try:
+                status = str(row.get('status', '')).strip().upper()
+                if status != 'OPEN':
+                    continue
+                sp = float(row.get('short_put_strike', 0.0) or 0.0)
+                sc = float(row.get('short_call_strike', 0.0) or 0.0)
+                ww = float(row.get('wing_width', 0.0) or 0.0)
+                if (
+                    abs(sp - short_put_strike) <= 0.01
+                    and abs(sc - short_call_strike) <= 0.01
+                    and abs(ww - wing_width) <= 0.01
+                ):
+                    return int(row.get('trade_id', 0) or 0)
+            except Exception:
+                continue
+        return 0
+
+    def _finalize_hold_to_expiry(
+        self,
+        final_pnl: float,
+        max_spread_val: float,
+        min_pnl_observed: float,
+        max_pnl_observed: float,
+    ):
+        """Finalize state/journal for hold-to-expiry without requiring a close order."""
+        if not self.active_position:
+            return
+
+        signature = self._build_legs_signature(self.active_position.legs or [])
+        cleanup_key = self._signature_day_key(signature)
+        if cleanup_key and self.last_expiry_cleanup_key == cleanup_key:
+            self.logger.warning(
+                "⚠️ Duplicate hold-to-expiry cleanup detected for same position signature; skipping duplicate accounting."
+            )
+            self.active_position = None
+            self.save_state()
+            return
+
+        self.logger.info(
+            "✅ Market close reached in hold-to-expiry mode; no TP close order sent."
+        )
+
+        trade_id = int(self.active_position.trade_id or 0)
+        if self.journal and trade_id > 0:
+            self.journal.log_trade_close(
+                trade_id=trade_id,
+                exit_reason="EXPIRED_HOLD_TO_EXPIRY",
+                final_pnl_usd=final_pnl,
+                entry_timestamp=self.active_position.entry_time,
+                max_spread_val=max_spread_val,
+                rv_duration=0.0,
+                max_adverse_excursion=min_pnl_observed,
+                max_favorable_excursion=max_pnl_observed,
+            )
+            self._update_kill_switch_trackers(final_pnl)
+        elif self.journal and trade_id <= 0:
+            self.logger.warning(
+                "⚠️ Skipping journal/DD update for recovered position with trade_id<=0 (unmapped position)."
+            )
+        else:
+            self._update_kill_switch_trackers(final_pnl)
+
+        if cleanup_key:
+            self.last_expiry_cleanup_key = cleanup_key
+        if signature:
+            self._register_expired_signature(signature)
+        self.active_position = None
+        self.save_state()
 
     def _update_kill_switch_trackers(self, final_pnl: float):
         """Update L5 streak tracking and L1 drawdown tracking after a trade is closed."""
@@ -302,6 +461,13 @@ class LiveExecutor:
             self.logger.info("   ✅ No existing positions found. Ready for new entries.")
             return
 
+        live_signature = self._build_positions_signature(xsp_positions)
+        if self._is_expired_signature_blocked(live_signature):
+            self.logger.info(
+                "   ℹ️ Ignoring previously finalized hold-to-expiry position signature."
+            )
+            return
+
         self.logger.warning(f"   ⚠️ Found {len(xsp_positions)} existing XSP legs. Attempting recovery...")
         
         try:
@@ -371,7 +537,11 @@ class LiveExecutor:
                 entry_time = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
             
             self.active_position = IronCondorPosition(
-                trade_id=0,
+                trade_id=self._find_open_trade_id(
+                    short_put.contract.strike,
+                    short_call.contract.strike,
+                    wing_width,
+                ),
                 entry_time=entry_time,
                 short_put_strike=short_put.contract.strike,
                 long_put_strike=long_put.contract.strike,
@@ -389,7 +559,16 @@ class LiveExecutor:
             )
             
             hold_min = (datetime.now() - entry_time).total_seconds() / 60
-            self.logger.info(f"   ✅ Position Recovered! Strikes: {short_put.contract.strike}P/{short_call.contract.strike}C | Hold: {hold_min:.0f}m")
+            if self.active_position.trade_id > 0:
+                self.logger.info(
+                    f"   ✅ Position Recovered! TradeID={self.active_position.trade_id} "
+                    f"Strikes: {short_put.contract.strike}P/{short_call.contract.strike}C | Hold: {hold_min:.0f}m"
+                )
+            else:
+                self.logger.warning(
+                    f"   ⚠️ Position recovered without OPEN journal row "
+                    f"(trade_id=0): {short_put.contract.strike}P/{short_call.contract.strike}C"
+                )
             
         except Exception as e:
             self.logger.error(f"   ❌ Recovery Failed: {e}")
@@ -406,7 +585,16 @@ class LiveExecutor:
         xsp_positions = [p for p in positions 
                         if p.contract.symbol == 'XSP' 
                         and abs(p.position) == 1]
-        return len(xsp_positions) > 0
+        if not xsp_positions:
+            return False
+
+        live_signature = self._build_positions_signature(xsp_positions)
+        if self._is_expired_signature_blocked(live_signature):
+            self.logger.info(
+                "ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position()."
+            )
+            return False
+        return True
     
     def build_option_contract(self, strike: float, right: str, expiry: str) -> Option:
         """Build an XSP option contract."""
@@ -750,7 +938,7 @@ class LiveExecutor:
         credit_call_spread = prices['short_call'] - prices['long_call']
         total_credit = credit_put_spread + credit_call_spread
         
-        min_credit_required = self.config.get('min_credit', 0.20)
+        min_credit_required = self.config.get('min_credit', 0.18)
         if total_credit <= 0:
             self.logger.error(f"❌ Invalid credit: ${total_credit:.2f}")
             return None
@@ -835,7 +1023,7 @@ class LiveExecutor:
                 
                 # Adjust Price: Less negative = easier fill
                 limit_price += self.TICK_SIZE
-                min_credit_floor = self.config.get('min_credit', 0.20)
+                min_credit_floor = self.config.get('min_credit', 0.18)
                 if abs(limit_price) < min_credit_floor:
                     self.logger.warning(f"   🛑 Chase stopped: credit ${abs(limit_price):.2f} < floor ${min_credit_floor}. Aborting.")
                     if trade:
@@ -1276,145 +1464,157 @@ class LiveExecutor:
         print(f"\n📡 Monitoring position (checking every {check_interval}s)...")
         
         # Market close time
-        # Market close time
         market_close = dt_time(16, 0)
         
         max_spread_val = 0.0
         min_pnl_observed = 0.0  # Track MAE (Max Adverse Excursion)
         max_pnl_observed = 0.0  # Track MFE (Max Favorable Excursion)
+        last_known_pnl = 0.0
         spot_prices = [] # NEW: for RV calc
         
         while self.active_position:
-            # Update Max Spread Value (Tail Risk)
-            # PnL = (EntryCredit - CurrentSpread) * 100 * Qty
-            # CurrentSpread = EntryCredit - (PnL / (100 * self.active_position.qty))
-            pnl = self.get_position_pnl()
-            if pnl is not None:
-                current_spread_cost = self.active_position.entry_credit - (pnl / (100 * self.active_position.qty))
-                if current_spread_cost > max_spread_val:
-                    max_spread_val = current_spread_cost
-                if pnl < min_pnl_observed:
-                    min_pnl_observed = pnl
-                if pnl > max_pnl_observed:
-                    max_pnl_observed = pnl
-            
-            # Get current spot
-            spot = self.connector.get_live_price('XSP') or 0.0
-            if spot > 0:
-                spot_prices.append(spot)
-            
-            # Get VIX
-            vix = self.connector.get_live_price('VIX') or 0.0
-            
-            # Calculate distances to strikes
-            short_put = self.active_position.short_put_strike
-            short_call = self.active_position.short_call_strike
-            dist_put = spot - short_put
-            dist_call = short_call - spot
-            
-            # Danger zone detection (Global scope)
-            min_distance = min(dist_put, dist_call)
-            
-            # Calculate percentages
-            max_profit = self.active_position.max_profit
-            max_loss = self.active_position.max_loss
-            pnl_val = pnl if pnl is not None else 0.0
-            
-            tp_pct = (pnl_val / max_profit * 100) if max_profit > 0 else 0
-            sl_pct = (pnl_val / max_loss * 100) if max_loss > 0 else 0 # Careful, max_loss is positive number
-            # Actually max_loss is max loss amount. SL hit is negative PnL. 
-            # Let's stick to TP% of MaxProfit.
-            
-            # Time held
             now = datetime.now()
-            
-            # Calculate hold time
-            hold_time = (now - self.active_position.entry_time).total_seconds() / 60
-            
-            if pnl is not None:
-                max_profit = self.active_position.max_profit
-                tp_target = max_profit * self.TAKE_PROFIT_PCT
-                # Show % of TP target reached (100% = hit target)
-                tp_pct = (pnl / tp_target) * 100 if tp_target > 0 else 0
-                # Also show % of max profit for context
-                max_pct = (pnl / max_profit) * 100 if max_profit > 0 else 0
-                
-                # Calculate SL progress
-                sl_target = -self.active_position.entry_credit * 100 * self.STOP_LOSS_MULT
-                sl_pct = (pnl / sl_target) * 100 if sl_target < 0 else 0
-                
-                # Danger zone detection
-                # min_distance = min(dist_put, dist_call) # Moved up
-                current_spread_cost = self.active_position.entry_credit - (pnl / (100 * self.active_position.qty))
-                if current_spread_cost > max_spread_val:
-                    max_spread_val = current_spread_cost
-                if pnl < min_pnl_observed:
-                    min_pnl_observed = pnl
-                if pnl > max_pnl_observed:
-                    max_pnl_observed = pnl
-            
-            # Danger zone detection
-            danger = "⚠️ DANGER" if min_distance < 5 else ""
-            
-            # Enhanced output: TP% means progress to TP target, Hold shows time in trade
-            now_str = now.strftime("%H:%M:%S")
-            # Calculate max potential profit pct realized
-            max_pct = (pnl_val / max_profit * 100)
-            
-            base_output = f"[{now_str}] XSP: {spot:.2f} | VIX: {vix:.1f} | PnL: ${pnl_val:.2f} ({max_pct:.0f}%Max) | TP:{tp_pct:.0f}% SL:{sl_pct:.0f}% | {short_put:.0f}P({dist_put:+.0f}) {short_call:.0f}C({dist_call:+.0f}) | Hold:{hold_time:.0f}m | MaxSprd:{max_spread_val:.2f}"
-            print(f"{danger} {base_output}" if danger else base_output, flush=True)
-            
-            exit_reason = self.check_exit_conditions()
-            if exit_reason:
-                # Calculate Realized Volatility (RV)
-                rv_duration = 0.0
-                if len(spot_prices) > 2:
-                     try:
-                        prices_arr = np.array(spot_prices)
-                        log_returns = np.log(prices_arr[1:] / prices_arr[:-1])
-                        std_dev = np.std(log_returns)
-                        # Annualize: sqrt(252 trading days * 6.5 hours * 3600 seconds / interval)
-                        # We use the actual sampling interval (check_interval)
-                        annualization_factor = np.sqrt(252 * 6.5 * 3600 / check_interval)
-                        rv_duration = std_dev * annualization_factor
-                     except Exception as e:
-                        print(f"⚠️ RV Calc Error: {e}")
-                
-                success = self.close_position(
-                    exit_reason,
+
+            # FIX 11: Hard expiry deadline BEFORE any IBKR-dependent fetches.
+            if self.HOLD_TO_EXPIRY_MODE and now.time() >= market_close:
+                final_pnl = last_known_pnl
+                try:
+                    latest_pnl = self.get_position_pnl()
+                    if latest_pnl is not None:
+                        final_pnl = latest_pnl
+                except Exception as e:
+                    self.logger.warning(
+                        f"⚠️ Could not refresh PnL at expiry; using last known PnL=${last_known_pnl:.2f}. Error: {e}"
+                    )
+                self._finalize_hold_to_expiry(
+                    final_pnl,
                     max_spread_val,
-                    rv_duration,
                     min_pnl_observed,
                     max_pnl_observed,
                 )
-                if success:
-                    break
-                else:
-                    print("⚠️ Exit failed. Retrying monitoring loop...")
-                    self.ib.sleep(1)
-
-            # Hold-to-expiry path: no TP close order; mark as expired at market close.
-            if self.HOLD_TO_EXPIRY_MODE and now.time() >= market_close:
-                self.logger.info(
-                    "✅ Market close reached in hold-to-expiry mode; no TP close order sent."
-                )
-                if self.journal and self.active_position:
-                    self.journal.log_trade_close(
-                        trade_id=self.active_position.trade_id,
-                        exit_reason="EXPIRED_HOLD_TO_EXPIRY",
-                        final_pnl_usd=pnl_val,
-                        entry_timestamp=self.active_position.entry_time,
-                        max_spread_val=max_spread_val,
-                        rv_duration=0.0,
-                        max_adverse_excursion=min_pnl_observed,
-                        max_favorable_excursion=max_pnl_observed,
-                    )
-                self._update_kill_switch_trackers(pnl_val)
-                self.active_position = None
-                self.save_state()
                 break
-            
-            self.ib.sleep(check_interval)
+
+            try:
+                # Update Max Spread Value (Tail Risk)
+                # PnL = (EntryCredit - CurrentSpread) * 100 * Qty
+                # CurrentSpread = EntryCredit - (PnL / (100 * self.active_position.qty))
+                pnl = self.get_position_pnl()
+                if pnl is not None:
+                    last_known_pnl = pnl
+                    current_spread_cost = self.active_position.entry_credit - (pnl / (100 * self.active_position.qty))
+                    if current_spread_cost > max_spread_val:
+                        max_spread_val = current_spread_cost
+                    if pnl < min_pnl_observed:
+                        min_pnl_observed = pnl
+                    if pnl > max_pnl_observed:
+                        max_pnl_observed = pnl
+                else:
+                    pnl = last_known_pnl
+
+                # Get current spot
+                spot = self.connector.get_live_price('XSP') or 0.0
+                if spot > 0:
+                    spot_prices.append(spot)
+
+                # Get VIX
+                vix = self.connector.get_live_price('VIX') or 0.0
+
+                # Calculate distances to strikes
+                short_put = self.active_position.short_put_strike
+                short_call = self.active_position.short_call_strike
+                dist_put = spot - short_put
+                dist_call = short_call - spot
+
+                # Danger zone detection
+                min_distance = min(dist_put, dist_call)
+
+                # Calculate percentages
+                max_profit = self.active_position.max_profit
+                pnl_val = pnl if pnl is not None else 0.0
+                tp_target = max_profit * self.TAKE_PROFIT_PCT
+                tp_pct = (pnl_val / tp_target * 100) if tp_target > 0 else 0
+                sl_target = -self.active_position.entry_credit * 100 * self.STOP_LOSS_MULT
+                sl_pct = (pnl_val / sl_target * 100) if sl_target < 0 else 0
+                max_pct = (pnl_val / max_profit * 100) if max_profit > 0 else 0
+
+                # Time held
+                now = datetime.now()
+                hold_time = (now - self.active_position.entry_time).total_seconds() / 60
+
+                danger = "⚠️ DANGER" if min_distance < 5 else ""
+                now_str = now.strftime("%H:%M:%S")
+                base_output = (
+                    f"[{now_str}] XSP: {spot:.2f} | VIX: {vix:.1f} | "
+                    f"PnL: ${pnl_val:.2f} ({max_pct:.0f}%Max) | TP:{tp_pct:.0f}% SL:{sl_pct:.0f}% | "
+                    f"{short_put:.0f}P({dist_put:+.0f}) {short_call:.0f}C({dist_call:+.0f}) | "
+                    f"Hold:{hold_time:.0f}m | MaxSprd:{max_spread_val:.2f}"
+                )
+                print(f"{danger} {base_output}" if danger else base_output, flush=True)
+
+                exit_reason = self.check_exit_conditions()
+                if exit_reason:
+                    # Calculate Realized Volatility (RV)
+                    rv_duration = 0.0
+                    if len(spot_prices) > 2:
+                        try:
+                            prices_arr = np.array(spot_prices)
+                            log_returns = np.log(prices_arr[1:] / prices_arr[:-1])
+                            std_dev = np.std(log_returns)
+                            # Annualize using actual sampling interval
+                            annualization_factor = np.sqrt(252 * 6.5 * 3600 / check_interval)
+                            rv_duration = std_dev * annualization_factor
+                        except Exception as e:
+                            print(f"⚠️ RV Calc Error: {e}")
+
+                    success = self.close_position(
+                        exit_reason,
+                        max_spread_val,
+                        rv_duration,
+                        min_pnl_observed,
+                        max_pnl_observed,
+                    )
+                    if success:
+                        break
+                    print("⚠️ Exit failed. Retrying monitoring loop...")
+                    try:
+                        self.ib.sleep(1)
+                    except Exception:
+                        time_module.sleep(1)
+
+            except Exception as e:
+                self.logger.error(f"⚠️ Monitor loop exception: {e}")
+                now = datetime.now()
+                if self.HOLD_TO_EXPIRY_MODE and now.time() >= market_close:
+                    self.logger.warning(
+                        "⚠️ Exception at/after market close. Forcing hold-to-expiry cleanup with last known PnL."
+                    )
+                    self._finalize_hold_to_expiry(
+                        last_known_pnl,
+                        max_spread_val,
+                        min_pnl_observed,
+                        max_pnl_observed,
+                    )
+                    break
+                try:
+                    self.ib.sleep(1)
+                except Exception:
+                    time_module.sleep(1)
+                continue
+
+            try:
+                self.ib.sleep(check_interval)
+            except Exception as e:
+                self.logger.warning(f"⚠️ Monitor sleep interrupted: {e}")
+                now = datetime.now()
+                if self.HOLD_TO_EXPIRY_MODE and now.time() >= market_close:
+                    self._finalize_hold_to_expiry(
+                        last_known_pnl,
+                        max_spread_val,
+                        min_pnl_observed,
+                        max_pnl_observed,
+                    )
+                    break
+                time_module.sleep(min(check_interval, 1.0))
 
 """
 IBKR Combo Order Price Convention (from official docs):
