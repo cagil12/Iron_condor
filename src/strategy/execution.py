@@ -17,6 +17,7 @@ import logging
 from pathlib import Path
 import numpy as np # NEW: For RV calculation
 from dataclasses import dataclass
+from enum import Enum
 
 from ib_insync import IB, Option, Order, LimitOrder, MarketOrder, Trade as IBTrade, Contract, ComboLeg
 
@@ -58,6 +59,15 @@ class IronCondorPosition:
             self.order_ids = []
         if self.legs is None:
             self.legs = []
+
+
+class ChaseState(Enum):
+    """Entry chase order state machine to prevent double-submit races."""
+    IDLE = "IDLE"
+    PENDING_FILL = "PENDING_FILL"
+    AWAITING_CANCEL = "AWAITING_CANCEL"
+    FILLED = "FILLED"
+    FILLED_DURING_CANCEL = "FILLED_DURING_CANCEL"
 
 
 class LiveExecutor:
@@ -109,6 +119,11 @@ class LiveExecutor:
         self.last_expiry_cleanup_key: Optional[str] = None
         # Tracks in-flight entry order ID to prevent chase re-submit races.
         self.pending_entry_order_id: Optional[int] = None
+        self.emergency_halt: bool = False
+        self.chase_state: ChaseState = ChaseState.IDLE
+        self._active_chase_order_id: Optional[int] = None
+        self._chase_state_ts: float = time_module.time()
+        self._ib_order_callbacks_registered: bool = False
         
         # Load dynamic settings
         self.TAKE_PROFIT_PCT = float(self.config.get('take_profit_pct', self.TAKE_PROFIT_PCT))
@@ -159,6 +174,7 @@ class LiveExecutor:
         
         # FIX 3: Load state at startup
         self.load_state()
+        self._register_ib_order_callbacks()
         self.logger.info(
             f"🛡️ Kill Switches: "
             f"L1={'ON' if self.config.get('dd_kill_enabled') else 'OFF'} "
@@ -172,6 +188,8 @@ class LiveExecutor:
             self.logger.warning(f"⚠️ L1 ACTIVE: Trading halted until {self.dd_pause_until}")
         if self.streak_pause_until:
             self.logger.warning(f"⚠️ L5 ACTIVE: Streak pause until {self.streak_pause_until}")
+        if self.emergency_halt:
+            self.logger.critical("🚨 EMERGENCY_HALT flag is set in state.json. Manual review required before trading.")
 
     def save_state(self):
         """Persistir estado a disco para sobrevivir reinicios (FIX 3)"""
@@ -186,6 +204,7 @@ class LiveExecutor:
                 'expired_hold_signatures': self.expired_hold_signatures,
                 'last_expiry_cleanup_key': self.last_expiry_cleanup_key,
                 'pending_entry_order_id': self.pending_entry_order_id,
+                'emergency_halt': self.emergency_halt,
                 'last_updated': datetime.now().isoformat()
             }
             # Handle non-serializable objects in __dict__ if any (delta/datetime handled by default str logic)
@@ -220,6 +239,7 @@ class LiveExecutor:
                 self.last_expiry_cleanup_key = state.get('last_expiry_cleanup_key', None)
                 pending = state.get('pending_entry_order_id', None)
                 self.pending_entry_order_id = int(pending) if pending not in (None, "", 0, "0") else None
+                self.emergency_halt = bool(state.get('emergency_halt', False))
             except Exception as e:
                 self.logger.error(f"Failed to load state: {e}")
                 self.active_position = None
@@ -231,6 +251,292 @@ class LiveExecutor:
                 self.expired_hold_signatures = []
                 self.last_expiry_cleanup_key = None
                 self.pending_entry_order_id = None
+                self.emergency_halt = False
+
+    def _ensure_chase_runtime_state(self):
+        """Lazy-init chase runtime attrs for tests that bypass __init__."""
+        if not hasattr(self, 'chase_state') or self.chase_state is None:
+            self.chase_state = ChaseState.IDLE
+        elif isinstance(self.chase_state, str):
+            try:
+                self.chase_state = ChaseState(self.chase_state)
+            except Exception:
+                self.chase_state = ChaseState.IDLE
+        if not hasattr(self, '_active_chase_order_id'):
+            self._active_chase_order_id = None
+        if not hasattr(self, '_chase_state_ts'):
+            self._chase_state_ts = time_module.time()
+        if not hasattr(self, '_ib_order_callbacks_registered'):
+            self._ib_order_callbacks_registered = False
+        if not hasattr(self, 'emergency_halt'):
+            self.emergency_halt = False
+        if not hasattr(self, 'pending_entry_order_id'):
+            self.pending_entry_order_id = None
+
+    def _transition_chase_state(
+        self,
+        new_state: ChaseState,
+        *,
+        order_id: Optional[int] = None,
+        limit_price: Optional[float] = None,
+        reason: str = "",
+        level: str = "info",
+    ) -> None:
+        """Centralized chase state transition + logging."""
+        self._ensure_chase_runtime_state()
+        prev = self.chase_state
+        self.chase_state = new_state
+        now_ts = time_module.time()
+        elapsed = max(0.0, now_ts - float(getattr(self, '_chase_state_ts', now_ts)))
+        self._chase_state_ts = now_ts
+        if order_id is None:
+            order_id = int(getattr(self, '_active_chase_order_id', 0) or 0) or None
+        msg = f"Chase state: {prev.value} -> {new_state.value}"
+        details = []
+        if order_id is not None:
+            details.append(f"order_id={order_id}")
+        if limit_price is not None:
+            try:
+                details.append(f"limit={float(limit_price):.2f}")
+            except Exception:
+                details.append(f"limit={limit_price}")
+        if reason:
+            details.append(f"reason={reason}")
+        details.append(f"elapsed={elapsed:.1f}s")
+        if details:
+            msg += " (" + ", ".join(details) + ")"
+        log_fn = getattr(self.logger, level, self.logger.info)
+        log_fn(msg)
+
+    def _reset_chase_state_machine(self):
+        """Reset runtime chase state after entry flow completes/aborts."""
+        self._ensure_chase_runtime_state()
+        self._active_chase_order_id = None
+        if self.chase_state != ChaseState.IDLE:
+            self._transition_chase_state(ChaseState.IDLE, reason="reset")
+
+    def _register_ib_order_callbacks(self) -> None:
+        """Register ib_insync order status callback when available."""
+        self._ensure_chase_runtime_state()
+        if self._ib_order_callbacks_registered:
+            return
+        try:
+            event = getattr(self.ib, 'orderStatusEvent', None)
+            if event is not None:
+                event += self._on_order_status
+                self._ib_order_callbacks_registered = True
+        except Exception as e:
+            self.logger.debug(f"Order status callback registration skipped: {e}")
+
+    def _on_order_status(self, trade, *args):
+        """ib_insync callback: track active chase order status transitions."""
+        self._ensure_chase_runtime_state()
+        try:
+            order = getattr(trade, 'order', None)
+            status_obj = getattr(trade, 'orderStatus', None)
+            order_id = int(getattr(order, 'orderId', 0) or 0)
+            status = str(getattr(status_obj, 'status', '') or '')
+        except Exception:
+            return
+
+        if order_id <= 0 or order_id != int(getattr(self, '_active_chase_order_id', 0) or 0):
+            return
+
+        if status == "Cancelled" and self.chase_state == ChaseState.AWAITING_CANCEL:
+            self._transition_chase_state(ChaseState.IDLE, order_id=order_id, reason="cancel_confirmed")
+        elif status == "Filled":
+            if self.chase_state == ChaseState.AWAITING_CANCEL:
+                self._transition_chase_state(
+                    ChaseState.FILLED_DURING_CANCEL,
+                    order_id=order_id,
+                    reason="filled_during_cancel",
+                    level="warning",
+                )
+            elif self.chase_state == ChaseState.PENDING_FILL:
+                self._transition_chase_state(ChaseState.FILLED, order_id=order_id, reason="fill_confirmed")
+
+    def _assert_chase_submit_allowed(self, *, limit_price: Optional[float] = None):
+        """Enforce state machine invariant: no submit unless IDLE."""
+        self._ensure_chase_runtime_state()
+        if self.chase_state != ChaseState.IDLE:
+            msg = (
+                f"🚨 Chase submit blocked: state={self.chase_state.value}. "
+                "submit_order() is only allowed from IDLE."
+            )
+            self.logger.critical(msg)
+            raise RuntimeError(msg)
+
+    def _submit_chase_order(self, bag: Contract, order: Order, *, limit_price: float, chase: int):
+        """Submit a new chase attempt, enforcing IDLE->PENDING_FILL transition."""
+        self._ensure_chase_runtime_state()
+        self._assert_chase_submit_allowed(limit_price=limit_price)
+        trade = self.ib.placeOrder(bag, order)
+        real_id = int(getattr(getattr(trade, 'order', None), 'orderId', 0) or 0)
+        self._active_chase_order_id = real_id if real_id > 0 else None
+        self._transition_chase_state(
+            ChaseState.PENDING_FILL,
+            order_id=self._active_chase_order_id,
+            limit_price=limit_price,
+            reason=f"submit_chase_{chase}",
+        )
+        if real_id > 0:
+            self.pending_entry_order_id = real_id
+            self.save_state()
+        else:
+            self.logger.warning(
+                "⚠️ placeOrder returned orderId=0. pending_entry_order_id lock not set for this attempt."
+            )
+        return trade
+
+    def _cancel_entry_order_and_wait(self, order: Order, *, reason: str, timeout: float = 10.0) -> str:
+        """
+        Cancel chase entry order and block until resolved (cancel/fill/timeout verification).
+
+        Returns one of: Cancelled/Filled/Timeout/Mismatch or another terminal state string.
+        """
+        self._ensure_chase_runtime_state()
+        order_id = int(getattr(order, 'orderId', 0) or 0)
+        self._active_chase_order_id = order_id if order_id > 0 else self._active_chase_order_id
+        self._transition_chase_state(
+            ChaseState.AWAITING_CANCEL,
+            order_id=order_id or None,
+            reason=reason,
+        )
+        try:
+            self.ib.cancelOrder(order)
+        except Exception as e:
+            self.logger.warning(f"Cancel order exception for chase order {order_id}: {e}")
+
+        terminal_status = self._wait_for_terminal(order, timeout=timeout)
+        if terminal_status == "Filled":
+            if self.chase_state != ChaseState.FILLED_DURING_CANCEL:
+                self._transition_chase_state(
+                    ChaseState.FILLED_DURING_CANCEL,
+                    order_id=order_id or None,
+                    reason="filled_during_cancel_poll",
+                    level="warning",
+                )
+            return "Filled"
+
+        if terminal_status in ("Cancelled", "ApiCancelled", "Inactive", "ApiPending"):
+            if self.chase_state != ChaseState.IDLE:
+                self._transition_chase_state(
+                    ChaseState.IDLE,
+                    order_id=order_id or None,
+                    reason=f"cancel_confirmed_{terminal_status}",
+                )
+            self.pending_entry_order_id = None
+            self.save_state()
+            return "Cancelled"
+
+        if terminal_status == "Timeout":
+            self.logger.warning(
+                f"⚠️ Cancel timeout after {timeout:.1f}s for order {order_id}. Verifying positions..."
+            )
+            resolved = self._resolve_cancel_timeout(order)
+            return resolved
+
+        # Unknown terminal: stay conservative and do not resubmit.
+        self.logger.error(
+            f"❌ Unexpected terminal status during chase cancel wait: order {order_id} -> {terminal_status}"
+        )
+        return terminal_status
+
+    def _resolve_cancel_timeout(self, order: Order) -> str:
+        """Conservative timeout resolution: inspect fills and positions before any re-submit."""
+        self._ensure_chase_runtime_state()
+        order_id = int(getattr(order, 'orderId', 0) or 0)
+        target_symbol = str(getattr(self, 'SYMBOL', self.config.get('symbol', 'XSP')))
+
+        pos_check = self._verify_position_state(expected_qty=self.MAX_QTY)
+        if pos_check == "mismatch":
+            return "Mismatch"
+
+        try:
+            live_positions = self.ib.positions()
+        except Exception:
+            live_positions = []
+        symbol_positions = [
+            p for p in live_positions
+            if getattr(getattr(p, 'contract', None), 'symbol', '') == target_symbol
+            and getattr(getattr(p, 'contract', None), 'secType', '') == 'OPT'
+            and int(getattr(p, 'position', 0) or 0) != 0
+        ]
+        live_qty = max((abs(int(getattr(p, 'position', 0) or 0)) for p in symbol_positions), default=0)
+        if live_qty == int(self.MAX_QTY) and len(symbol_positions) >= 4:
+            self._transition_chase_state(
+                ChaseState.FILLED_DURING_CANCEL,
+                order_id=order_id or None,
+                reason="timeout_detected_positions",
+                level="warning",
+            )
+            return "Filled"
+
+        try:
+            has_fill = any(
+                int(getattr(getattr(f, 'execution', None), 'orderId', 0) or 0) == order_id
+                for f in self.ib.fills()
+            )
+        except Exception:
+            has_fill = False
+
+        if has_fill:
+            self._transition_chase_state(
+                ChaseState.FILLED_DURING_CANCEL,
+                order_id=order_id or None,
+                reason="timeout_detected_fill",
+                level="warning",
+            )
+            return "Filled"
+
+        self.pending_entry_order_id = None
+        self.save_state()
+        return "Timeout"
+
+    def _verify_position_state(self, expected_qty: int = 1) -> str:
+        """Compare IBKR positions with expected entry qty to detect double-fill desync."""
+        self._ensure_chase_runtime_state()
+        target_symbol = str(getattr(self, 'SYMBOL', self.config.get('symbol', 'XSP')))
+        try:
+            positions = self.ib.positions()
+        except Exception as e:
+            self.logger.warning(f"⚠️ Position verification failed (positions() exception): {e}")
+            return "unknown"
+
+        xsp_positions = [
+            p for p in positions
+            if getattr(getattr(p, 'contract', None), 'symbol', '') == target_symbol
+            and getattr(getattr(p, 'contract', None), 'secType', '') == 'OPT'
+            and int(getattr(p, 'position', 0) or 0) != 0
+        ]
+        actual_qty = max((abs(int(getattr(p, 'position', 0) or 0)) for p in xsp_positions), default=0)
+
+        if actual_qty > int(expected_qty):
+            details = []
+            for p in xsp_positions:
+                c = p.contract
+                details.append(
+                    f"{c.symbol} {getattr(c, 'strike', 0)}{getattr(c, 'right', '')} qty={p.position}"
+                )
+            self.logger.critical(
+                "🚨 POSITION MISMATCH: IBKR qty=%d, expected=%d. Possible double-fill. "
+                "HALTING operations. Positions: %s",
+                actual_qty,
+                int(expected_qty),
+                "; ".join(details) if details else "<none>",
+            )
+            self._emergency_halt("Double-fill detected during entry chase position verification")
+            return "mismatch"
+
+        return "ok"
+
+    def _emergency_halt(self, reason: str) -> None:
+        """Persist emergency halt flag for manual intervention workflow."""
+        self._ensure_chase_runtime_state()
+        self.emergency_halt = True
+        self.pending_entry_order_id = None
+        self.save_state()
+        self.logger.critical(f"🚨 Emergency halt engaged: {reason}")
 
     def _wait_for_terminal(self, order: Order, timeout: float = 10.0) -> str:
         """
@@ -279,6 +585,7 @@ class LiveExecutor:
         """
         Recover active position when a cancel-targeted entry order fills.
         """
+        self._ensure_chase_runtime_state()
         order_id = int(getattr(order, 'orderId', 0) or 0)
         target_symbol = str(getattr(self, 'SYMBOL', self.config.get('symbol', '')))
 
@@ -351,6 +658,11 @@ class LiveExecutor:
             except Exception:
                 qty = 1
         qty = max(qty, 1)
+
+        verify_status = self._verify_position_state(expected_qty=qty)
+        if verify_status == "mismatch":
+            self._reset_chase_state_machine()
+            return
 
         combo_credit = abs(float(getattr(order, 'lmtPrice', 0.0) or 0.0))
         verified_credit = None
@@ -451,6 +763,7 @@ class LiveExecutor:
             gamma=0.0,
         )
         self.pending_entry_order_id = None
+        self._reset_chase_state_machine()
         self.save_state()
         self.logger.warning(
             f"🛑 Race fill registered: order {order_id} recovered as "
@@ -690,8 +1003,11 @@ class LiveExecutor:
 
     def startup_reconciliation(self):
         """Cancelar órdenes huérfanas y reconciliar posiciones al iniciar (FIX 2)"""
+        self._ensure_chase_runtime_state()
         self.logger.info("REMINDER: Verify TWS setting 'Download open orders on connection' is enabled")
         self.logger.info("TWS → Global Configuration → API → Settings → ☑️ Download open orders")
+        if self.emergency_halt:
+            self.logger.critical("🚨 Startup detected emergency_halt=True. Bot will require manual intervention before new entries.")
 
         if self.pending_entry_order_id:
             self._resolve_stale_pending_entry_on_startup()
@@ -1144,6 +1460,9 @@ class LiveExecutor:
         if self.active_position:
             self.logger.warning("⚠️ ABORT: Active position exists. No pyramiding allowed.")
             return None
+        if getattr(self, 'emergency_halt', False):
+            self.logger.critical("🚨 ABORT: emergency_halt=True in state. Clear manually before new entries.")
+            return None
 
         # === L3: VIX REGIME GATE ===
         if self.config.get('vix_gate_enabled', True):
@@ -1289,6 +1608,7 @@ class LiveExecutor:
             else:
                 self.logger.error(f"⚠️ Margin Check Failed: {e}")
                 return None
+        self._reset_chase_state_machine()
             
         # 3. CHASE LOOP (FIX 1, FIX 6b)
         filled = False   # FIX 1: Initialized
@@ -1300,8 +1620,11 @@ class LiveExecutor:
                 self.logger.info(f"   🔄 Chase #{chase}: Cancelling previous order...")
                 if trade:
                     prev_order = trade.order
-                    self.ib.cancelOrder(prev_order)
-                    terminal_status = self._wait_for_terminal(prev_order, timeout=10.0)
+                    terminal_status = self._cancel_entry_order_and_wait(
+                        prev_order,
+                        reason=f"chase_retry_{chase}",
+                        timeout=10.0,
+                    )
 
                     if terminal_status == "Filled":
                         self.logger.warning(
@@ -1310,16 +1633,13 @@ class LiveExecutor:
                         )
                         self._register_fill_from_race(prev_order)
                         return self.active_position
-                    if terminal_status == "Timeout":
+                    if terminal_status in ("Timeout", "Mismatch"):
                         self.logger.error(
                             f"❌ Cancel timeout for order {prev_order.orderId} after 10s. "
                             "Aborting chase — manual review required."
                         )
-                        self.pending_entry_order_id = None
-                        self.save_state()
+                        self._reset_chase_state_machine()
                         return None
-                    self.pending_entry_order_id = None
-                    self.save_state()
                 
                 # Adjust Price: Less negative = easier fill
                 limit_price += self.TICK_SIZE
@@ -1328,8 +1648,11 @@ class LiveExecutor:
                     self.logger.warning(f"   🛑 Chase stopped: credit ${abs(limit_price):.2f} < floor ${min_credit_floor}. Aborting.")
                     if trade:
                         prev_order = trade.order
-                        self.ib.cancelOrder(prev_order)
-                        terminal_status = self._wait_for_terminal(prev_order, timeout=10.0)
+                        terminal_status = self._cancel_entry_order_and_wait(
+                            prev_order,
+                            reason="credit_floor_abort",
+                            timeout=10.0,
+                        )
                         if terminal_status == "Filled":
                             self.logger.warning(
                                 f"🛑 Chase race detected: order {prev_order.orderId} filled during cancel. "
@@ -1337,7 +1660,11 @@ class LiveExecutor:
                             )
                             self._register_fill_from_race(prev_order)
                             return self.active_position
+                        if terminal_status in ("Timeout", "Mismatch"):
+                            self._reset_chase_state_machine()
+                            return None
                     self.pending_entry_order_id = None
+                    self._reset_chase_state_machine()
                     self.save_state()
                     return None
                     
@@ -1352,24 +1679,31 @@ class LiveExecutor:
                 order.tif = 'DAY'
             
             self.logger.info(f"   📡 Placing order at ${limit_price:.2f} (Chase {chase})")
-            trade = self.ib.placeOrder(bag, order)
-            real_id = int(getattr(trade.order, 'orderId', 0) or 0)
-            if real_id > 0:
-                self.pending_entry_order_id = real_id
-                self.save_state()
-            else:
-                self.logger.warning(
-                    "⚠️ placeOrder returned orderId=0. pending_entry_order_id lock not set for this attempt."
-                )
+            try:
+                trade = self._submit_chase_order(bag, order, limit_price=limit_price, chase=chase)
+            except RuntimeError:
+                self._reset_chase_state_machine()
+                return None
             
             # Wait for fill with timeout
             start_wait = time_module.time()
             while (time_module.time() - start_wait) < 15:
                 self.ib.sleep(1)
                 if trade.orderStatus.status == 'Filled':
+                    self._transition_chase_state(
+                        ChaseState.FILLED,
+                        order_id=int(getattr(trade.order, 'orderId', 0) or 0) or None,
+                        reason="fill_detected_wait_loop",
+                    )
                     filled = True
                     break
                 if trade.orderStatus.status in ['Cancelled', 'Inactive', 'ApiCancelled']:
+                    if self.chase_state != ChaseState.IDLE:
+                        self._transition_chase_state(
+                            ChaseState.IDLE,
+                            order_id=int(getattr(trade.order, 'orderId', 0) or 0) or None,
+                            reason=f"terminal_{trade.orderStatus.status.lower()}",
+                        )
                     break
             
             if filled:
@@ -1379,8 +1713,11 @@ class LiveExecutor:
             self.logger.warning("❌ Timeout after chase. Cancelling.")
             if trade:
                 prev_order = trade.order
-                self.ib.cancelOrder(prev_order)
-                terminal_status = self._wait_for_terminal(prev_order, timeout=10.0)
+                terminal_status = self._cancel_entry_order_and_wait(
+                    prev_order,
+                    reason="entry_timeout_abort",
+                    timeout=10.0,
+                )
                 if terminal_status == "Filled":
                     self.logger.warning(
                         f"🛑 Chase race detected: order {prev_order.orderId} filled during cancel. "
@@ -1388,11 +1725,20 @@ class LiveExecutor:
                     )
                     self._register_fill_from_race(prev_order)
                     return self.active_position
+                if terminal_status in ("Timeout", "Mismatch"):
+                    self._reset_chase_state_machine()
+                    return None
             self.pending_entry_order_id = None
+            self._reset_chase_state_machine()
             self.save_state()
             return None
 
         self.pending_entry_order_id = None
+        verify_state = self._verify_position_state(expected_qty=self.MAX_QTY)
+        if verify_state == "mismatch":
+            self._reset_chase_state_machine()
+            return None
+        self._reset_chase_state_machine()
         self.save_state()
             
         # Success - Verify real credit from individual leg fills

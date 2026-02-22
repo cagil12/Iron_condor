@@ -55,7 +55,7 @@ LIVE_CONFIG = {
     # Strategy Parameters (Scaled for XSP)
     'wing_width': 2.0,  # 2-point wings (matched to base.yaml)
     'target_delta': 0.10,
-    'min_credit': 0.20,  # $20 min credit per contract (ratio 4:1 max)
+    'min_credit': 0.18,  # $18 min credit floor for 2-wide IC; prefer higher when available
     'min_days_expiry': 0, # 0DTE
     
     # Risk Management
@@ -67,7 +67,7 @@ LIVE_CONFIG = {
     'dd_max_pct': 0.15,              # L1: Max drawdown as % of max_capital
     'dd_pause_days': 5,              # L1: Calendar days pause after DD breach
     'dd_kill_enabled': True,         # L1: Portfolio drawdown kill switch
-    'vix_gate_threshold': 30.0,      # L3: Do not trade if VIX > this value
+    'vix_gate_threshold': 25.0,      # L3: Do not trade if VIX > this value
     'vix_gate_enabled': True,        # L3: Volatility regime gate
     'streak_max_losses': 3,          # L5: Pause after N consecutive losses
     'streak_pause_days': 2,          # L5: Calendar days to pause after streak
