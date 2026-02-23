@@ -59,10 +59,10 @@ LIVE_CONFIG = {
     'min_days_expiry': 0, # 0DTE
     
     # Risk Management
-    'max_capital': 2000.0,  # $2,000 USD account size
+    'max_capital': 3000.0,  # $3,000 USD account size (risk housekeeping recalibration)
     'max_contracts': 1,    # Conservative start
     'max_daily_loss': 200.0,  # $200 daily loss limit (10% of account)
-    'min_account_value': 1400.0, # HARD SWITCH: Equity Floor ($1400)
+    'min_account_value': 2000.0, # HARD SWITCH: Equity Floor ($2000)
     # Kill Switches (Phase 2 prerequisites)
     'dd_max_pct': 0.15,              # L1: Max drawdown as % of max_capital
     'dd_pause_days': 5,              # L1: Calendar days pause after DD breach
