@@ -85,7 +85,7 @@ class TradeJournal:
 
         # Check existing headers
         try:
-            with open(self.journal_path, 'r', encoding='utf-8') as f:
+            with open(self.journal_path, 'r', encoding='utf-8-sig') as f:
                 reader = csv.reader(f)
                 headers = next(reader, [])
                 
@@ -108,7 +108,7 @@ class TradeJournal:
     def _get_last_trade_id(self) -> int:
         """Get the last trade ID from the journal."""
         try:
-            with open(self.journal_path, 'r', encoding='utf-8') as f:
+            with open(self.journal_path, 'r', encoding='utf-8-sig') as f:
                 reader = csv.DictReader(f)
                 rows = list(reader)
                 if rows:
@@ -231,7 +231,7 @@ class TradeJournal:
         """
         # Read all rows
         rows = []
-        with open(self.journal_path, 'r', newline='', encoding='utf-8') as f:
+        with open(self.journal_path, 'r', newline='', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
             rows = list(reader)
         
@@ -286,7 +286,7 @@ class TradeJournal:
     def get_trade_summary(self) -> Dict[str, Any]:
         """Get summary statistics from the journal."""
         try:
-            with open(self.journal_path, 'r', encoding='utf-8') as f:
+            with open(self.journal_path, 'r', encoding='utf-8-sig') as f:
                 reader = csv.DictReader(f)
                 rows = list(reader)
         except FileNotFoundError:
