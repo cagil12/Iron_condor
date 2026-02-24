@@ -8,6 +8,7 @@ SAFETY: Hardcoded limits for small account ($200 capital).
 """
 import time as time_module
 from datetime import datetime, time, timedelta
+import math
 import json
 import csv
 from typing import Optional, Dict, Any, List
@@ -68,6 +69,65 @@ class ChaseState(Enum):
     AWAITING_CANCEL = "AWAITING_CANCEL"
     FILLED = "FILLED"
     FILLED_DURING_CANCEL = "FILLED_DURING_CANCEL"
+
+
+def calc_p_otm(
+    spot: float,
+    short_put: float,
+    short_call: float,
+    minutes_to_close: float,
+    vix_current: float,
+    r: float = 0.05,
+) -> Optional[Dict[str, float]]:
+    """
+    Observation-only P(OTM) metric for live monitoring.
+
+    Returns dict with p_put, p_call, p_otm, minutes_to_close, gamma_unreliable
+    or None if inputs are invalid.
+    """
+    try:
+        spot = float(spot)
+        short_put = float(short_put)
+        short_call = float(short_call)
+        minutes_to_close = float(minutes_to_close)
+        vix_current = float(vix_current)
+    except (TypeError, ValueError):
+        return None
+
+    if (
+        minutes_to_close <= 0.0
+        or vix_current <= 0.0
+        or spot <= 0.0
+        or short_put <= 0.0
+        or short_call <= 0.0
+    ):
+        return None
+
+    sigma = vix_current / 100.0
+    tte = minutes_to_close / (252.0 * 390.0)
+    if sigma <= 0.0 or tte <= 1e-10:
+        return None
+
+    try:
+        sqrt_tte = math.sqrt(tte)
+        d2_put = (math.log(spot / short_put) + (r - 0.5 * sigma * sigma) * tte) / (sigma * sqrt_tte)
+        d2_call = (math.log(spot / short_call) + (r - 0.5 * sigma * sigma) * tte) / (sigma * sqrt_tte)
+
+        # Standard normal CDF via erf to avoid introducing scipy dependency in live code.
+        norm_cdf = lambda x: 0.5 * (1.0 + math.erf(x / math.sqrt(2.0)))
+        p_put = norm_cdf(d2_put)       # P(S_T > K_short_put)
+        p_call = norm_cdf(-d2_call)    # P(S_T < K_short_call)
+        p_otm = min(p_put, p_call)
+    except (ValueError, OverflowError, ZeroDivisionError):
+        return None
+
+    return {
+        "p_put": float(max(0.0, min(1.0, p_put))),
+        "p_call": float(max(0.0, min(1.0, p_call))),
+        "p_otm": float(max(0.0, min(1.0, p_otm))),
+        "minutes_to_close": minutes_to_close,
+        "gamma_unreliable": bool(minutes_to_close < 5.0),
+    }
 
 
 class LiveExecutor:
@@ -307,6 +367,38 @@ class LiveExecutor:
             msg += " (" + ", ".join(details) + ")"
         log_fn = getattr(self.logger, level, self.logger.info)
         log_fn(msg)
+
+    def _is_paper_trading_session(self) -> bool:
+        """Best-effort paper/live detection for entry-time execution tuning."""
+        try:
+            client = getattr(self.ib, 'client', None)
+            port = int(getattr(client, 'port', 0) or 0)
+        except Exception:
+            port = 0
+
+        try:
+            paper_port = int(self.config.get('ibkr', {}).get('paper_port', 7497))
+        except Exception:
+            paper_port = 7497
+
+        if port > 0:
+            return port == paper_port
+
+        mode = str(self.config.get('trading_mode', '') or '').upper()
+        return mode == 'PAPER'
+
+    def _get_chase_cancel_timeout_sec(self) -> float:
+        """Paper/live-specific cancel timeout for entry chase (paper IBKR is slower)."""
+        try:
+            live_timeout = float(self.config.get('chase_cancel_timeout_live_sec', 10.0))
+        except Exception:
+            live_timeout = 10.0
+        try:
+            paper_timeout = float(self.config.get('chase_cancel_timeout_paper_sec', 25.0))
+        except Exception:
+            paper_timeout = 25.0
+        timeout = paper_timeout if self._is_paper_trading_session() else live_timeout
+        return max(1.0, timeout)
 
     def _reset_chase_state_machine(self):
         """Reset runtime chase state after entry flow completes/aborts."""
@@ -1609,6 +1701,11 @@ class LiveExecutor:
                 self.logger.error(f"⚠️ Margin Check Failed: {e}")
                 return None
         self._reset_chase_state_machine()
+        chase_cancel_timeout = self._get_chase_cancel_timeout_sec()
+        self.logger.info(
+            f"🕒 Entry chase cancel timeout={chase_cancel_timeout:.0f}s "
+            f"({'paper' if self._is_paper_trading_session() else 'live'})"
+        )
             
         # 3. CHASE LOOP (FIX 1, FIX 6b)
         filled = False   # FIX 1: Initialized
@@ -1623,7 +1720,7 @@ class LiveExecutor:
                     terminal_status = self._cancel_entry_order_and_wait(
                         prev_order,
                         reason=f"chase_retry_{chase}",
-                        timeout=10.0,
+                        timeout=chase_cancel_timeout,
                     )
 
                     if terminal_status == "Filled":
@@ -1635,7 +1732,7 @@ class LiveExecutor:
                         return self.active_position
                     if terminal_status in ("Timeout", "Mismatch"):
                         self.logger.error(
-                            f"❌ Cancel timeout for order {prev_order.orderId} after 10s. "
+                            f"❌ Cancel timeout for order {prev_order.orderId} after {chase_cancel_timeout:.0f}s. "
                             "Aborting chase — manual review required."
                         )
                         self._reset_chase_state_machine()
@@ -1651,7 +1748,7 @@ class LiveExecutor:
                         terminal_status = self._cancel_entry_order_and_wait(
                             prev_order,
                             reason="credit_floor_abort",
-                            timeout=10.0,
+                            timeout=chase_cancel_timeout,
                         )
                         if terminal_status == "Filled":
                             self.logger.warning(
@@ -1716,7 +1813,7 @@ class LiveExecutor:
                 terminal_status = self._cancel_entry_order_and_wait(
                     prev_order,
                     reason="entry_timeout_abort",
-                    timeout=10.0,
+                    timeout=chase_cancel_timeout,
                 )
                 if terminal_status == "Filled":
                     self.logger.warning(
@@ -2220,6 +2317,26 @@ class LiveExecutor:
                 # Time held
                 now = datetime.now()
                 hold_time = (now - self.active_position.entry_time).total_seconds() / 60
+                minutes_to_close = max((datetime.combine(now.date(), market_close) - now).total_seconds() / 60.0, 0.0)
+
+                # Observation-only probability metric (no effect on exits).
+                p_otm_data = calc_p_otm(
+                    spot=spot,
+                    short_put=short_put,
+                    short_call=short_call,
+                    minutes_to_close=minutes_to_close,
+                    vix_current=vix,
+                    r=0.05,
+                )
+                if p_otm_data:
+                    p_otm_suffix = "(γ!)" if p_otm_data.get("gamma_unreliable") else ""
+                    p_otm_str = (
+                        f"P_put:{p_otm_data['p_put']:.2f} "
+                        f"P_call:{p_otm_data['p_call']:.2f} "
+                        f"P_OTM:{p_otm_data['p_otm']:.2f}{p_otm_suffix}"
+                    )
+                else:
+                    p_otm_str = "P_OTM:N/A"
 
                 danger = "⚠️ DANGER" if min_distance < 5 else ""
                 now_str = now.strftime("%H:%M:%S")
@@ -2227,7 +2344,7 @@ class LiveExecutor:
                     f"[{now_str}] XSP: {spot:.2f} | VIX: {vix:.1f} | "
                     f"PnL: ${pnl_val:.2f} ({max_pct:.0f}%Max) | TP:{tp_pct:.0f}% SL:{sl_pct:.0f}% | "
                     f"{short_put:.0f}P({dist_put:+.0f}) {short_call:.0f}C({dist_call:+.0f}) | "
-                    f"Hold:{hold_time:.0f}m | MaxSprd:{max_spread_val:.2f}"
+                    f"Hold:{hold_time:.0f}m | MaxSprd:{max_spread_val:.2f} | {p_otm_str}"
                 )
                 print(f"{danger} {base_output}" if danger else base_output, flush=True)
 
