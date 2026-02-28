@@ -24,6 +24,16 @@ timing:
   risk_free_rate: 0.05
   vix_source: "previous_close"
 
+pricing:
+  use_bs_repricing: true   # true = full BS checkpoint repricing, false = legacy linear proxy
+
+dynamic_sl:
+  enabled: true
+  sl_floor: 1.5
+  sl_ceiling: 4.0
+  alpha: 1.0
+  beta: 0.5
+
 # VIX-to-IV calibration factor
 # sigma_0dte = VIX_close * iv_scaling_factor
 # Default 1.0 = no scaling (current behavior, preserves backward compatibility)
@@ -62,12 +72,18 @@ sweep:
   bid_ask_haircut: [0.20, 0.30]
   tp_pct: [0.50, 0.75, 1.00]
   sl_mult: [2.0, 3.0, 5.0]
+  sl_floor: [1.0, 1.5, 2.0, 2.5]
+  sl_ceiling: [2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0]
+  alpha: [0.5, 1.0, 1.5, 2.0]
+  beta: [0.0, 0.5, 1.0, 1.5]
 
 # Scenarios to simulate (all provide bounds on reality)
 scenarios:
   - hold_to_expiry
   - worst_case
-  - tp50_expiry
+  - tp50_or_expiry
+  - tp50_sl_capped
+  - ev_based_exit
 
 sweep_filters:
   max_credit_to_wing_ratio: 0.60

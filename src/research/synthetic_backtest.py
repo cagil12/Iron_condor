@@ -28,12 +28,16 @@ TRADING_DAYS_PER_YEAR = 252.0
 TRADING_HOURS_PER_DAY = 6.5
 MARKET_CLOSE_HOUR = 16.0
 DEFAULT_RANDOM_SEED = 42
+MIN_BS_REPRICE_MINUTES = 5.0
+MIN_BS_REPRICE_TTE_YEARS = MIN_BS_REPRICE_MINUTES / (TRADING_DAYS_PER_YEAR * 390.0)
 
 SCENARIO_COLUMNS = {
     "hold_to_expiry": "outcome_hold_to_expiry",
     "worst_case": "outcome_worst_case",
     "tp50_or_expiry": "outcome_tp50_or_expiry",
     "tp50_sl_capped": "outcome_tp50_sl_capped",
+    "dynamic_sl": "outcome_dynamic_sl",
+    "ev_based_exit": "outcome_ev_based_exit",
 }
 
 PRE_COMMISSION_COLUMNS = {
@@ -41,6 +45,8 @@ PRE_COMMISSION_COLUMNS = {
     "worst_case": "worst_case_pre_commission",
     "tp50_or_expiry": "tp50_or_expiry_pre_commission",
     "tp50_sl_capped": "tp50_sl_capped_pre_commission",
+    "dynamic_sl": "dynamic_sl_pre_commission",
+    "ev_based_exit": "ev_based_exit_pre_commission",
 }
 
 COMMISSION_COLUMNS = {
@@ -48,6 +54,8 @@ COMMISSION_COLUMNS = {
     "worst_case": "commission_worst_case",
     "tp50_or_expiry": "commission_tp50_or_expiry",
     "tp50_sl_capped": "commission_tp50_sl_capped",
+    "dynamic_sl": "commission_dynamic_sl",
+    "ev_based_exit": "commission_ev_based_exit",
 }
 
 
@@ -272,6 +280,30 @@ def compute_time_to_expiry(entry_hour: float) -> float:
     return max(hours_remaining / (TRADING_DAYS_PER_YEAR * TRADING_HOURS_PER_DAY), 1e-8)
 
 
+def reprice_ic_spread(
+    S_t: float,
+    K_short_put: float,
+    K_long_put: float,
+    K_short_call: float,
+    K_long_call: float,
+    TTE: float,
+    sigma: float,
+    r: float,
+) -> float:
+    """
+    Reprice a 4-leg iron condor using Black-Scholes and return cost-to-close per share.
+
+    This reprices the short and long verticals separately:
+      spread_cost = (short_put - long_put) + (short_call - long_call)
+    """
+    put_short = bs_price(S_t, K_short_put, TTE, r, sigma, "put")
+    put_long = bs_price(S_t, K_long_put, TTE, r, sigma, "put")
+    call_short = bs_price(S_t, K_short_call, TTE, r, sigma, "call")
+    call_long = bs_price(S_t, K_long_call, TTE, r, sigma, "call")
+    spread_cost = (put_short - put_long) + (call_short - call_long)
+    return float(max(spread_cost, 0.0))
+
+
 def _bs_price_vectorized(
     S: np.ndarray,
     K: np.ndarray,
@@ -321,6 +353,702 @@ def _bs_price_vectorized(
         px = K[valid] * np.exp(-r * T) * norm.cdf(-d2) - S[valid] * norm.cdf(-d1)
     prices[valid] = np.maximum(px, 0.0)
     return prices
+
+
+def _reprice_ic_spread_vectorized(
+    S_t: np.ndarray,
+    short_put: np.ndarray,
+    long_put: np.ndarray,
+    short_call: np.ndarray,
+    long_call: np.ndarray,
+    TTE: float,
+    sigma: np.ndarray,
+    r: float,
+) -> np.ndarray:
+    """Vectorized iron condor cost-to-close repricing (per share) using Black-Scholes."""
+    put_short = _bs_price_vectorized(S_t, short_put, TTE, r, sigma, "put")
+    put_long = _bs_price_vectorized(S_t, long_put, TTE, r, sigma, "put")
+    call_short = _bs_price_vectorized(S_t, short_call, TTE, r, sigma, "call")
+    call_long = _bs_price_vectorized(S_t, long_call, TTE, r, sigma, "call")
+    return np.maximum((put_short - put_long) + (call_short - call_long), 0.0)
+
+
+def _linear_spread_cost_proxy_vectorized(
+    S_t: np.ndarray,
+    short_put: np.ndarray,
+    long_put: np.ndarray,
+    short_call: np.ndarray,
+    long_call: np.ndarray,
+) -> np.ndarray:
+    """
+    Legacy linear proxy for spread cost (per share) based on strike intrusion.
+
+    Proxy = min(max(intrusion past short put, intrusion past short call), wing_width).
+    """
+    S_t = np.asarray(S_t, dtype=float)
+    put_intrusion = np.maximum(short_put - S_t, 0.0)
+    call_intrusion = np.maximum(S_t - short_call, 0.0)
+    intrusion = np.maximum(put_intrusion, call_intrusion)
+    wing_width = np.maximum(short_put - long_put, long_call - short_call)
+    return np.minimum(intrusion, np.maximum(wing_width, 0.0))
+
+
+def _spread_cost_with_fallback_vectorized(
+    S_t: np.ndarray,
+    short_put: np.ndarray,
+    long_put: np.ndarray,
+    short_call: np.ndarray,
+    long_call: np.ndarray,
+    TTE: float,
+    sigma: np.ndarray,
+    r: float,
+    use_bs_repricing: bool,
+) -> np.ndarray:
+    """
+    Cost-to-close proxy with BS repricing and short-T fallback to legacy linear proxy.
+    """
+    if (not use_bs_repricing) or (TTE <= MIN_BS_REPRICE_TTE_YEARS):
+        return _linear_spread_cost_proxy_vectorized(S_t, short_put, long_put, short_call, long_call)
+    return _reprice_ic_spread_vectorized(S_t, short_put, long_put, short_call, long_call, TTE, sigma, r)
+
+
+def _checkpoint_ttes_from_entry_T(T_entry: float) -> tuple[float, float]:
+    """
+    Coarse OHLC checkpoint model for daily bars:
+    - checkpoint 1 at ~1/3 elapsed (2/3 T remaining)
+    - checkpoint 2 at ~2/3 elapsed (1/3 T remaining)
+    """
+    t1 = max(float(T_entry) * (2.0 / 3.0), 0.0)
+    t2 = max(float(T_entry) * (1.0 / 3.0), 0.0)
+    return t1, t2
+
+
+def _build_legacy_exit_annotations(
+    skipped: np.ndarray,
+    touched_short: np.ndarray,
+    untouched: np.ndarray,
+    settlement_pre_commission: np.ndarray,
+    tp_cap_usd: np.ndarray,
+    sl_cap_usd: np.ndarray,
+    S_open: np.ndarray,
+    high: np.ndarray,
+    low: np.ndarray,
+    close: np.ndarray,
+    short_put: np.ndarray,
+    short_call: np.ndarray,
+    T_entry: float,
+) -> Dict[str, np.ndarray]:
+    """
+    Legacy path annotations (reasons + trigger metadata) for comparison reporting.
+
+    This preserves existing scenario PnL behavior and only adds metadata.
+    """
+    n = len(S_open)
+    tp_reason = np.full(n, "", dtype=object)
+    tp_sl_reason = np.full(n, "", dtype=object)
+    tp_spot = np.full(n, np.nan, dtype=float)
+    tp_sl_spot = np.full(n, np.nan, dtype=float)
+    tp_tte = np.full(n, np.nan, dtype=float)
+    tp_sl_tte = np.full(n, np.nan, dtype=float)
+
+    t1_tte, t2_tte = _checkpoint_ttes_from_entry_T(T_entry)
+    first_is_low = close >= S_open
+    first_spot = np.where(first_is_low, low, high)
+    second_spot = np.where(first_is_low, high, low)
+    first_is_touch = np.where(first_is_low, low <= short_put, high >= short_call)
+    second_is_touch = np.where(first_is_low, high >= short_call, low <= short_put)
+    legacy_touch_trigger = touched_short.astype(bool)
+
+    tp_hit_legacy = untouched & (settlement_pre_commission > tp_cap_usd)
+    tp_reason[:] = np.where(skipped, "", np.where(tp_hit_legacy, "TP", "EXPIRY")).astype(object)
+    tp_spot[:] = np.where(tp_hit_legacy, close, np.nan)
+    tp_tte[:] = np.where(tp_hit_legacy, 0.0, np.nan)
+
+    sl_hit_legacy = touched_short & (settlement_pre_commission < -sl_cap_usd)
+    tp_hit_legacy_sl_scenario = untouched & (settlement_pre_commission > tp_cap_usd)
+    tp_sl_reason[:] = np.where(
+        skipped,
+        "",
+        np.where(sl_hit_legacy, "SL", np.where(tp_hit_legacy_sl_scenario, "TP", "EXPIRY")),
+    ).astype(object)
+
+    # Approximate trigger metadata for legacy SL as first touched extreme in our coarse path model.
+    use_first_sl = sl_hit_legacy & first_is_touch
+    use_second_sl = sl_hit_legacy & (~first_is_touch) & second_is_touch
+    tp_sl_spot[:] = np.where(use_first_sl, first_spot, tp_sl_spot)
+    tp_sl_spot[:] = np.where(use_second_sl, second_spot, tp_sl_spot)
+    tp_sl_tte[:] = np.where(use_first_sl, t1_tte, tp_sl_tte)
+    tp_sl_tte[:] = np.where(use_second_sl, t2_tte, tp_sl_tte)
+
+    # Legacy TP trigger metadata is only inferable from settlement under the current model.
+    tp_sl_spot[:] = np.where(tp_hit_legacy_sl_scenario, close, tp_sl_spot)
+    tp_sl_tte[:] = np.where(tp_hit_legacy_sl_scenario, 0.0, tp_sl_tte)
+
+    tp_dist = np.minimum(np.abs(tp_spot - short_put), np.abs(short_call - tp_spot))
+    tp_sl_dist = np.minimum(np.abs(tp_sl_spot - short_put), np.abs(short_call - tp_sl_spot))
+
+    return {
+        "tp50_or_expiry_exit_type": tp_reason,
+        "tp50_or_expiry_trigger_spot": tp_spot,
+        "tp50_or_expiry_tte_at_trigger": tp_tte,
+        "tp50_or_expiry_distance_to_short_strike": tp_dist,
+        "tp50_sl_capped_exit_type": tp_sl_reason,
+        "tp50_sl_capped_trigger_spot": tp_sl_spot,
+        "tp50_sl_capped_tte_at_trigger": tp_sl_tte,
+        "tp50_sl_capped_distance_to_short_strike": tp_sl_dist,
+        "tp50_sl_capped_sl_trigger": sl_hit_legacy.astype(bool),
+        "legacy_sl_touch_trigger": legacy_touch_trigger.astype(bool),
+    }
+
+
+def _build_bs_exit_annotations_and_pnl(
+    skipped: np.ndarray,
+    S_open: np.ndarray,
+    high: np.ndarray,
+    low: np.ndarray,
+    close: np.ndarray,
+    sigma: np.ndarray,
+    short_put: np.ndarray,
+    long_put: np.ndarray,
+    short_call: np.ndarray,
+    long_call: np.ndarray,
+    entry_credit: np.ndarray,
+    settlement_pre_commission: np.ndarray,
+    tp_cap_usd: np.ndarray,
+    sl_cap_usd: np.ndarray,
+    T_entry: float,
+    r: float,
+    tp_pct: float,
+    use_bs_repricing: bool,
+) -> Dict[str, np.ndarray]:
+    """
+    Coarse intraday OHLC checkpoint engine for TP/SL using BS spread repricing.
+
+    Path order assumption (deterministic, due daily OHLC limitations):
+      - Up-close day:   Open -> Low -> High -> Close
+      - Down-close day: Open -> High -> Low -> Close
+    """
+    n = len(S_open)
+    tp_pre = settlement_pre_commission.copy()
+    tp_sl_pre = settlement_pre_commission.copy()
+
+    tp_reason = np.full(n, "", dtype=object)
+    tp_sl_reason = np.full(n, "", dtype=object)
+    tp_spot = np.full(n, np.nan, dtype=float)
+    tp_sl_spot = np.full(n, np.nan, dtype=float)
+    tp_tte = np.full(n, np.nan, dtype=float)
+    tp_sl_tte = np.full(n, np.nan, dtype=float)
+
+    t1_tte, t2_tte = _checkpoint_ttes_from_entry_T(T_entry)
+    first_is_low = close >= S_open
+    s1 = np.where(first_is_low, low, high)
+    s2 = np.where(first_is_low, high, low)
+
+    c1 = _spread_cost_with_fallback_vectorized(
+        s1, short_put, long_put, short_call, long_call, t1_tte, sigma, r, use_bs_repricing
+    )
+    c2 = _spread_cost_with_fallback_vectorized(
+        s2, short_put, long_put, short_call, long_call, t2_tte, sigma, r, use_bs_repricing
+    )
+    # Settlement spread cost = entry_credit - settlement PnL/share.
+    c3 = np.maximum(entry_credit - (settlement_pre_commission / XSP_MULTIPLIER), 0.0)
+
+    tp_enabled = bool(tp_pct < 1.0 - 1e-12)
+    tp_target_cost = np.maximum(entry_credit * (1.0 - tp_pct), 0.0)
+    sl_target_cost = np.maximum(entry_credit * 0.0 + (sl_cap_usd / XSP_MULTIPLIER), 0.0)
+
+    valid = (~skipped) & np.isfinite(entry_credit) & np.isfinite(settlement_pre_commission)
+
+    # Scenario: TP50 or expiry (no SL)
+    if tp_enabled:
+        tp1 = valid & (c1 <= tp_target_cost)
+        tp2 = valid & (~tp1) & (c2 <= tp_target_cost)
+        tp3 = valid & (~tp1) & (~tp2) & (c3 <= tp_target_cost)
+        tp_hit = tp1 | tp2 | tp3
+        tp_pre = np.where(tp_hit, tp_cap_usd, settlement_pre_commission)
+        tp_reason[:] = np.where(skipped, "", np.where(tp_hit, "TP", "EXPIRY")).astype(object)
+        tp_spot[:] = np.where(tp1, s1, tp_spot)
+        tp_spot[:] = np.where(tp2, s2, tp_spot)
+        tp_spot[:] = np.where(tp3, close, tp_spot)
+        tp_tte[:] = np.where(tp1, t1_tte, tp_tte)
+        tp_tte[:] = np.where(tp2, t2_tte, tp_tte)
+        tp_tte[:] = np.where(tp3, 0.0, tp_tte)
+    else:
+        tp_reason[:] = np.where(skipped, "", "EXPIRY").astype(object)
+
+    # Scenario: TP50 + SL capped (SL priority at each checkpoint)
+    sl_hit = np.zeros(n, dtype=bool)
+    tp_hit_sl_scenario = np.zeros(n, dtype=bool)
+
+    undecided = valid.copy()
+    sl1 = undecided & (c1 >= sl_target_cost)
+    tp1s = undecided & (~sl1) & tp_enabled & (c1 <= tp_target_cost)
+    sl_hit |= sl1
+    tp_hit_sl_scenario |= tp1s
+    tp_sl_spot[:] = np.where(sl1 | tp1s, s1, tp_sl_spot)
+    tp_sl_tte[:] = np.where(sl1 | tp1s, t1_tte, tp_sl_tte)
+    undecided &= ~(sl1 | tp1s)
+
+    sl2 = undecided & (c2 >= sl_target_cost)
+    tp2s = undecided & (~sl2) & tp_enabled & (c2 <= tp_target_cost)
+    sl_hit |= sl2
+    tp_hit_sl_scenario |= tp2s
+    tp_sl_spot[:] = np.where(sl2 | tp2s, s2, tp_sl_spot)
+    tp_sl_tte[:] = np.where(sl2 | tp2s, t2_tte, tp_sl_tte)
+    undecided &= ~(sl2 | tp2s)
+
+    # No active close at settlement for this scenario if still undecided -> expire.
+    tp_sl_pre = np.where(sl_hit, -sl_cap_usd, tp_sl_pre)
+    tp_sl_pre = np.where(tp_hit_sl_scenario, tp_cap_usd, tp_sl_pre)
+    tp_sl_reason[:] = np.where(
+        skipped,
+        "",
+        np.where(sl_hit, "SL", np.where(tp_hit_sl_scenario, "TP", "EXPIRY")),
+    ).astype(object)
+
+    tp_dist = np.minimum(np.abs(tp_spot - short_put), np.abs(short_call - tp_spot))
+    tp_sl_dist = np.minimum(np.abs(tp_sl_spot - short_put), np.abs(short_call - tp_sl_spot))
+
+    return {
+        "tp50_or_expiry_pre_commission": tp_pre,
+        "tp50_or_expiry_exit_type": tp_reason,
+        "tp50_or_expiry_trigger_spot": tp_spot,
+        "tp50_or_expiry_tte_at_trigger": tp_tte,
+        "tp50_or_expiry_distance_to_short_strike": tp_dist,
+        "tp50_sl_capped_pre_commission": tp_sl_pre,
+        "tp50_sl_capped_exit_type": tp_sl_reason,
+        "tp50_sl_capped_trigger_spot": tp_sl_spot,
+        "tp50_sl_capped_tte_at_trigger": tp_sl_tte,
+        "tp50_sl_capped_distance_to_short_strike": tp_sl_dist,
+        "tp50_sl_capped_sl_trigger": sl_hit.astype(bool),
+    }
+
+
+def calc_continuation_value(
+    S_t: float,
+    K_short_put: float,
+    K_short_call: float,
+    TTE: float,
+    sigma: float,
+    r: float,
+    credit: float,
+    wing: float,
+    qty: float = 1.0,
+    multiplier: float = XSP_MULTIPLIER,
+) -> tuple[float, float, float, float]:
+    """
+    Continuation value for an iron condor using conservative min-side P(OTM).
+
+    Returns: (V_continue, P_OTM_min, P_OTM_put, P_OTM_call)
+    """
+    if not (
+        np.isfinite(S_t)
+        and np.isfinite(K_short_put)
+        and np.isfinite(K_short_call)
+        and np.isfinite(TTE)
+        and np.isfinite(sigma)
+        and np.isfinite(credit)
+        and np.isfinite(wing)
+        and S_t > 0
+        and K_short_put > 0
+        and K_short_call > 0
+        and TTE > 0
+        and sigma > 0
+    ):
+        return (float("nan"), float("nan"), float("nan"), float("nan"))
+
+    sqrt_t = float(np.sqrt(TTE))
+    d2_put = (np.log(S_t / K_short_put) + (r - 0.5 * sigma**2) * TTE) / (sigma * sqrt_t)
+    d2_call = (np.log(S_t / K_short_call) + (r - 0.5 * sigma**2) * TTE) / (sigma * sqrt_t)
+    p_otm_put = float(norm.cdf(d2_put))       # P(S_T > K_short_put)
+    p_otm_call = float(norm.cdf(-d2_call))    # P(S_T < K_short_call)
+    p_otm = float(min(p_otm_put, p_otm_call))
+    p_itm = 1.0 - p_otm
+
+    e_profit = float(credit) * float(multiplier) * float(qty)
+    e_loss_itm = max(float(wing) - float(credit), 0.0) * float(multiplier) * float(qty)
+    v_continue = p_otm * e_profit - p_itm * e_loss_itm
+    return (float(v_continue), p_otm, p_otm_put, p_otm_call)
+
+
+def _calc_continuation_value_vectorized(
+    S_t: np.ndarray,
+    short_put: np.ndarray,
+    short_call: np.ndarray,
+    TTE: float,
+    sigma: np.ndarray,
+    r: float,
+    credit: np.ndarray,
+    wing_width: float,
+    qty: float = 1.0,
+    multiplier: float = XSP_MULTIPLIER,
+) -> Dict[str, np.ndarray]:
+    """Vectorized continuation-value calculation for EV-based exits."""
+    n = len(S_t)
+    v = np.full(n, np.nan, dtype=float)
+    p_min = np.full(n, np.nan, dtype=float)
+    p_put = np.full(n, np.nan, dtype=float)
+    p_call = np.full(n, np.nan, dtype=float)
+
+    if (not np.isfinite(TTE)) or TTE <= 0.0:
+        return {"V_continue": v, "P_OTM_min": p_min, "P_OTM_put": p_put, "P_OTM_call": p_call}
+
+    S_t = np.asarray(S_t, dtype=float)
+    short_put = np.asarray(short_put, dtype=float)
+    short_call = np.asarray(short_call, dtype=float)
+    sigma = np.asarray(sigma, dtype=float)
+    credit = np.asarray(credit, dtype=float)
+
+    valid = (
+        np.isfinite(S_t)
+        & np.isfinite(short_put)
+        & np.isfinite(short_call)
+        & np.isfinite(sigma)
+        & np.isfinite(credit)
+        & (S_t > 0)
+        & (short_put > 0)
+        & (short_call > 0)
+        & (sigma > 0)
+    )
+    if not np.any(valid):
+        return {"V_continue": v, "P_OTM_min": p_min, "P_OTM_put": p_put, "P_OTM_call": p_call}
+
+    sqrt_t = float(np.sqrt(TTE))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        d2_put = (np.log(S_t[valid] / short_put[valid]) + (r - 0.5 * sigma[valid] ** 2) * TTE) / (sigma[valid] * sqrt_t)
+        d2_call = (np.log(S_t[valid] / short_call[valid]) + (r - 0.5 * sigma[valid] ** 2) * TTE) / (sigma[valid] * sqrt_t)
+
+    p_put_valid = norm.cdf(d2_put)
+    p_call_valid = norm.cdf(-d2_call)
+    p_min_valid = np.minimum(p_put_valid, p_call_valid)
+    p_itm_valid = 1.0 - p_min_valid
+
+    e_profit = credit[valid] * float(multiplier) * float(qty)
+    e_loss_itm = np.maximum(float(wing_width) - credit[valid], 0.0) * float(multiplier) * float(qty)
+    v_valid = p_min_valid * e_profit - p_itm_valid * e_loss_itm
+
+    p_put[valid] = p_put_valid
+    p_call[valid] = p_call_valid
+    p_min[valid] = p_min_valid
+    v[valid] = v_valid
+    return {"V_continue": v, "P_OTM_min": p_min, "P_OTM_put": p_put, "P_OTM_call": p_call}
+
+
+def calc_dynamic_sl(
+    P_OTM: np.ndarray,
+    tte_ratio: np.ndarray,
+    sl_floor: float,
+    sl_ceiling: float,
+    alpha: float,
+    beta: float,
+) -> np.ndarray:
+    """
+    Compute dynamic SL multiplier as a function of P(OTM) and time remaining.
+    """
+    p = np.clip(np.asarray(P_OTM, dtype=float), 0.0, 1.0)
+    t = np.clip(np.asarray(tte_ratio, dtype=float), 0.0, 1.0)
+    base = float(sl_floor)
+    span = float(sl_ceiling) - float(sl_floor)
+    return base + span * np.power(p, float(alpha)) * np.power(t, float(beta))
+
+
+def calc_P_OTM_vectorized(
+    S_t: np.ndarray,
+    K_short_put: np.ndarray,
+    K_short_call: np.ndarray,
+    TTE: float,
+    sigma: np.ndarray,
+    r: float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Compute P(OTM) for both sides of the condor using Black-Scholes d2.
+
+    Returns (P_OTM_min, P_OTM_put, P_OTM_call); returns NaNs when TTE is too small.
+    """
+    S_t = np.asarray(S_t, dtype=float)
+    K_short_put = np.asarray(K_short_put, dtype=float)
+    K_short_call = np.asarray(K_short_call, dtype=float)
+    sigma = np.asarray(sigma, dtype=float)
+    n = len(S_t)
+
+    p_put = np.full(n, np.nan, dtype=float)
+    p_call = np.full(n, np.nan, dtype=float)
+    p_min = np.full(n, np.nan, dtype=float)
+
+    if (not np.isfinite(TTE)) or (TTE <= MIN_BS_REPRICE_TTE_YEARS):
+        return p_min, p_put, p_call
+
+    valid = (
+        np.isfinite(S_t)
+        & np.isfinite(K_short_put)
+        & np.isfinite(K_short_call)
+        & np.isfinite(sigma)
+        & (S_t > 0)
+        & (K_short_put > 0)
+        & (K_short_call > 0)
+        & (sigma > 0)
+    )
+    if not np.any(valid):
+        return p_min, p_put, p_call
+
+    sqrt_T = float(np.sqrt(TTE))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        d2_put = (np.log(S_t[valid] / K_short_put[valid]) + (r - 0.5 * sigma[valid] ** 2) * TTE) / (sigma[valid] * sqrt_T)
+        d2_call = (np.log(S_t[valid] / K_short_call[valid]) + (r - 0.5 * sigma[valid] ** 2) * TTE) / (sigma[valid] * sqrt_T)
+    p_put[valid] = norm.cdf(d2_put)      # P(S_T > K_short_put)
+    p_call[valid] = norm.cdf(-d2_call)   # P(S_T < K_short_call)
+    p_min = np.minimum(p_put, p_call)
+    return p_min, p_put, p_call
+
+
+def _build_dynamic_sl_annotations_and_pnl(
+    skipped: np.ndarray,
+    S_open: np.ndarray,
+    high: np.ndarray,
+    low: np.ndarray,
+    close: np.ndarray,
+    sigma: np.ndarray,
+    short_put: np.ndarray,
+    long_put: np.ndarray,
+    short_call: np.ndarray,
+    long_call: np.ndarray,
+    entry_credit: np.ndarray,
+    settlement_pre_commission: np.ndarray,
+    T_entry: float,
+    r: float,
+    xsp_multiplier: float,
+    use_bs_repricing: bool,
+    sl_floor: float,
+    sl_ceiling: float,
+    alpha: float,
+    beta: float,
+) -> Dict[str, np.ndarray]:
+    """
+    Dynamic SL scenario: state-dependent SL multiplier based on P(OTM) and TTE.
+
+    No TP; trade holds to expiry unless DYNAMIC_SL triggers at a checkpoint.
+    """
+    n = len(S_open)
+    result_pre = settlement_pre_commission.copy()
+    exit_reason = np.full(n, "", dtype=object)
+    exit_spot = np.full(n, np.nan, dtype=float)
+    exit_tte = np.full(n, np.nan, dtype=float)
+    exit_P_OTM = np.full(n, np.nan, dtype=float)
+    exit_sl_mult = np.full(n, np.nan, dtype=float)
+    exit_dist = np.full(n, np.nan, dtype=float)
+    exit_spread_cost = np.full(n, np.nan, dtype=float)
+    sl_triggered = np.zeros(n, dtype=bool)
+
+    t1_tte, t2_tte = _checkpoint_ttes_from_entry_T(T_entry)
+    first_is_low = close >= S_open
+    s1 = np.where(first_is_low, low, high)
+    s2 = np.where(first_is_low, high, low)
+
+    valid = (~skipped) & np.isfinite(entry_credit) & np.isfinite(settlement_pre_commission)
+    if T_entry > 0:
+        tte_ratio_1 = float(np.clip(t1_tte / T_entry, 0.0, 1.0))
+        tte_ratio_2 = float(np.clip(t2_tte / T_entry, 0.0, 1.0))
+    else:
+        tte_ratio_1 = 0.0
+        tte_ratio_2 = 0.0
+
+    # Checkpoint 1
+    c1 = _spread_cost_with_fallback_vectorized(s1, short_put, long_put, short_call, long_call, t1_tte, sigma, r, use_bs_repricing)
+    pnl1 = (entry_credit - c1) * float(xsp_multiplier)
+    p_min_1, p_put_1, p_call_1 = calc_P_OTM_vectorized(s1, short_put, short_call, t1_tte, sigma, r)
+    sl_mult_1 = calc_dynamic_sl(p_min_1, np.full(n, tte_ratio_1, dtype=float), sl_floor, sl_ceiling, alpha, beta)
+    sl_cost_1 = entry_credit * sl_mult_1
+    sl1 = valid & np.isfinite(p_min_1) & np.isfinite(c1) & np.isfinite(sl_cost_1) & (c1 >= sl_cost_1) & (pnl1 < 0)
+
+    sl_triggered |= sl1
+    result_pre = np.where(sl1, -(c1 - entry_credit) * float(xsp_multiplier), result_pre)
+    exit_spot = np.where(sl1, s1, exit_spot)
+    exit_tte = np.where(sl1, t1_tte, exit_tte)
+    exit_P_OTM = np.where(sl1, p_min_1, exit_P_OTM)
+    exit_sl_mult = np.where(sl1, sl_mult_1, exit_sl_mult)
+    exit_spread_cost = np.where(sl1, c1, exit_spread_cost)
+
+    undecided = valid & (~sl_triggered)
+
+    # Checkpoint 2
+    c2 = _spread_cost_with_fallback_vectorized(s2, short_put, long_put, short_call, long_call, t2_tte, sigma, r, use_bs_repricing)
+    pnl2 = (entry_credit - c2) * float(xsp_multiplier)
+    p_min_2, p_put_2, p_call_2 = calc_P_OTM_vectorized(s2, short_put, short_call, t2_tte, sigma, r)
+    sl_mult_2 = calc_dynamic_sl(p_min_2, np.full(n, tte_ratio_2, dtype=float), sl_floor, sl_ceiling, alpha, beta)
+    sl_cost_2 = entry_credit * sl_mult_2
+    sl2 = undecided & np.isfinite(p_min_2) & np.isfinite(c2) & np.isfinite(sl_cost_2) & (c2 >= sl_cost_2) & (pnl2 < 0)
+
+    sl_triggered |= sl2
+    result_pre = np.where(sl2, -(c2 - entry_credit) * float(xsp_multiplier), result_pre)
+    exit_spot = np.where(sl2, s2, exit_spot)
+    exit_tte = np.where(sl2, t2_tte, exit_tte)
+    exit_P_OTM = np.where(sl2, p_min_2, exit_P_OTM)
+    exit_sl_mult = np.where(sl2, sl_mult_2, exit_sl_mult)
+    exit_spread_cost = np.where(sl2, c2, exit_spread_cost)
+
+    exit_reason[:] = np.where(
+        skipped,
+        "",
+        np.where(
+            sl_triggered,
+            "DYNAMIC_SL",
+            np.where((settlement_pre_commission >= 0), "EXPIRED_OTM", "EXPIRED_ITM"),
+        ),
+    ).astype(object)
+
+    # Settlement rows use settlement spot and no active SL metadata.
+    expired = valid & (~sl_triggered)
+    exit_spot = np.where(expired, close, exit_spot)
+    exit_tte = np.where(expired, 0.0, exit_tte)
+    exit_dist = np.minimum(np.abs(exit_spot - short_put), np.abs(short_call - exit_spot))
+
+    # Keep optional diagnostic arrays for both sides if needed later.
+    # For triggered rows, pick checkpoint-side values; expiry rows remain NaN.
+    exit_p_put = np.full(n, np.nan, dtype=float)
+    exit_p_call = np.full(n, np.nan, dtype=float)
+    exit_p_put = np.where(sl1, p_put_1, exit_p_put)
+    exit_p_put = np.where(sl2, p_put_2, exit_p_put)
+    exit_p_call = np.where(sl1, p_call_1, exit_p_call)
+    exit_p_call = np.where(sl2, p_call_2, exit_p_call)
+
+    return {
+        "dynamic_sl_pre_commission": result_pre,
+        "dynamic_sl_exit_type": exit_reason,
+        "dynamic_sl_trigger_spot": exit_spot,
+        "dynamic_sl_tte_at_trigger": exit_tte,
+        "dynamic_sl_P_OTM_at_trigger": exit_P_OTM,
+        "dynamic_sl_P_OTM_put_at_trigger": exit_p_put,
+        "dynamic_sl_P_OTM_call_at_trigger": exit_p_call,
+        "dynamic_sl_mult_at_trigger": exit_sl_mult,
+        "dynamic_sl_distance_to_short_strike": exit_dist,
+        "dynamic_sl_spread_cost_at_trigger": exit_spread_cost,
+        "dynamic_sl_triggered": sl_triggered.astype(bool),
+    }
+
+
+def _build_ev_exit_annotations_and_pnl(
+    skipped: np.ndarray,
+    S_open: np.ndarray,
+    high: np.ndarray,
+    low: np.ndarray,
+    close: np.ndarray,
+    sigma: np.ndarray,
+    short_put: np.ndarray,
+    long_put: np.ndarray,
+    short_call: np.ndarray,
+    long_call: np.ndarray,
+    entry_credit: np.ndarray,
+    settlement_pre_commission: np.ndarray,
+    T_entry: float,
+    r: float,
+    wing_width: float,
+    xsp_multiplier: float,
+    use_bs_repricing: bool,
+) -> Dict[str, np.ndarray]:
+    """
+    EV-based early-exit scenario using continuation value vs current close cost.
+
+    Evaluates at the same coarse OHLC checkpoints used by TP/SL scenarios.
+    """
+    n = len(S_open)
+    ev_pre = settlement_pre_commission.copy()
+    exit_reason = np.full(n, "", dtype=object)
+    trigger_spot = np.full(n, np.nan, dtype=float)
+    trigger_tte = np.full(n, np.nan, dtype=float)
+    dist_to_short = np.full(n, np.nan, dtype=float)
+    p_otm_min = np.full(n, np.nan, dtype=float)
+    p_otm_put = np.full(n, np.nan, dtype=float)
+    p_otm_call = np.full(n, np.nan, dtype=float)
+    v_continue_out = np.full(n, np.nan, dtype=float)
+    early_exit = np.zeros(n, dtype=bool)
+
+    t1_tte, t2_tte = _checkpoint_ttes_from_entry_T(T_entry)
+    first_is_low = close >= S_open
+    s1 = np.where(first_is_low, low, high)
+    s2 = np.where(first_is_low, high, low)
+
+    c1 = _spread_cost_with_fallback_vectorized(
+        s1, short_put, long_put, short_call, long_call, t1_tte, sigma, r, use_bs_repricing
+    )
+    c2 = _spread_cost_with_fallback_vectorized(
+        s2, short_put, long_put, short_call, long_call, t2_tte, sigma, r, use_bs_repricing
+    )
+    close1_pre = (entry_credit - c1) * float(xsp_multiplier)
+    close2_pre = (entry_credit - c2) * float(xsp_multiplier)
+
+    cv1 = _calc_continuation_value_vectorized(
+        s1, short_put, short_call, t1_tte, sigma, r, entry_credit, wing_width, qty=1.0, multiplier=xsp_multiplier
+    )
+    cv2 = _calc_continuation_value_vectorized(
+        s2, short_put, short_call, t2_tte, sigma, r, entry_credit, wing_width, qty=1.0, multiplier=xsp_multiplier
+    )
+
+    valid = (~skipped) & np.isfinite(entry_credit) & np.isfinite(settlement_pre_commission)
+    can_eval_1 = valid & (t1_tte > MIN_BS_REPRICE_TTE_YEARS) & np.isfinite(cv1["V_continue"]) & np.isfinite(close1_pre)
+    can_eval_2 = valid & (t2_tte > MIN_BS_REPRICE_TTE_YEARS) & np.isfinite(cv2["V_continue"]) & np.isfinite(close2_pre)
+
+    exit1 = can_eval_1 & (cv1["V_continue"] < close1_pre)
+    exit2 = (~exit1) & can_eval_2 & (cv2["V_continue"] < close2_pre)
+
+    early_exit |= exit1 | exit2
+    ev_pre = np.where(exit1, close1_pre, ev_pre)
+    ev_pre = np.where(exit2, close2_pre, ev_pre)
+
+    trigger_spot = np.where(exit1, s1, trigger_spot)
+    trigger_spot = np.where(exit2, s2, trigger_spot)
+    trigger_tte = np.where(exit1, t1_tte, trigger_tte)
+    trigger_tte = np.where(exit2, t2_tte, trigger_tte)
+
+    p_otm_min = np.where(exit1, cv1["P_OTM_min"], p_otm_min)
+    p_otm_min = np.where(exit2, cv2["P_OTM_min"], p_otm_min)
+    p_otm_put = np.where(exit1, cv1["P_OTM_put"], p_otm_put)
+    p_otm_put = np.where(exit2, cv2["P_OTM_put"], p_otm_put)
+    p_otm_call = np.where(exit1, cv1["P_OTM_call"], p_otm_call)
+    p_otm_call = np.where(exit2, cv2["P_OTM_call"], p_otm_call)
+    v_continue_out = np.where(exit1, cv1["V_continue"], v_continue_out)
+    v_continue_out = np.where(exit2, cv2["V_continue"], v_continue_out)
+
+    expired_mask = valid & (~early_exit)
+    expired_otm = expired_mask & (close >= short_put) & (close <= short_call)
+    expired_itm = expired_mask & (~expired_otm)
+    exit_reason[:] = np.where(skipped, "", np.where(early_exit, "EV_NEGATIVE", np.where(expired_otm, "EXPIRED_OTM", "EXPIRED_ITM"))).astype(object)
+
+    # For expiry rows, expose last evaluated continuation metrics (checkpoint 2, then checkpoint 1) for diagnostics.
+    last_eval_2 = expired_mask & can_eval_2
+    last_eval_1 = expired_mask & (~can_eval_2) & can_eval_1
+    p_otm_min = np.where(last_eval_2, cv2["P_OTM_min"], p_otm_min)
+    p_otm_min = np.where(last_eval_1, cv1["P_OTM_min"], p_otm_min)
+    p_otm_put = np.where(last_eval_2, cv2["P_OTM_put"], p_otm_put)
+    p_otm_put = np.where(last_eval_1, cv1["P_OTM_put"], p_otm_put)
+    p_otm_call = np.where(last_eval_2, cv2["P_OTM_call"], p_otm_call)
+    p_otm_call = np.where(last_eval_1, cv1["P_OTM_call"], p_otm_call)
+    v_continue_out = np.where(last_eval_2, cv2["V_continue"], v_continue_out)
+    v_continue_out = np.where(last_eval_1, cv1["V_continue"], v_continue_out)
+    # "At exit" for expiry is settlement; use 0.0. Add a separate eval TTE for diagnostics.
+    eval_tte = np.full(n, np.nan, dtype=float)
+    eval_tte = np.where(exit1, t1_tte, eval_tte)
+    eval_tte = np.where(exit2, t2_tte, eval_tte)
+    eval_tte = np.where(last_eval_2, t2_tte, eval_tte)
+    eval_tte = np.where(last_eval_1, t1_tte, eval_tte)
+
+    trigger_spot = np.where(expired_mask, close, trigger_spot)
+    trigger_tte = np.where(expired_mask, 0.0, trigger_tte)
+
+    dist_to_short = np.minimum(np.abs(trigger_spot - short_put), np.abs(short_call - trigger_spot))
+
+    return {
+        "ev_based_exit_pre_commission": ev_pre,
+        "ev_based_exit_exit_reason": exit_reason,
+        "ev_based_exit_trigger_spot": trigger_spot,
+        "ev_based_exit_tte_at_exit": trigger_tte,
+        "ev_based_exit_tte_at_eval": eval_tte,
+        "ev_based_exit_distance_to_short_strike": dist_to_short,
+        "ev_based_exit_P_OTM_min": p_otm_min,
+        "ev_based_exit_P_OTM_put": p_otm_put,
+        "ev_based_exit_P_OTM_call": p_otm_call,
+        "ev_based_exit_V_continue": v_continue_out,
+        "ev_based_exit_early_exit": early_exit.astype(bool),
+    }
 
 
 def _delta_to_strike_vectorized(
@@ -459,6 +1187,11 @@ def _backtest_params(config: Dict[str, Any]) -> Dict[str, Any]:
 
     max_credit_to_wing_ratio = _cfg(config, "sweep_filters", "max_credit_to_wing_ratio", default=np.nan)
     max_margin_per_contract = _cfg(config, "sweep_filters", "max_margin_per_contract", default=np.nan)
+    dyn_sl_enabled = bool(_cfg(config, "dynamic_sl", "enabled", default=True))
+    dyn_sl_floor = float(_cfg(config, "dynamic_sl", "sl_floor", default=1.5))
+    dyn_sl_ceiling = float(_cfg(config, "dynamic_sl", "sl_ceiling", default=4.0))
+    dyn_sl_alpha = float(_cfg(config, "dynamic_sl", "alpha", default=1.0))
+    dyn_sl_beta = float(_cfg(config, "dynamic_sl", "beta", default=0.5))
 
     return {
         "start_date": str(start_date),
@@ -475,6 +1208,7 @@ def _backtest_params(config: Dict[str, Any]) -> Dict[str, Any]:
         "entry_hour": float(entry_hour),
         "risk_free_rate": float(_cfg(config, "timing", "risk_free_rate", default=0.05)),
         "vix_source": str(_cfg(config, "timing", "vix_source", default="previous_close")).lower(),
+        "use_bs_repricing": bool(_cfg(config, "pricing", "use_bs_repricing", default=True)),
         "iv_scaling_factor": float(iv_scaling_factor),
         "take_profit_pct": float(take_profit_pct),
         "stop_loss_mult": float(stop_loss_mult),
@@ -482,6 +1216,11 @@ def _backtest_params(config: Dict[str, Any]) -> Dict[str, Any]:
         "xsp_multiplier": float(_cfg(config, "default", "multiplier", default=XSP_MULTIPLIER)),
         "max_credit_to_wing_ratio": finite_or_nan(max_credit_to_wing_ratio),
         "max_margin_per_contract": finite_or_nan(max_margin_per_contract),
+        "dynamic_sl_enabled": dyn_sl_enabled,
+        "dynamic_sl_floor": dyn_sl_floor,
+        "dynamic_sl_ceiling": dyn_sl_ceiling,
+        "dynamic_sl_alpha": dyn_sl_alpha,
+        "dynamic_sl_beta": dyn_sl_beta,
         **commission,
     }
 
@@ -587,6 +1326,95 @@ def _simulate_dataframe(data: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFr
     set_reason(high < low, "invalid_ohlc")
 
     skipped = reason != ""
+    use_bs_repricing = bool(params.get("use_bs_repricing", True))
+
+    legacy_exit_annotations = _build_legacy_exit_annotations(
+        skipped=skipped,
+        touched_short=touched_short,
+        untouched=untouched,
+        settlement_pre_commission=settlement_pre_commission,
+        tp_cap_usd=tp_cap_usd,
+        sl_cap_usd=sl_cap_usd,
+        S_open=S,
+        high=high,
+        low=low,
+        close=close,
+        short_put=short_put,
+        short_call=short_call,
+        T_entry=T,
+    )
+
+    if use_bs_repricing:
+        bs_exit_annotations = _build_bs_exit_annotations_and_pnl(
+            skipped=skipped,
+            S_open=S,
+            high=high,
+            low=low,
+            close=close,
+            sigma=sigma,
+            short_put=short_put,
+            long_put=long_put,
+            short_call=short_call,
+            long_call=long_call,
+            entry_credit=entry_credit,
+            settlement_pre_commission=settlement_pre_commission,
+            tp_cap_usd=tp_cap_usd,
+            sl_cap_usd=sl_cap_usd,
+            T_entry=T,
+            r=params["risk_free_rate"],
+            tp_pct=params["take_profit_pct"],
+            use_bs_repricing=use_bs_repricing,
+        )
+        tp_pre_commission = bs_exit_annotations["tp50_or_expiry_pre_commission"]
+        tp50_sl_capped_pre_commission = bs_exit_annotations["tp50_sl_capped_pre_commission"]
+        exit_annotations = {**legacy_exit_annotations, **bs_exit_annotations}
+        pricing_mode = "bs"
+    else:
+        exit_annotations = legacy_exit_annotations
+        pricing_mode = "linear"
+
+    ev_exit_annotations = _build_ev_exit_annotations_and_pnl(
+        skipped=skipped,
+        S_open=S,
+        high=high,
+        low=low,
+        close=close,
+        sigma=sigma,
+        short_put=short_put,
+        long_put=long_put,
+        short_call=short_call,
+        long_call=long_call,
+        entry_credit=entry_credit,
+        settlement_pre_commission=settlement_pre_commission,
+        T_entry=T,
+        r=params["risk_free_rate"],
+        wing_width=params["wing_width"],
+        xsp_multiplier=params["xsp_multiplier"],
+        use_bs_repricing=use_bs_repricing,
+    )
+    dynamic_sl_annotations = _build_dynamic_sl_annotations_and_pnl(
+        skipped=skipped,
+        S_open=S,
+        high=high,
+        low=low,
+        close=close,
+        sigma=sigma,
+        short_put=short_put,
+        long_put=long_put,
+        short_call=short_call,
+        long_call=long_call,
+        entry_credit=entry_credit,
+        settlement_pre_commission=settlement_pre_commission,
+        T_entry=T,
+        r=params["risk_free_rate"],
+        xsp_multiplier=params["xsp_multiplier"],
+        use_bs_repricing=use_bs_repricing,
+        sl_floor=params["dynamic_sl_floor"],
+        sl_ceiling=params["dynamic_sl_ceiling"],
+        alpha=params["dynamic_sl_alpha"],
+        beta=params["dynamic_sl_beta"],
+    )
+
     open_commission = float(params["open_commission"])
     round_trip_commission = float(params["round_trip_commission"])
 
@@ -596,6 +1424,8 @@ def _simulate_dataframe(data: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFr
         commission_worst = np.full(len(frame), flat_commission, dtype=float)
         commission_tp = np.full(len(frame), flat_commission, dtype=float)
         commission_tp_sl_capped = np.full(len(frame), flat_commission, dtype=float)
+        commission_dynamic = np.full(len(frame), flat_commission, dtype=float)
+        commission_ev = np.full(len(frame), flat_commission, dtype=float)
     else:
         # Hold-to-expiry wins (both shorts OTM at settlement) can expire worthless:
         # only opening commission is paid. All other outcomes are modeled as active
@@ -605,16 +1435,22 @@ def _simulate_dataframe(data: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFr
         commission_worst = np.full(len(frame), round_trip_commission, dtype=float)
         commission_tp = np.full(len(frame), round_trip_commission, dtype=float)
         commission_tp_sl_capped = np.full(len(frame), round_trip_commission, dtype=float)
+        commission_dynamic = np.where(dynamic_sl_annotations["dynamic_sl_triggered"], round_trip_commission, commission_hold)
+        commission_ev = np.where(ev_exit_annotations["ev_based_exit_early_exit"], round_trip_commission, commission_hold)
 
     commission_hold = np.where(skipped, 0.0, commission_hold)
     commission_worst = np.where(skipped, 0.0, commission_worst)
     commission_tp = np.where(skipped, 0.0, commission_tp)
     commission_tp_sl_capped = np.where(skipped, 0.0, commission_tp_sl_capped)
+    commission_dynamic = np.where(skipped, 0.0, commission_dynamic)
+    commission_ev = np.where(skipped, 0.0, commission_ev)
 
     outcome_hold = np.where(skipped, np.nan, settlement_pre_commission - commission_hold)
     outcome_worst = np.where(skipped, np.nan, worst_pre_commission - commission_worst)
     outcome_tp = np.where(skipped, np.nan, tp_pre_commission - commission_tp)
     outcome_tp_sl_capped = np.where(skipped, np.nan, tp50_sl_capped_pre_commission - commission_tp_sl_capped)
+    outcome_dynamic = np.where(skipped, np.nan, dynamic_sl_annotations["dynamic_sl_pre_commission"] - commission_dynamic)
+    outcome_ev = np.where(skipped, np.nan, ev_exit_annotations["ev_based_exit_pre_commission"] - commission_ev)
 
     result = pd.DataFrame(
         {
@@ -649,24 +1485,38 @@ def _simulate_dataframe(data: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFr
             "worst_case_pre_commission": worst_pre_commission,
             "tp50_or_expiry_pre_commission": tp_pre_commission,
             "tp50_sl_capped_pre_commission": tp50_sl_capped_pre_commission,
+            "dynamic_sl_pre_commission": dynamic_sl_annotations["dynamic_sl_pre_commission"],
+            "ev_based_exit_pre_commission": ev_exit_annotations["ev_based_exit_pre_commission"],
+            "pricing_mode": pricing_mode,
+            "use_bs_repricing": np.full(len(frame), use_bs_repricing, dtype=bool),
             "settlement_pnl_usd": outcome_hold,
             "outcome_hold_to_expiry": outcome_hold,
             "outcome_worst_case": outcome_worst,
             "outcome_tp50_or_expiry": outcome_tp,
             "outcome_tp50_sl_capped": outcome_tp_sl_capped,
+            "outcome_dynamic_sl": outcome_dynamic,
+            "outcome_ev_based_exit": outcome_ev,
             "commission_open_usd": np.where(skipped, 0.0, open_commission),
             "commission_round_trip_usd": np.where(skipped, 0.0, round_trip_commission),
             "commission_hold_to_expiry": commission_hold,
             "commission_worst_case": commission_worst,
             "commission_tp50_or_expiry": commission_tp,
             "commission_tp50_sl_capped": commission_tp_sl_capped,
+            "commission_dynamic_sl": commission_dynamic,
+            "commission_ev_based_exit": commission_ev,
             "selection_method": np.where(skipped, "", "DELTA"),
             # Legacy commission field kept for compatibility with existing consumers.
             "commission_usd": commission_hold,
             "skipped": skipped,
             "skip_reason": reason,
+            # Generic aliases for EV scenario diagnostics (requested by PR2 spec).
+            "P_OTM_min": ev_exit_annotations["ev_based_exit_P_OTM_min"],
+            "V_continue": ev_exit_annotations["ev_based_exit_V_continue"],
+            "exit_reason": ev_exit_annotations["ev_based_exit_exit_reason"],
         }
     )
+    for col_name, values in {**exit_annotations, **dynamic_sl_annotations, **ev_exit_annotations}.items():
+        result[col_name] = values
     return result
 
 
@@ -701,6 +1551,510 @@ def run_backtest(config: Dict[str, Any], data: Optional[pd.DataFrame] = None) ->
             & (data["date"] <= pd.to_datetime(params["end_date"]))
         ].copy()
     return _simulate_dataframe(data, config)
+
+
+def _with_pricing_mode(config: Dict[str, Any], use_bs_repricing: bool) -> Dict[str, Any]:
+    """Return a config copy with pricing.use_bs_repricing forced to requested mode."""
+    cfg = copy.deepcopy(config)
+    cfg.setdefault("pricing", {})["use_bs_repricing"] = bool(use_bs_repricing)
+    return cfg
+
+
+def _scenario_sl_trigger_count(results: pd.DataFrame, scenario_name: str) -> int:
+    """Count SL triggers for a scenario where applicable."""
+    if scenario_name == "tp50_sl_capped" and "tp50_sl_capped_sl_trigger" in results.columns:
+        return int(results["tp50_sl_capped_sl_trigger"].fillna(False).astype(bool).sum())
+    if scenario_name == "dynamic_sl" and "dynamic_sl_triggered" in results.columns:
+        return int(results["dynamic_sl_triggered"].fillna(False).astype(bool).sum())
+    return 0
+
+
+def _scenario_exit_meta_columns(scenario_name: str) -> Dict[str, str]:
+    """Return per-scenario metadata columns used for pricing-mode diffs."""
+    if scenario_name == "tp50_or_expiry":
+        return {
+            "exit_type": "tp50_or_expiry_exit_type",
+            "spot": "tp50_or_expiry_trigger_spot",
+            "dist": "tp50_or_expiry_distance_to_short_strike",
+            "tte": "tp50_or_expiry_tte_at_trigger",
+        }
+    if scenario_name == "tp50_sl_capped":
+        return {
+            "exit_type": "tp50_sl_capped_exit_type",
+            "spot": "tp50_sl_capped_trigger_spot",
+            "dist": "tp50_sl_capped_distance_to_short_strike",
+            "tte": "tp50_sl_capped_tte_at_trigger",
+        }
+    if scenario_name == "dynamic_sl":
+        return {
+            "exit_type": "dynamic_sl_exit_type",
+            "spot": "dynamic_sl_trigger_spot",
+            "dist": "dynamic_sl_distance_to_short_strike",
+            "tte": "dynamic_sl_tte_at_trigger",
+        }
+    if scenario_name == "ev_based_exit":
+        return {
+            "exit_type": "ev_based_exit_exit_reason",
+            "spot": "ev_based_exit_trigger_spot",
+            "dist": "ev_based_exit_distance_to_short_strike",
+            "tte": "ev_based_exit_tte_at_eval",
+        }
+    return {}
+
+
+def _default_outcome_label_for_scenario(scenario_name: str, frame: pd.DataFrame, suffix: str = "") -> np.ndarray:
+    """Fallback outcome labels for scenarios without explicit exit-type metadata."""
+    n = len(frame)
+    if scenario_name == "hold_to_expiry":
+        labels = np.full(n, "EXPIRY", dtype=object)
+    elif scenario_name == "worst_case":
+        touched = (frame.get(f"put_breached{suffix}", pd.Series(False, index=frame.index)).fillna(False).astype(bool)) | (
+            frame.get(f"call_breached{suffix}", pd.Series(False, index=frame.index)).fillna(False).astype(bool)
+        )
+        labels = np.where(touched.to_numpy(), "WORST_TOUCH", "NO_TOUCH_MAXPROFIT").astype(object)
+    else:
+        labels = np.full(n, "", dtype=object)
+
+    skipped_col = f"skipped{suffix}"
+    if skipped_col in frame.columns:
+        skipped = frame[skipped_col].fillna(False).astype(bool).to_numpy()
+        labels = np.where(skipped, "", labels).astype(object)
+    return labels
+
+
+def build_bs_repricing_comparison_outputs(
+    config: Dict[str, Any],
+    data: Optional[pd.DataFrame] = None,
+    output_dir: str | Path = "outputs",
+) -> Dict[str, Any]:
+    """
+    Run linear-vs-BS repricing comparison and write requested CSV outputs.
+
+    Returns dict with dataframes and output paths for downstream callers.
+    """
+    base_params = _backtest_params(config)
+    if data is None:
+        data = download_data(
+            start_date=base_params["start_date"],
+            end_date=base_params["end_date"],
+            cache_file=base_params["cache_file"],
+        )
+    else:
+        data = data.copy()
+
+    cfg_linear = _with_pricing_mode(config, False)
+    cfg_bs = _with_pricing_mode(config, True)
+
+    linear_results = run_backtest(cfg_linear, data=data)
+    bs_results = run_backtest(cfg_bs, data=data)
+
+    linear_metrics = compute_metrics(linear_results, cfg_linear)
+    bs_metrics = compute_metrics(bs_results, cfg_bs)
+
+    sl_delta_by_scenario: Dict[str, int] = {}
+    for scenario_name in SCENARIO_COLUMNS:
+        sl_delta_by_scenario[scenario_name] = _scenario_sl_trigger_count(bs_results, scenario_name) - _scenario_sl_trigger_count(
+            linear_results, scenario_name
+        )
+
+    comparison_rows: List[Dict[str, Any]] = []
+    for pricing_mode, metrics in (("linear", linear_metrics), ("bs", bs_metrics)):
+        results_frame = linear_results if pricing_mode == "linear" else bs_results
+        for scenario_name in SCENARIO_COLUMNS:
+            metric = metrics.get(scenario_name, {})
+            comparison_rows.append(
+                {
+                    "scenario": scenario_name,
+                    "pricing_mode": pricing_mode,
+                    "total_pnl": float(metric.get("total_pnl_usd", 0.0)),
+                    "win_rate": float(metric.get("win_rate", 0.0)),
+                    "max_drawdown": float(metric.get("max_drawdown_usd", 0.0)),
+                    "avg_loss": float(metric.get("avg_loss_usd", 0.0)),
+                    "sharpe": float(metric.get("sharpe_daily", 0.0)),
+                    "total_trades": int(metric.get("total_trades", 0)),
+                    "sl_triggers": _scenario_sl_trigger_count(results_frame, scenario_name),
+                    "sl_triggers_delta": int(sl_delta_by_scenario.get(scenario_name, 0)),
+                }
+            )
+
+    comparison_df = pd.DataFrame(comparison_rows)
+
+    linear_renamed = linear_results.copy()
+    bs_renamed = bs_results.copy()
+    linear_renamed = linear_renamed.add_suffix("_linear")
+    bs_renamed = bs_renamed.add_suffix("_bs")
+    merged = pd.merge(
+        linear_renamed,
+        bs_renamed,
+        left_on="date_linear",
+        right_on="date_bs",
+        how="outer",
+        validate="one_to_one",
+    )
+    if "date_linear" in merged.columns:
+        merged["date"] = merged["date_linear"].combine_first(merged.get("date_bs"))
+
+    diff_rows: List[Dict[str, Any]] = []
+    pnl_tol = 1e-6
+
+    for scenario_name, outcome_col in SCENARIO_COLUMNS.items():
+        meta = _scenario_exit_meta_columns(scenario_name)
+        lin_col = f"{outcome_col}_linear"
+        bs_col = f"{outcome_col}_bs"
+        if lin_col not in merged.columns or bs_col not in merged.columns:
+            continue
+
+        linear_pnl = pd.to_numeric(merged[lin_col], errors="coerce")
+        bs_pnl = pd.to_numeric(merged[bs_col], errors="coerce")
+        pnl_changed = ~np.isclose(linear_pnl.to_numpy(), bs_pnl.to_numpy(), atol=pnl_tol, rtol=0.0, equal_nan=True)
+
+        if meta:
+            lin_exit = merged.get(f"{meta['exit_type']}_linear", pd.Series("", index=merged.index)).fillna("").astype(str)
+            bs_exit = merged.get(f"{meta['exit_type']}_bs", pd.Series("", index=merged.index)).fillna("").astype(str)
+        else:
+            lin_exit = pd.Series(_default_outcome_label_for_scenario(scenario_name, merged, suffix="_linear"), index=merged.index)
+            bs_exit = pd.Series(_default_outcome_label_for_scenario(scenario_name, merged, suffix="_bs"), index=merged.index)
+
+        exit_changed = lin_exit.to_numpy(dtype=object) != bs_exit.to_numpy(dtype=object)
+        changed_mask = pnl_changed | exit_changed
+        if not changed_mask.any():
+            continue
+
+        if meta:
+            spot_lin = pd.to_numeric(merged.get(f"{meta['spot']}_linear"), errors="coerce")
+            spot_bs = pd.to_numeric(merged.get(f"{meta['spot']}_bs"), errors="coerce")
+            dist_lin = pd.to_numeric(merged.get(f"{meta['dist']}_linear"), errors="coerce")
+            dist_bs = pd.to_numeric(merged.get(f"{meta['dist']}_bs"), errors="coerce")
+            tte_lin = pd.to_numeric(merged.get(f"{meta['tte']}_linear"), errors="coerce")
+            tte_bs = pd.to_numeric(merged.get(f"{meta['tte']}_bs"), errors="coerce")
+            spot_out = spot_bs.combine_first(spot_lin)
+            dist_out = dist_bs.combine_first(dist_lin)
+            tte_out = tte_bs.combine_first(tte_lin)
+        else:
+            spot_out = pd.Series(np.nan, index=merged.index, dtype=float)
+            dist_out = pd.Series(np.nan, index=merged.index, dtype=float)
+            tte_out = pd.Series(np.nan, index=merged.index, dtype=float)
+
+        vix_out = pd.to_numeric(merged.get("vix_bs"), errors="coerce").combine_first(pd.to_numeric(merged.get("vix_linear"), errors="coerce"))
+
+        changed_idx = np.flatnonzero(changed_mask)
+        for idx in changed_idx:
+            diff_rows.append(
+                {
+                    "date": pd.to_datetime(merged.iloc[idx]["date"]).date() if pd.notna(merged.iloc[idx]["date"]) else pd.NaT,
+                    "scenario": scenario_name,
+                    "linear_outcome": lin_exit.iloc[idx],
+                    "bs_outcome": bs_exit.iloc[idx],
+                    "linear_pnl": float(linear_pnl.iloc[idx]) if pd.notna(linear_pnl.iloc[idx]) else np.nan,
+                    "bs_pnl": float(bs_pnl.iloc[idx]) if pd.notna(bs_pnl.iloc[idx]) else np.nan,
+                    "spot_at_trigger": float(spot_out.iloc[idx]) if pd.notna(spot_out.iloc[idx]) else np.nan,
+                    "distance_to_short_strike": float(dist_out.iloc[idx]) if pd.notna(dist_out.iloc[idx]) else np.nan,
+                    "VIX": float(vix_out.iloc[idx]) if pd.notna(vix_out.iloc[idx]) else np.nan,
+                    "TTE_at_trigger": float(tte_out.iloc[idx]) if pd.notna(tte_out.iloc[idx]) else np.nan,
+                }
+            )
+
+    trade_diff_df = pd.DataFrame(diff_rows)
+    if not trade_diff_df.empty:
+        trade_diff_df = trade_diff_df.sort_values(["date", "scenario"]).reset_index(drop=True)
+
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    comparison_path = out_dir / "bs_repricing_comparison.csv"
+    trade_diff_path = out_dir / "bs_repricing_trade_diff.csv"
+    comparison_df.to_csv(comparison_path, index=False)
+    trade_diff_df.to_csv(trade_diff_path, index=False)
+
+    return {
+        "comparison": comparison_df,
+        "trade_diff": trade_diff_df,
+        "linear_results": linear_results,
+        "bs_results": bs_results,
+        "comparison_path": comparison_path,
+        "trade_diff_path": trade_diff_path,
+    }
+
+
+def build_ev_exit_outputs(
+    config: Dict[str, Any],
+    data: Optional[pd.DataFrame] = None,
+    output_dir: str | Path = "outputs",
+) -> Dict[str, Any]:
+    """
+    Run backtest (BS repricing default) and emit EV-exit comparison/detail CSVs.
+    """
+    params = _backtest_params(config)
+    if data is None:
+        data = download_data(
+            start_date=params["start_date"],
+            end_date=params["end_date"],
+            cache_file=params["cache_file"],
+        )
+    else:
+        data = data.copy()
+
+    results = run_backtest(config, data=data)
+    metrics = compute_metrics(results, config)
+
+    comparison_rows: List[Dict[str, Any]] = []
+    for scenario_name in SCENARIO_COLUMNS:
+        m = metrics.get(scenario_name, {})
+        early_exits = 0
+        if scenario_name == "ev_based_exit" and "ev_based_exit_early_exit" in results.columns:
+            early_exits = int(results["ev_based_exit_early_exit"].fillna(False).astype(bool).sum())
+        comparison_rows.append(
+            {
+                "scenario": scenario_name,
+                "total_pnl": float(m.get("total_pnl_usd", 0.0)),
+                "win_rate": float(m.get("win_rate", 0.0)),
+                "max_drawdown": float(m.get("max_drawdown_usd", 0.0)),
+                "avg_win": float(m.get("avg_win_usd", 0.0)),
+                "avg_loss": float(m.get("avg_loss_usd", 0.0)),
+                "sharpe": float(m.get("sharpe_daily", 0.0)),
+                "total_trades": int(m.get("total_trades", 0)),
+                "early_exits": int(early_exits),
+            }
+        )
+    comparison_df = pd.DataFrame(comparison_rows)
+
+    ev_rows = results[(~results["skipped"]) & results["outcome_ev_based_exit"].notna()].copy() if "outcome_ev_based_exit" in results.columns else pd.DataFrame()
+    if not ev_rows.empty:
+        ev_analysis_df = pd.DataFrame(
+            {
+                "date": pd.to_datetime(ev_rows["date"]).dt.date,
+                "exit_reason": ev_rows["ev_based_exit_exit_reason"],
+                "P_OTM_at_exit": ev_rows["ev_based_exit_P_OTM_min"],
+                "V_continue_at_exit": ev_rows["ev_based_exit_V_continue"],
+                "TTE_at_exit": ev_rows["ev_based_exit_tte_at_eval"],
+                "pnl": ev_rows["outcome_ev_based_exit"],
+                "VIX": ev_rows["vix"],
+                "spot_at_exit": ev_rows["ev_based_exit_trigger_spot"],
+                "distance_to_short": ev_rows["ev_based_exit_distance_to_short_strike"],
+            }
+        ).sort_values("date").reset_index(drop=True)
+    else:
+        ev_analysis_df = pd.DataFrame(
+            columns=[
+                "date",
+                "exit_reason",
+                "P_OTM_at_exit",
+                "V_continue_at_exit",
+                "TTE_at_exit",
+                "pnl",
+                "VIX",
+                "spot_at_exit",
+                "distance_to_short",
+            ]
+        )
+
+    potm_hist_df = ev_analysis_df[ev_analysis_df["exit_reason"] == "EV_NEGATIVE"][["date", "P_OTM_at_exit"]].copy()
+    potm_hist_df = potm_hist_df.rename(columns={"P_OTM_at_exit": "P_OTM_min"})
+
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    comparison_path = out_dir / "ev_exit_comparison.csv"
+    analysis_path = out_dir / "ev_exit_analysis.csv"
+    potm_hist_path = out_dir / "ev_exit_P_OTM_distribution.csv"
+
+    comparison_df.to_csv(comparison_path, index=False)
+    ev_analysis_df.to_csv(analysis_path, index=False)
+    potm_hist_df.to_csv(potm_hist_path, index=False)
+
+    return {
+        "results": results,
+        "metrics": metrics,
+        "comparison": comparison_df,
+        "ev_analysis": ev_analysis_df,
+        "potm_distribution": potm_hist_df,
+        "comparison_path": comparison_path,
+        "analysis_path": analysis_path,
+        "potm_hist_path": potm_hist_path,
+    }
+
+
+def build_dynamic_sl_outputs(
+    config: Dict[str, Any],
+    data: Optional[pd.DataFrame] = None,
+    output_dir: str | Path = "outputs",
+    run_sweep: bool = True,
+) -> Dict[str, Any]:
+    """
+    Produce PR2b dynamic SL comparison and diagnostics CSV outputs.
+    """
+    params = _backtest_params(config)
+    if data is None:
+        data = download_data(
+            start_date=params["start_date"],
+            end_date=params["end_date"],
+            cache_file=params["cache_file"],
+        )
+    else:
+        data = data.copy()
+
+    # Base run (should use BS repricing by default from config)
+    base_results = run_backtest(config, data=data)
+    base_metrics = compute_metrics(base_results, config)
+
+    # Direct fixed 2x comparison = TP=100%, SL=2x under same BS pricing.
+    fixed_cfg = copy.deepcopy(config)
+    fixed_cfg.setdefault("default", {})["tp_pct"] = 1.0
+    fixed_cfg.setdefault("default", {})["sl_mult"] = 2.0
+    fixed_cfg.setdefault("pricing", {})["use_bs_repricing"] = True
+    fixed_results = run_backtest(fixed_cfg, data=data)
+    fixed_metrics = compute_metrics(fixed_results, fixed_cfg)
+
+    comparison_rows: List[Dict[str, Any]] = []
+
+    def _append_row(label: str, results_df: pd.DataFrame, metrics_dict: Dict[str, Dict[str, float]], scenario_key: str) -> None:
+        m = metrics_dict.get(scenario_key, {})
+        sl_triggers = _scenario_sl_trigger_count(results_df, scenario_key)
+        total_trades = int(m.get("total_trades", 0))
+        comparison_rows.append(
+            {
+                "scenario": label,
+                "total_pnl": float(m.get("total_pnl_usd", 0.0)),
+                "win_rate": float(m.get("win_rate", 0.0)),
+                "max_drawdown": float(m.get("max_drawdown_usd", 0.0)),
+                "avg_win": float(m.get("avg_win_usd", 0.0)),
+                "avg_loss": float(m.get("avg_loss_usd", 0.0)),
+                "sharpe": float(m.get("sharpe_daily", 0.0)),
+                "total_trades": total_trades,
+                "sl_triggers": sl_triggers,
+                "sl_trigger_rate": (sl_triggers / total_trades) if total_trades else np.nan,
+            }
+        )
+
+    for scen in ("hold_to_expiry", "tp50_sl_capped", "dynamic_sl"):
+        if scen in base_metrics:
+            _append_row(scen, base_results, base_metrics, scen)
+    if "tp50_sl_capped" in fixed_metrics:
+        _append_row("fixed_sl_2x", fixed_results, fixed_metrics, "tp50_sl_capped")
+
+    comparison_df = pd.DataFrame(comparison_rows)
+
+    dyn_rows = base_results[(~base_results["skipped"]) & base_results["outcome_dynamic_sl"].notna()].copy()
+    if not dyn_rows.empty:
+        trigger_analysis_df = pd.DataFrame(
+            {
+                "date": pd.to_datetime(dyn_rows["date"]).dt.date,
+                "exit_type": dyn_rows["dynamic_sl_exit_type"],
+                "P_OTM_at_exit": dyn_rows["dynamic_sl_P_OTM_at_trigger"],
+                "sl_mult_at_exit": dyn_rows["dynamic_sl_mult_at_trigger"],
+                "TTE_at_exit_hours": pd.to_numeric(dyn_rows["dynamic_sl_tte_at_trigger"], errors="coerce") * (TRADING_DAYS_PER_YEAR * TRADING_HOURS_PER_DAY),
+                "pnl": dyn_rows["outcome_dynamic_sl"],
+                "VIX": dyn_rows["vix"],
+                "spot_at_exit": dyn_rows["dynamic_sl_trigger_spot"],
+                "distance_to_short": dyn_rows["dynamic_sl_distance_to_short_strike"],
+                "spread_cost_at_exit": dyn_rows["dynamic_sl_spread_cost_at_trigger"],
+            }
+        ).sort_values("date").reset_index(drop=True)
+    else:
+        trigger_analysis_df = pd.DataFrame(
+            columns=[
+                "date",
+                "exit_type",
+                "P_OTM_at_exit",
+                "sl_mult_at_exit",
+                "TTE_at_exit_hours",
+                "pnl",
+                "VIX",
+                "spot_at_exit",
+                "distance_to_short",
+                "spread_cost_at_exit",
+            ]
+        )
+
+    dyn_only = trigger_analysis_df[trigger_analysis_df["exit_type"] == "DYNAMIC_SL"]["P_OTM_at_exit"].dropna()
+    stats_rows = []
+    if len(dyn_only) > 0:
+        stats_rows = [
+            {"stat": "n", "value": float(len(dyn_only))},
+            {"stat": "mean", "value": float(dyn_only.mean())},
+            {"stat": "median", "value": float(dyn_only.median())},
+            {"stat": "std", "value": float(dyn_only.std(ddof=0))},
+            {"stat": "p10", "value": float(dyn_only.quantile(0.10))},
+            {"stat": "p25", "value": float(dyn_only.quantile(0.25))},
+            {"stat": "p50", "value": float(dyn_only.quantile(0.50))},
+            {"stat": "p75", "value": float(dyn_only.quantile(0.75))},
+            {"stat": "p90", "value": float(dyn_only.quantile(0.90))},
+            {"stat": "min", "value": float(dyn_only.min())},
+            {"stat": "max", "value": float(dyn_only.max())},
+        ]
+    potm_dist_df = pd.DataFrame(stats_rows, columns=["stat", "value"])
+
+    sweep_df = pd.DataFrame()
+    if run_sweep:
+        floors = np.arange(1.0, 2.5 + 1e-9, 0.5)
+        ceilings = np.arange(2.5, 6.0 + 1e-9, 0.5)
+        alphas = np.arange(0.5, 2.0 + 1e-9, 0.5)
+        betas = np.arange(0.0, 1.5 + 1e-9, 0.5)
+        sweep_rows: List[Dict[str, Any]] = []
+        for sl_floor in floors:
+            for sl_ceiling in ceilings:
+                if sl_ceiling <= sl_floor:
+                    continue
+                for alpha in alphas:
+                    for beta in betas:
+                        cfg = copy.deepcopy(config)
+                        dyn = cfg.setdefault("dynamic_sl", {})
+                        dyn["enabled"] = True
+                        dyn["sl_floor"] = float(sl_floor)
+                        dyn["sl_ceiling"] = float(sl_ceiling)
+                        dyn["alpha"] = float(alpha)
+                        dyn["beta"] = float(beta)
+                        res = run_backtest(cfg, data=data)
+                        met = compute_metrics(res, cfg).get("dynamic_sl", {})
+                        sl_trig = int(res.get("dynamic_sl_triggered", pd.Series(dtype=bool)).fillna(False).astype(bool).sum()) if "dynamic_sl_triggered" in res.columns else 0
+                        trig_mask = res.get("dynamic_sl_triggered", pd.Series(False, index=res.index)).fillna(False).astype(bool) if not res.empty else pd.Series(dtype=bool)
+                        if "dynamic_sl_mult_at_trigger" in res.columns and not res.empty and trig_mask.any():
+                            avg_mult = float(pd.to_numeric(res.loc[trig_mask, "dynamic_sl_mult_at_trigger"], errors="coerce").dropna().mean())
+                        else:
+                            avg_mult = np.nan
+                        sweep_rows.append(
+                            {
+                                "sl_floor": float(sl_floor),
+                                "sl_ceiling": float(sl_ceiling),
+                                "alpha": float(alpha),
+                                "beta": float(beta),
+                                "total_pnl": float(met.get("total_pnl_usd", 0.0)),
+                                "win_rate": float(met.get("win_rate", 0.0)),
+                                "max_drawdown": float(met.get("max_drawdown_usd", 0.0)),
+                                "sharpe": float(met.get("sharpe_daily", 0.0)),
+                                "sl_triggers": sl_trig,
+                                "avg_sl_mult_at_trigger": avg_mult,
+                            }
+                        )
+        sweep_df = pd.DataFrame(sweep_rows)
+        if not sweep_df.empty:
+            sweep_df = sweep_df.sort_values(["sharpe", "total_pnl"], ascending=[False, False]).reset_index(drop=True)
+
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    comparison_path = out_dir / "dynamic_sl_comparison.csv"
+    trigger_analysis_path = out_dir / "dynamic_sl_trigger_analysis.csv"
+    potm_dist_path = out_dir / "dynamic_sl_P_OTM_distribution.csv"
+    sweep_path = out_dir / "dynamic_sl_sweep.csv"
+
+    comparison_df.to_csv(comparison_path, index=False)
+    trigger_analysis_df.to_csv(trigger_analysis_path, index=False)
+    potm_dist_df.to_csv(potm_dist_path, index=False)
+    if run_sweep:
+        sweep_df.to_csv(sweep_path, index=False)
+
+    return {
+        "base_results": base_results,
+        "base_metrics": base_metrics,
+        "fixed_results": fixed_results,
+        "fixed_metrics": fixed_metrics,
+        "comparison": comparison_df,
+        "trigger_analysis": trigger_analysis_df,
+        "potm_distribution": potm_dist_df,
+        "sweep": sweep_df,
+        "comparison_path": comparison_path,
+        "trigger_analysis_path": trigger_analysis_path,
+        "potm_dist_path": potm_dist_path,
+        "sweep_path": sweep_path,
+    }
 
 
 def breakeven_winrate(
@@ -974,6 +2328,8 @@ def run_parameter_sweep(
         tp_pct = float(combo_params.get("tp_pct", combo_params.get("take_profit_pct", params_base["take_profit_pct"])))
         sl_mult = float(combo_params.get("sl_mult", combo_params.get("stop_loss_mult", params_base["stop_loss_mult"])))
         commission = params_base["commission_per_trade"]
+        dyn_floor = float(combo_params.get("sl_floor", params_base.get("dynamic_sl_floor", 1.5)))
+        dyn_ceiling = float(combo_params.get("sl_ceiling", params_base.get("dynamic_sl_ceiling", 4.0)))
 
         row_base = dict(combo_params)
         row_base.setdefault("iv_scaling_factor", float(combo_params.get("iv_scaling_factor", params_base["iv_scaling_factor"])))
@@ -1001,7 +2357,14 @@ def run_parameter_sweep(
             rows.append(row_base)
             continue
 
-        # Invalid combo 4: structurally impossible required win rate.
+        # Invalid combo 4b: dynamic SL ceiling must exceed floor.
+        if ("sl_floor" in combo_params or "sl_ceiling" in combo_params) and (dyn_ceiling <= dyn_floor):
+            row_base["combo_skipped"] = True
+            row_base["combo_skip_reason"] = "dynamic_sl_ceiling_lte_floor"
+            rows.append(row_base)
+            continue
+
+        # Invalid combo 5: structurally impossible required win rate.
         be_tp = breakeven_winrate(min_credit, wing, commission, tp_pct, sl_mult)["with_tp_sl"]
         if be_tp > 0.95:
             row_base["combo_skipped"] = True
@@ -1030,6 +2393,16 @@ def run_parameter_sweep(
             cfg.setdefault("default", {})["sl_mult"] = float(combo_params["stop_loss_mult"])
         if "iv_scaling_factor" in combo_params:
             cfg["iv_scaling_factor"] = float(combo_params["iv_scaling_factor"])
+        if any(k in combo_params for k in ("sl_floor", "sl_ceiling", "alpha", "beta")):
+            dyn_cfg = cfg.setdefault("dynamic_sl", {})
+            if "sl_floor" in combo_params:
+                dyn_cfg["sl_floor"] = float(combo_params["sl_floor"])
+            if "sl_ceiling" in combo_params:
+                dyn_cfg["sl_ceiling"] = float(combo_params["sl_ceiling"])
+            if "alpha" in combo_params:
+                dyn_cfg["alpha"] = float(combo_params["alpha"])
+            if "beta" in combo_params:
+                dyn_cfg["beta"] = float(combo_params["beta"])
 
         results = run_backtest(cfg, data=data)
         metrics = compute_metrics(results, cfg)

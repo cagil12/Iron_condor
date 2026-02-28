@@ -1,0 +1,15 @@
+2026-02-26 17:45:47,048 - src.strategy.execution - INFO - HOLD_TO_EXPIRY_MODE=True (tp_pct=1.00)
+2026-02-26 17:45:47,049 - src.strategy.execution - INFO - 🔧 Executor Config: TP=1.00 | SL=3.0x | Width=2.0 | ExitStrategy=hold_to_expiry_sl2x
+2026-02-26 17:45:47,051 - src.strategy.execution - INFO - 💸 Expected commissions: win=$2.60 | loss=$5.20 | open=$2.60 | round_trip=$5.20
+2026-02-26 17:45:47,052 - src.strategy.execution - INFO - 📌 TP mode is hold-to-expiry (tp_pct >= 1.00): skipping TP close orders; only SL/EOD can trigger active close.
+2026-02-26 17:45:47,053 - src.strategy.execution - INFO - 🛡️ Kill Switches: L1=ON (DD>15%) | L3=ON (VIX>25) | L5=ON (3 losses)
+2026-02-26 17:45:47,053 - src.strategy.execution - INFO - REMINDER: Verify TWS setting 'Download open orders on connection' is enabled
+2026-02-26 17:45:47,053 - src.strategy.execution - INFO - TWS → Global Configuration → API → Settings → ☑️ Download open orders
+2026-02-26 17:45:49,062 - src.strategy.execution - INFO -   Position: XSP 684.0 P qty=-1.0
+2026-02-26 17:45:49,094 - src.strategy.execution - INFO -   Position: XSP 696.0 C qty=-1.0
+2026-02-26 17:45:49,095 - src.strategy.execution - INFO -   Position: XSP 698.0 C qty=1.0
+2026-02-26 17:45:49,095 - src.strategy.execution - INFO -   Position: XSP 682.0 P qty=1.0
+2026-02-26 17:45:49,095 - src.strategy.execution - INFO - 🔍 Checking for existing positions to resume...
+2026-02-26 17:45:49,096 - src.strategy.execution - INFO -    ℹ️ Ignoring previously finalized hold-to-expiry position signature.
+2026-02-26 17:45:49,311 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-26 17:46:49,315 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().

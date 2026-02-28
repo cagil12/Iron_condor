@@ -1,0 +1,4 @@
+❌ ABORT: Another bot instance is already running (PID unknown)!
+   Kill it first:
+     Windows: taskkill /F /PID unknown
+     Linux:   kill unknown

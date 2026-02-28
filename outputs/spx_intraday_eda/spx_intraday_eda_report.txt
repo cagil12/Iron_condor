@@ -1,0 +1,236 @@
+======================================================================
+SPX INTRADAY RETURN EDA FOR IRON CONDOR 0DTE (PRODUCTIONIZED)
+======================================================================
+
+Assumptions / framing:
+  Example XSP reference (display only): 690
+  Typical IC credit (for SL survival proxy): $0.25
+  Wing width cap for spread approximation: 2.0 pts
+  Intraday timing layer uses 1h Yahoo bars -> coarse timing proxy (not minute-accurate).
+
+======================================================================
+DATA DOWNLOAD
+======================================================================
+Downloading ^GSPC daily OHLC (2020-01-01 to 2026-02-27)...
+  Daily SPX bars: 1546
+Downloading ^VIX daily OHLC (2020-01-01 to 2026-02-27)...
+  Daily VIX bars: 1546
+Hourly source: 1h intraday (730d)
+  - period=730d: 5069 RTH hourly bars accepted
+  Hourly RTH bars retained: 5069
+
+======================================================================
+LAYER 1: DAILY MAX ADVERSE EXCURSION (2020-2026)
+======================================================================
+MAE Down (Open→Low, proxy for PUT side risk):
+  Mean   0.647%
+  Median 0.419%
+  Std    0.740%
+  P90    1.540%
+  P95    2.076%
+  P99    3.413%
+  Max    6.402%
+
+MAE Up (Open→High, proxy for CALL side risk):
+  Mean   0.608%
+  Median 0.440%
+  Std    0.667%
+  P90    1.294%
+  P95    1.690%
+  P99    2.861%
+  Max    10.393%
+
+Converted to XSP-equivalent points (dynamic daily reference = SPX Open / 10):
+  MAE Down (put): Mean=2.9 | Median=1.9 | P90=6.9 | P95=8.6 | P99=13.4 | Max=28.3 pts
+  MAE Up (call): Mean=2.7 | Median=2.0 | P90=5.6 | P95=7.2 | P99=10.7 | Max=51.6 pts
+
+How often does intraday MAE reach a strike distance? (dynamic point threshold per day)
+ Dist | Put breach | Call breach | Either
+----- | ---------- | ----------- | ------
+   5 |      18.2% |       13.8% |   30.9%
+   6 |      13.0% |        8.3% |   20.8%
+   7 |       9.6% |        5.5% |   14.8%
+   8 |       6.5% |        3.4% |    9.8%
+   9 |       4.3% |        2.2% |    6.4%
+  10 |       3.5% |        1.5% |    4.9%
+  12 |       1.7% |        0.8% |    2.5%
+  15 |       0.6% |        0.2% |    0.8%
+  20 |       0.3% |        0.1% |    0.4%
+
+Distribution shape (fat tails diagnostics):
+  MAE Down:
+    Skewness   2.54
+    Kurtosis   9.96 (excess)
+    Jarque-Bera stat=8009.1, p=0.00e+00
+  Daily close-to-close returns:
+    Skewness   -0.33
+    Kurtosis   14.04 (excess)
+    Jarque-Bera stat=12633.7, p=0.00e+00
+
+MAE by VIX regime (using VIX previous close for regime assignment):
+  VIX  0-15 (n= 283):
+    MAE down pts: mean=1.8 P90=4.7 P95=5.4 P99=8.5
+    MAE up pts:   mean=1.8 P90=3.7 P95=4.5 P99=6.1
+    Breach 8 pts (either side): 1.8%
+  VIX 15-20 (n= 586):
+    MAE down pts: mean=2.7 P90=6.4 P95=7.9 P99=12.3
+    MAE up pts:   mean=2.2 P90=4.6 P95=5.5 P99=6.8
+    Breach 8 pts (either side): 5.1%
+  VIX 20-25 (n= 342):
+    MAE down pts: mean=2.7 P90=6.4 P95=8.0 P99=11.7
+    MAE up pts:   mean=3.0 P90=6.0 P95=7.9 P99=11.0
+    Breach 8 pts (either side): 9.6%
+  VIX 25-30 (n= 187):
+    MAE down pts: mean=3.7 P90=8.8 P95=10.4 P99=13.8
+    MAE up pts:   mean=3.3 P90=7.0 P95=8.4 P99=10.5
+    Breach 8 pts (either side): 19.3%
+  VIX 30-100 (n= 147):
+    MAE down pts: mean=4.6 P90=10.5 P95=12.8 P99=23.1
+    MAE up pts:   mean=4.9 P90=9.3 P95=12.3 P99=23.4
+    Breach 8 pts (either side): 32.0%
+
+======================================================================
+LAYER 2: HOURLY INTRADAY DYNAMICS (1H BARS, ET/RTH-FILTERED)
+======================================================================
+Note: 1h Yahoo bars are coarse. '10:00 onward' is proxied using the first bar ending after ~10:00.
+Sessions with >=5 hourly RTH bars: 720
+Hourly session bar-count quality: min=7 median=7 max=7
+
+Hour-of-day: when does the worst drawdown occur? (put side proxy)
+  09:00   279 ( 38.8%) ###################
+  10:00    77 ( 10.7%) #####
+  11:00    65 (  9.0%) ####
+  12:00    59 (  8.2%) ####
+  13:00    76 ( 10.6%) #####
+  14:00    64 (  8.9%) ####
+  15:00   100 ( 13.9%) ######
+
+Hour-of-day: when does the worst upside move occur? (call side proxy)
+  09:00   246 ( 34.2%) #################
+  10:00    70 (  9.7%) ####
+  11:00    49 (  6.8%) ###
+  12:00    54 (  7.5%) ###
+  13:00    60 (  8.3%) ####
+  14:00    97 ( 13.5%) ######
+  15:00   144 ( 20.0%) ##########
+
+Recovery analysis (hourly proxy): if price drops > N pts from open by hour H,
+what % of the time does it close above open?
+  Drop >  3 pts (n=242, overall recovery=14.0%):
+    Breach at 09:00: n=  94 | recovered=  23 ( 24.5%) ####
+    Breach at 10:00: n=  54 | recovered=   6 ( 11.1%) ##
+    Breach at 11:00: n=  27 | recovered=   3 ( 11.1%) ##
+    Breach at 12:00: n=  20 | recovered=   1 (  5.0%) #
+    Breach at 13:00: n=  19 | recovered=   1 (  5.3%) #
+    Breach at 14:00: n=  22 | recovered=   0 (  0.0%) 
+    Breach at 15:00: n=   6 | recovered=   0 (  0.0%) 
+  Drop >  5 pts (n=124, overall recovery=8.1%):
+    Breach at 09:00: n=  32 | recovered=   5 ( 15.6%) ###
+    Breach at 10:00: n=  19 | recovered=   1 (  5.3%) #
+    Breach at 11:00: n=  22 | recovered=   3 ( 13.6%) ##
+    Breach at 12:00: n=  15 | recovered=   1 (  6.7%) #
+    Breach at 13:00: n=  11 | recovered=   0 (  0.0%) 
+    Breach at 14:00: n=  14 | recovered=   0 (  0.0%) 
+    Breach at 15:00: n=  11 | recovered=   0 (  0.0%) 
+  Drop >  7 pts (n=64, overall recovery=3.1%):
+    Breach at 09:00: n=   8 | recovered=   2 ( 25.0%) #####
+    Breach at 10:00: n=  14 | recovered=   0 (  0.0%) 
+    Breach at 11:00: n=   8 | recovered=   0 (  0.0%) 
+    Breach at 12:00: n=  12 | recovered=   0 (  0.0%) 
+    Breach at 13:00: n=  11 | recovered=   0 (  0.0%) 
+    Breach at 14:00: n=   9 | recovered=   0 (  0.0%) 
+    Breach at 15:00: n=   2 | recovered=   0 (  0.0%) 
+  Drop >  9 pts (n=28, overall recovery=3.6%):
+    Breach at 09:00: n=   2 | recovered=   1 ( 50.0%) ##########
+    Breach at 10:00: n=   5 | recovered=   0 (  0.0%) 
+    Breach at 11:00: n=   3 | recovered=   0 (  0.0%) 
+    Breach at 12:00: n=   3 | recovered=   0 (  0.0%) 
+    Breach at 13:00: n=   5 | recovered=   0 (  0.0%) 
+    Breach at 14:00: n=   7 | recovered=   0 (  0.0%) 
+    Breach at 15:00: n=   3 | recovered=   0 (  0.0%) 
+  Drop > 12 pts (n=13, overall recovery=0.0%):
+    Breach at 10:00: n=   1 | recovered=   0 (  0.0%) 
+    Breach at 11:00: n=   3 | recovered=   0 (  0.0%) 
+    Breach at 12:00: n=   2 | recovered=   0 (  0.0%) 
+    Breach at 13:00: n=   2 | recovered=   0 (  0.0%) 
+    Breach at 14:00: n=   2 | recovered=   0 (  0.0%) 
+    Breach at 15:00: n=   3 | recovered=   0 (  0.0%) 
+
+MAE from ~10:00 onward (1h proxy): uses first hourly bar with bar_end_et >= 10:00 ET
+  Sessions: 720
+  Down (put): Mean=2.8 pts | P90=6.5 | P95=8.5 | P99=14.0 | Max=28.3
+  Up (call): Mean=2.6 pts | P90=5.4 | P95=6.6 | P99=10.8 | Max=51.6
+
+======================================================================
+LAYER 3: SL THRESHOLD SURVIVAL ANALYSIS (LINEAR PROXY, CAPPED)
+======================================================================
+Assumptions: credit=$0.25, wing=2.0 pts, cost-basis SL semantics
+Using daily Open→Low MAE as put-side proxy. Linear spread approximation with wing cap:
+  est_spread = min(credit + intrusion_pts, wing_width)
+Strike distance: 6 pts from open
+  SL=2.0x (spread>=$0.50, PnL≈-25) triggers= 191/1546 | survival= 87.6%
+  SL=2.5x (spread>=$0.62, PnL≈-38) triggers= 181/1546 | survival= 88.3%
+  SL=3.0x (spread>=$0.75, PnL≈-50) triggers= 174/1546 | survival= 88.7%
+  SL=3.5x (spread>=$0.88, PnL≈-62) triggers= 166/1546 | survival= 89.3%
+  SL=4.0x (spread>=$1.00, PnL≈-75) triggers= 161/1546 | survival= 89.6%
+
+Strike distance: 7 pts from open
+  SL=2.0x (spread>=$0.50, PnL≈-25) triggers= 145/1546 | survival= 90.6%
+  SL=2.5x (spread>=$0.62, PnL≈-38) triggers= 136/1546 | survival= 91.2%
+  SL=3.0x (spread>=$0.75, PnL≈-50) triggers= 128/1546 | survival= 91.7%
+  SL=3.5x (spread>=$0.88, PnL≈-62) triggers= 120/1546 | survival= 92.2%
+  SL=4.0x (spread>=$1.00, PnL≈-75) triggers= 112/1546 | survival= 92.8%
+
+Strike distance: 8 pts from open
+  SL=2.0x (spread>=$0.50, PnL≈-25) triggers=  92/1546 | survival= 94.0%
+  SL=2.5x (spread>=$0.62, PnL≈-38) triggers=  87/1546 | survival= 94.4%
+  SL=3.0x (spread>=$0.75, PnL≈-50) triggers=  84/1546 | survival= 94.6%
+  SL=3.5x (spread>=$0.88, PnL≈-62) triggers=  75/1546 | survival= 95.1%
+  SL=4.0x (spread>=$1.00, PnL≈-75) triggers=  74/1546 | survival= 95.2%
+
+Strike distance: 9 pts from open
+  SL=2.0x (spread>=$0.50, PnL≈-25) triggers=  66/1546 | survival= 95.7%
+  SL=2.5x (spread>=$0.62, PnL≈-38) triggers=  64/1546 | survival= 95.9%
+  SL=3.0x (spread>=$0.75, PnL≈-50) triggers=  62/1546 | survival= 96.0%
+  SL=3.5x (spread>=$0.88, PnL≈-62) triggers=  60/1546 | survival= 96.1%
+  SL=4.0x (spread>=$1.00, PnL≈-75) triggers=  58/1546 | survival= 96.2%
+
+Strike distance: 10 pts from open
+  SL=2.0x (spread>=$0.50, PnL≈-25) triggers=  50/1546 | survival= 96.8%
+  SL=2.5x (spread>=$0.62, PnL≈-38) triggers=  46/1546 | survival= 97.0%
+  SL=3.0x (spread>=$0.75, PnL≈-50) triggers=  40/1546 | survival= 97.4%
+  SL=3.5x (spread>=$0.88, PnL≈-62) triggers=  38/1546 | survival= 97.5%
+  SL=4.0x (spread>=$1.00, PnL≈-75) triggers=  36/1546 | survival= 97.7%
+
+Intraday asymmetry (put vs call side)
+  Mean MAE down: 0.647% (2.9 XSP pts)
+  Mean MAE up:   0.608% (2.7 XSP pts)
+  Ratio down/up: 1.06 (put riskier)
+  P95 down: 8.6 pts
+  P95 up:   7.2 pts
+  Supports left-biased IC? MARGINAL
+
+======================================================================
+SAVE OUTPUTS
+======================================================================
+Saved: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\spx_intraday_eda\spx_daily_mae.csv
+Saved: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\spx_intraday_eda\spx_mae_by_vix_regime.csv
+Saved: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\spx_intraday_eda\spx_sl_survival_analysis.csv
+Saved: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\spx_intraday_eda\spx_breach_prob_by_distance.csv
+Saved: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\spx_intraday_eda\spx_hourly_session_summary.csv
+Saved: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\spx_intraday_eda\spx_hourly_recovery_by_breach_hour.csv
+Saved: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\spx_intraday_eda\spx_mae_from_10am_proxy_1h.csv
+Saved: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\spx_intraday_eda\spx_hourly_rth_1h_used.csv
+Saved: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\spx_intraday_eda\spx_hourly_session_bar_counts.csv
+
+======================================================================
+KEY QUESTIONS THIS ANSWERS
+======================================================================
+1. Are delta~0.10 strike distances (~7-9 XSP pts) body or tail of MAE distribution?
+2. How fat are intraday MAE tails vs normal assumptions?
+3. Does a VIX gate (e.g., 25) exclude materially worse MAE regimes?
+4. If stressed early (hourly proxy), how often does price recover by close?
+5. Is there down/up asymmetry supporting left-biased condors?
+6. At cost-basis SL multiples (2x-4x), what is proxy trigger frequency?
+
+EDA complete.

@@ -21,7 +21,7 @@ strategy:
   width: 2.0               # Spread width (2-point wings)
   
   # Liquidity Gates
-  min_credit: 0.20         # Minimum credit to enter (Increased for 2-wide)
+  min_credit: 0.18         # Minimum credit floor for 2-wide (prefer higher credits when available)
   min_ror: 0.05            # Minimum Return on Risk
   max_spread_pct: 5.00     # Max relative spread
   max_spread_abs: 5.00     # Max absolute spread

@@ -1,0 +1,512 @@
+🔒 Acquired Instance Lock (PID 5712)
+
+    ___    _   ____________ _______  ___ _    ______________  __
+   /   |  / | / /_  __/  _// ____/ |/ / | |  / /  _/_  __/\ \/ /
+  / /| | /  |/ / / /  / / / / __ |   /  | | / // /  / /    \  / 
+ / ___ |/ /|  / / / _/ / / /_/ //   |   | |/ // /  / /     / /  
+/_/  |_/_/ |_/ /_/ /___/ \____//_/|_|   |___/___/ /_/     /_/   
+                                                                 
+                    ╔═══════════════════════════╗
+                    ║   XSP IRON CONDOR BOT     ║
+                    ║   $200 Capital Mode       ║
+                    ╚═══════════════════════════╝
+
+VIX cache loaded: 84 days
+
+══════════════════════════════════════════════════
+  📊 TRADE JOURNAL SUMMARY
+══════════════════════════════════════════════════
+  Total Trades: 3
+  Closed: 3 | Open: 0
+
+  💰 Total PnL: $70.02
+  📈 Win Rate: 100.0%
+  🏆 Best Trade: $29.30
+  💀 Worst Trade: $17.08
+  📉 Avg Pain (MAE): $0.00
+  💸 Total Slippage: $0.00
+══════════════════════════════════════════════════
+
+
+🔌 Connecting to TWS (PAPER)...
+✅ Connected to TWS (PAPER) - Account: DUO988990
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+⚠️  FIX 7: VERIFY TWS SETTINGS!
+   TWS → Global Configuration → API → Settings
+   ☑️ 'Download open orders on connection' MUST BE ENABLED
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+💰 Account Value: $1,001,890.83
+2026-02-26 09:33:56,711 - src.strategy.execution - INFO - HOLD_TO_EXPIRY_MODE=True (tp_pct=1.00)
+2026-02-26 09:33:56,711 - src.strategy.execution - INFO - 🔧 Executor Config: TP=1.00 | SL=2.0x | Width=2.0 | ExitStrategy=hold_to_expiry_sl2x
+2026-02-26 09:33:56,711 - src.strategy.execution - INFO - 💸 Expected commissions: win=$2.60 | loss=$5.20 | open=$2.60 | round_trip=$5.20
+2026-02-26 09:33:56,711 - src.strategy.execution - INFO - 📌 TP mode is hold-to-expiry (tp_pct >= 1.00): skipping TP close orders; only SL/EOD can trigger active close.
+2026-02-26 09:33:56,711 - src.strategy.execution - INFO - 🛡️ Kill Switches: L1=ON (DD>15%) | L3=ON (VIX>25) | L5=ON (3 losses)
+2026-02-26 09:33:56,712 - src.strategy.execution - INFO - REMINDER: Verify TWS setting 'Download open orders on connection' is enabled
+2026-02-26 09:33:56,712 - src.strategy.execution - INFO - TWS → Global Configuration → API → Settings → ☑️ Download open orders
+2026-02-26 09:33:58,821 - src.strategy.execution - INFO - 🔍 Checking for existing positions to resume...
+2026-02-26 09:33:58,821 - src.strategy.execution - INFO -    ✅ No existing positions found. Ready for new entries.
+
+══════════════════════════════════════════════════
+  🔍 SCANNING FOR OPPORTUNITIES
+  Press Ctrl+C to stop
+══════════════════════════════════════════════════
+
+[09:33:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:33)
+[09:34:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:34)
+[09:35:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:35)
+[09:36:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:36)
+[09:37:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:37)
+[09:38:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:38)
+[09:39:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:39)
+[09:40:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:40)
+[09:41:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:41)
+[09:42:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:42)
+[09:43:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:43)
+[09:44:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:44)
+[09:45:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:45)
+[09:46:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:46)
+[09:47:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:47)
+[09:48:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:48)
+[09:49:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:49)
+[09:50:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:50)
+[09:51:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:51)
+[09:52:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:52)
+[09:53:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:53)
+[09:54:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:54)
+[09:55:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:55)
+[09:56:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:56)
+[09:57:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:57)
+[09:58:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:58)
+[09:59:59] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:59)
+📈 VIX (LIVE from IBKR): 18.63
+[10:01:00] Scanning... (VIX: 18.6)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 684.0P (Δ=-0.073), 696.0C (Δ=0.158) | best candidate credit: $0.27
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 684P / 696C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.27 ($27)                       ║
+║    (Gross: $0.51 | Prot: -$0.24)                ║
+║ 📊 VIX: 18.63 | Spot: 692.05                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+2026-02-26 10:01:18,291 - src.strategy.execution - INFO - ⏳ Getting leg prices (Bid/Ask) for snapshot...
+2026-02-26 10:01:22,338 - src.strategy.execution - INFO - 📊 Calculated Mid Credit: $0.31 per contract (min: $0.18)
+Error 10349, reqId 162: Order TIF was set to DAY based on order preset., contract: Contract(secType='BAG', symbol='XSP', exchange='SMART', currency='USD', comboLegs=[ComboLeg(conId=850973397, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=850973437, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=850972893, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=850972939, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1)])
+2026-02-26 10:01:25,157 - src.strategy.execution - WARNING - ⚠️ Margin Check empty (Paper mode) — BYPASSING. Would block in LIVE.
+2026-02-26 10:01:25,157 - src.strategy.execution - INFO - 🕒 Entry chase cancel timeout=25s (paper)
+2026-02-26 10:01:25,157 - src.strategy.execution - INFO -    📡 Placing order at $-0.31 (Chase 0)
+2026-02-26 10:01:25,158 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=163, limit=-0.31, reason=submit_chase_0, elapsed=1648.4s)
+2026-02-26 10:01:40,321 - src.strategy.execution - INFO -    🔄 Chase #1: Cancelling previous order...
+2026-02-26 10:01:40,321 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=163, reason=chase_retry_1, elapsed=15.2s)
+2026-02-26 10:01:50,472 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (order_id=163, reason=cancel_confirmed, elapsed=10.2s)
+2026-02-26 10:01:50,529 - src.strategy.execution - INFO -    📡 Placing order at $-0.26 (Chase 1)
+2026-02-26 10:01:50,530 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=164, limit=-0.26, reason=submit_chase_1, elapsed=0.1s)
+2026-02-26 10:02:05,698 - src.strategy.execution - INFO -    🔄 Chase #2: Cancelling previous order...
+2026-02-26 10:02:05,698 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=164, reason=chase_retry_2, elapsed=15.2s)
+2026-02-26 10:02:16,983 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (order_id=164, reason=cancel_confirmed, elapsed=11.3s)
+2026-02-26 10:02:17,200 - src.strategy.execution - INFO -    📡 Placing order at $-0.21 (Chase 2)
+2026-02-26 10:02:17,201 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=165, limit=-0.21, reason=submit_chase_2, elapsed=0.2s)
+2026-02-26 10:02:23,843 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> FILLED (order_id=165, reason=fill_confirmed, elapsed=6.6s)
+2026-02-26 10:02:24,273 - src.strategy.execution - INFO - Chase state: FILLED -> FILLED (order_id=165, reason=fill_detected_wait_loop, elapsed=0.4s)
+2026-02-26 10:02:24,273 - src.strategy.execution - INFO - Chase state: FILLED -> IDLE (reason=reset, elapsed=0.0s)
+2026-02-26 10:02:26,283 - src.strategy.execution - INFO - ✅ Credit verified from fills: $0.25 (combo price was $0.21, delta=$0.04)
+2026-02-26 10:02:26,283 - src.strategy.execution - WARNING - ⚠️ CREDIT DISCREPANCY: combo=$0.21 vs fills=$0.25. Using fills value for all PnL/SL calculations.
+📝 Trade #4 logged to journal
+2026-02-26 10:02:26,285 - src.strategy.execution - INFO - ✅ Iron Condor Opened [ID:4] and State Saved
+📋 Position internal log ID: 4
+
+📡 Monitoring position (checking every 10.0s)...
+⚠️ DANGER [10:02:27] XSP: 691.46 | VIX: 18.9 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+7) 696C(+5) | Hold:0m | MaxSprd:0.35 | P_put:0.83 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:02:38] XSP: 691.35 | VIX: 18.9 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+7) 696C(+5) | Hold:0m | MaxSprd:0.35 | P_put:0.83 P_call:0.72 P_OTM:0.72
+⚠️ DANGER [10:02:49] XSP: 691.35 | VIX: 18.9 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+7) 696C(+5) | Hold:0m | MaxSprd:0.35 | P_put:0.83 P_call:0.72 P_OTM:0.72
+⚠️ DANGER [10:02:59] XSP: 691.55 | VIX: 18.8 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:1m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:03:10] XSP: 691.86 | VIX: 18.8 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:1m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:03:21] XSP: 691.64 | VIX: 18.7 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:1m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:03:32] XSP: 691.78 | VIX: 18.8 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:1m | MaxSprd:0.35 | P_put:0.84 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:03:43] XSP: 691.83 | VIX: 18.8 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:1m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:03:54] XSP: 691.93 | VIX: 18.7 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:1m | MaxSprd:0.35 | P_put:0.85 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:04:05] XSP: 691.92 | VIX: 18.7 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:2m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:04:16] XSP: 691.93 | VIX: 18.7 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:2m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:04:27] XSP: 691.99 | VIX: 18.7 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:2m | MaxSprd:0.35 | P_put:0.85 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:04:38] XSP: 692.08 | VIX: 18.6 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:2m | MaxSprd:0.35 | P_put:0.86 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:04:49] XSP: 692.12 | VIX: 18.6 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:2m | MaxSprd:0.35 | P_put:0.86 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:04:59] XSP: 691.96 | VIX: 18.7 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:3m | MaxSprd:0.35 | P_put:0.85 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:05:10] XSP: 691.80 | VIX: 18.7 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:3m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:05:21] XSP: 691.70 | VIX: 18.8 | PnL: $-9.54 (-38%Max) | TP:-38% SL:19% | 684P(+8) 696C(+4) | Hold:3m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:05:32] XSP: 691.75 | VIX: 18.8 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:3m | MaxSprd:0.35 | P_put:0.84 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:05:43] XSP: 691.76 | VIX: 18.8 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:3m | MaxSprd:0.35 | P_put:0.84 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:05:54] XSP: 691.80 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:3m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:06:05] XSP: 691.72 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:4m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:06:16] XSP: 692.07 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:4m | MaxSprd:0.35 | P_put:0.85 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:06:27] XSP: 691.98 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:4m | MaxSprd:0.35 | P_put:0.85 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:06:38] XSP: 691.86 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:4m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:06:49] XSP: 692.12 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:4m | MaxSprd:0.35 | P_put:0.86 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:07:00] XSP: 692.07 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:5m | MaxSprd:0.35 | P_put:0.86 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:07:10] XSP: 692.06 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:5m | MaxSprd:0.35 | P_put:0.85 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:07:21] XSP: 691.93 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:5m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:07:32] XSP: 691.96 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:5m | MaxSprd:0.35 | P_put:0.85 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:07:43] XSP: 691.83 | VIX: 18.7 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:5m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:07:54] XSP: 691.78 | VIX: 18.8 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:5m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:08:05] XSP: 691.76 | VIX: 18.8 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:6m | MaxSprd:0.35 | P_put:0.84 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:08:16] XSP: 691.66 | VIX: 18.8 | PnL: $-7.36 (-29%Max) | TP:-29% SL:15% | 684P(+8) 696C(+4) | Hold:6m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:08:27] XSP: 691.83 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:6m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:08:38] XSP: 691.79 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:6m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:08:49] XSP: 691.76 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:6m | MaxSprd:0.35 | P_put:0.84 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:09:00] XSP: 691.81 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:7m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:09:10] XSP: 691.84 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:7m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:09:21] XSP: 691.77 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:7m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:09:32] XSP: 691.65 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:7m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:09:43] XSP: 691.63 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:7m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:09:54] XSP: 691.56 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:7m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:10:05] XSP: 691.77 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:8m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:10:16] XSP: 691.65 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:8m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:10:27] XSP: 691.61 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:8m | MaxSprd:0.35 | P_put:0.84 P_call:0.71 P_OTM:0.71
+⚠️ DANGER [10:10:38] XSP: 691.85 | VIX: 18.8 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:8m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:10:49] XSP: 691.91 | VIX: 18.7 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:8m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:10:59] XSP: 691.99 | VIX: 18.7 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:9m | MaxSprd:0.35 | P_put:0.85 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:11:10] XSP: 692.11 | VIX: 18.7 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:9m | MaxSprd:0.35 | P_put:0.86 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:11:21] XSP: 692.00 | VIX: 18.7 | PnL: $-7.45 (-30%Max) | TP:-30% SL:15% | 684P(+8) 696C(+4) | Hold:9m | MaxSprd:0.35 | P_put:0.85 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:11:32] XSP: 691.97 | VIX: 18.7 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+8) 696C(+4) | Hold:9m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:11:43] XSP: 691.89 | VIX: 18.7 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+8) 696C(+4) | Hold:9m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:11:54] XSP: 692.08 | VIX: 18.7 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+8) 696C(+4) | Hold:9m | MaxSprd:0.35 | P_put:0.86 P_call:0.69 P_OTM:0.69
+⚠️ DANGER [10:12:05] XSP: 691.78 | VIX: 18.7 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+8) 696C(+4) | Hold:10m | MaxSprd:0.35 | P_put:0.85 P_call:0.70 P_OTM:0.70
+⚠️ DANGER [10:12:16] XSP: 691.42 | VIX: 18.8 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:10m | MaxSprd:0.35 | P_put:0.84 P_call:0.72 P_OTM:0.72
+⚠️ DANGER [10:12:27] XSP: 691.10 | VIX: 18.8 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:10m | MaxSprd:0.35 | P_put:0.82 P_call:0.73 P_OTM:0.73
+[10:12:38] XSP: 690.98 | VIX: 18.9 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:10m | MaxSprd:0.35 | P_put:0.82 P_call:0.74 P_OTM:0.74
+[10:12:49] XSP: 690.75 | VIX: 19.0 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:10m | MaxSprd:0.35 | P_put:0.81 P_call:0.75 P_OTM:0.75
+[10:12:59] XSP: 690.72 | VIX: 19.1 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:11m | MaxSprd:0.35 | P_put:0.81 P_call:0.75 P_OTM:0.75
+[10:13:10] XSP: 690.80 | VIX: 19.1 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:11m | MaxSprd:0.35 | P_put:0.81 P_call:0.74 P_OTM:0.74
+[10:13:21] XSP: 690.78 | VIX: 19.0 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:11m | MaxSprd:0.35 | P_put:0.81 P_call:0.74 P_OTM:0.74
+[10:13:32] XSP: 690.70 | VIX: 19.0 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:11m | MaxSprd:0.35 | P_put:0.81 P_call:0.75 P_OTM:0.75
+[10:13:43] XSP: 690.76 | VIX: 19.0 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:11m | MaxSprd:0.35 | P_put:0.81 P_call:0.74 P_OTM:0.74
+[10:13:54] XSP: 690.74 | VIX: 19.0 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:11m | MaxSprd:0.35 | P_put:0.81 P_call:0.75 P_OTM:0.75
+[10:14:05] XSP: 690.62 | VIX: 19.1 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+7) 696C(+5) | Hold:12m | MaxSprd:0.35 | P_put:0.81 P_call:0.75 P_OTM:0.75
+[10:14:16] XSP: 690.50 | VIX: 19.1 | PnL: $-7.76 (-31%Max) | TP:-31% SL:16% | 684P(+6) 696C(+6) | Hold:12m | MaxSprd:0.35 | P_put:0.80 P_call:0.75 P_OTM:0.75
+[10:14:27] XSP: 690.52 | VIX: 19.1 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+7) 696C(+5) | Hold:12m | MaxSprd:0.35 | P_put:0.80 P_call:0.75 P_OTM:0.75
+[10:14:38] XSP: 690.35 | VIX: 19.1 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+6) 696C(+6) | Hold:12m | MaxSprd:0.35 | P_put:0.80 P_call:0.76 P_OTM:0.76
+[10:14:49] XSP: 690.31 | VIX: 19.2 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+6) 696C(+6) | Hold:12m | MaxSprd:0.35 | P_put:0.79 P_call:0.76 P_OTM:0.76
+[10:14:59] XSP: 690.20 | VIX: 19.2 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+6) 696C(+6) | Hold:13m | MaxSprd:0.35 | P_put:0.79 P_call:0.77 P_OTM:0.77
+[10:15:10] XSP: 689.79 | VIX: 19.2 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+6) 696C(+6) | Hold:13m | MaxSprd:0.35 | P_put:0.77 P_call:0.78 P_OTM:0.77
+[10:15:21] XSP: 689.60 | VIX: 19.4 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+6) 696C(+6) | Hold:13m | MaxSprd:0.35 | P_put:0.76 P_call:0.79 P_OTM:0.76
+[10:15:32] XSP: 689.54 | VIX: 19.5 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+6) 696C(+6) | Hold:13m | MaxSprd:0.35 | P_put:0.76 P_call:0.79 P_OTM:0.76
+[10:15:43] XSP: 689.62 | VIX: 19.5 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+6) 696C(+6) | Hold:13m | MaxSprd:0.35 | P_put:0.76 P_call:0.79 P_OTM:0.76
+[10:15:54] XSP: 689.73 | VIX: 19.4 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+6) 696C(+6) | Hold:13m | MaxSprd:0.35 | P_put:0.77 P_call:0.78 P_OTM:0.77
+[10:16:05] XSP: 689.57 | VIX: 19.5 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+6) 696C(+6) | Hold:14m | MaxSprd:0.35 | P_put:0.76 P_call:0.79 P_OTM:0.76
+[10:16:16] XSP: 689.38 | VIX: 19.6 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+5) 696C(+7) | Hold:14m | MaxSprd:0.35 | P_put:0.75 P_call:0.79 P_OTM:0.75
+[10:16:27] XSP: 689.08 | VIX: 19.6 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+5) 696C(+7) | Hold:14m | MaxSprd:0.35 | P_put:0.74 P_call:0.80 P_OTM:0.74
+[10:16:38] XSP: 689.03 | VIX: 19.7 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+5) 696C(+7) | Hold:14m | MaxSprd:0.35 | P_put:0.74 P_call:0.80 P_OTM:0.74
+⚠️ DANGER [10:16:49] XSP: 688.86 | VIX: 19.8 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+5) 696C(+7) | Hold:14m | MaxSprd:0.35 | P_put:0.73 P_call:0.81 P_OTM:0.73
+⚠️ DANGER [10:17:00] XSP: 688.84 | VIX: 19.8 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+5) 696C(+7) | Hold:15m | MaxSprd:0.35 | P_put:0.73 P_call:0.81 P_OTM:0.73
+⚠️ DANGER [10:17:10] XSP: 688.95 | VIX: 19.8 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+5) 696C(+7) | Hold:15m | MaxSprd:0.35 | P_put:0.73 P_call:0.81 P_OTM:0.73
+[10:17:21] XSP: 689.17 | VIX: 19.7 | PnL: $-2.57 (-10%Max) | TP:-10% SL:5% | 684P(+5) 696C(+7) | Hold:15m | MaxSprd:0.35 | P_put:0.74 P_call:0.80 P_OTM:0.74
+⚠️ DANGER [10:17:32] XSP: 688.90 | VIX: 19.7 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+5) 696C(+7) | Hold:15m | MaxSprd:0.36 | P_put:0.73 P_call:0.81 P_OTM:0.73
+⚠️ DANGER [10:17:43] XSP: 688.82 | VIX: 19.7 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+5) 696C(+7) | Hold:15m | MaxSprd:0.36 | P_put:0.73 P_call:0.81 P_OTM:0.73
+⚠️ DANGER [10:17:54] XSP: 688.71 | VIX: 19.8 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+5) 696C(+7) | Hold:15m | MaxSprd:0.36 | P_put:0.72 P_call:0.81 P_OTM:0.72
+⚠️ DANGER [10:18:05] XSP: 688.66 | VIX: 19.8 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+5) 696C(+7) | Hold:16m | MaxSprd:0.36 | P_put:0.72 P_call:0.82 P_OTM:0.72
+⚠️ DANGER [10:18:16] XSP: 688.43 | VIX: 19.9 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:16m | MaxSprd:0.36 | P_put:0.71 P_call:0.82 P_OTM:0.71
+⚠️ DANGER [10:18:27] XSP: 688.32 | VIX: 19.9 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:16m | MaxSprd:0.36 | P_put:0.71 P_call:0.83 P_OTM:0.71
+⚠️ DANGER [10:18:38] XSP: 688.23 | VIX: 19.9 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:16m | MaxSprd:0.36 | P_put:0.70 P_call:0.83 P_OTM:0.70
+⚠️ DANGER [10:18:49] XSP: 688.36 | VIX: 19.9 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:16m | MaxSprd:0.36 | P_put:0.71 P_call:0.82 P_OTM:0.71
+⚠️ DANGER [10:19:00] XSP: 688.35 | VIX: 19.9 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:17m | MaxSprd:0.36 | P_put:0.71 P_call:0.82 P_OTM:0.71
+⚠️ DANGER [10:19:11] XSP: 688.24 | VIX: 19.9 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:17m | MaxSprd:0.36 | P_put:0.70 P_call:0.83 P_OTM:0.70
+⚠️ DANGER [10:19:21] XSP: 688.23 | VIX: 19.9 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:17m | MaxSprd:0.36 | P_put:0.70 P_call:0.83 P_OTM:0.70
+⚠️ DANGER [10:19:32] XSP: 688.09 | VIX: 20.0 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:17m | MaxSprd:0.36 | P_put:0.70 P_call:0.83 P_OTM:0.70
+⚠️ DANGER [10:19:43] XSP: 688.07 | VIX: 20.0 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:17m | MaxSprd:0.36 | P_put:0.70 P_call:0.83 P_OTM:0.70
+⚠️ DANGER [10:19:54] XSP: 687.99 | VIX: 20.0 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:17m | MaxSprd:0.36 | P_put:0.69 P_call:0.84 P_OTM:0.69
+⚠️ DANGER [10:20:05] XSP: 688.48 | VIX: 20.0 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:18m | MaxSprd:0.36 | P_put:0.71 P_call:0.82 P_OTM:0.71
+⚠️ DANGER [10:20:16] XSP: 688.42 | VIX: 19.9 | PnL: $-11.43 (-46%Max) | TP:-46% SL:23% | 684P(+4) 696C(+8) | Hold:18m | MaxSprd:0.36 | P_put:0.71 P_call:0.82 P_OTM:0.71
+⚠️ DANGER [10:20:27] XSP: 688.16 | VIX: 19.9 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+4) 696C(+8) | Hold:18m | MaxSprd:0.39 | P_put:0.70 P_call:0.83 P_OTM:0.70
+⚠️ DANGER [10:20:38] XSP: 688.02 | VIX: 20.0 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+4) 696C(+8) | Hold:18m | MaxSprd:0.39 | P_put:0.69 P_call:0.83 P_OTM:0.69
+⚠️ DANGER [10:20:49] XSP: 687.73 | VIX: 20.0 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+4) 696C(+8) | Hold:18m | MaxSprd:0.39 | P_put:0.68 P_call:0.84 P_OTM:0.68
+⚠️ DANGER [10:21:00] XSP: 687.62 | VIX: 20.1 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+4) 696C(+8) | Hold:19m | MaxSprd:0.39 | P_put:0.68 P_call:0.85 P_OTM:0.68
+⚠️ DANGER [10:21:11] XSP: 687.46 | VIX: 20.1 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:19m | MaxSprd:0.39 | P_put:0.67 P_call:0.85 P_OTM:0.67
+⚠️ DANGER [10:21:22] XSP: 687.53 | VIX: 20.2 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+4) 696C(+8) | Hold:19m | MaxSprd:0.39 | P_put:0.67 P_call:0.85 P_OTM:0.67
+⚠️ DANGER [10:21:33] XSP: 687.32 | VIX: 20.2 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:19m | MaxSprd:0.39 | P_put:0.66 P_call:0.85 P_OTM:0.66
+⚠️ DANGER [10:21:43] XSP: 687.29 | VIX: 20.2 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:19m | MaxSprd:0.39 | P_put:0.66 P_call:0.85 P_OTM:0.66
+⚠️ DANGER [10:21:54] XSP: 687.08 | VIX: 20.3 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:19m | MaxSprd:0.39 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:22:05] XSP: 686.91 | VIX: 20.4 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:20m | MaxSprd:0.39 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:22:16] XSP: 686.76 | VIX: 20.5 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:20m | MaxSprd:0.39 | P_put:0.63 P_call:0.86 P_OTM:0.63
+⚠️ DANGER [10:22:27] XSP: 686.78 | VIX: 20.5 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:20m | MaxSprd:0.39 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:22:38] XSP: 686.91 | VIX: 20.5 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:20m | MaxSprd:0.39 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:22:49] XSP: 686.89 | VIX: 20.5 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:20m | MaxSprd:0.39 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:23:00] XSP: 686.99 | VIX: 20.4 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:21m | MaxSprd:0.39 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:23:11] XSP: 686.86 | VIX: 20.4 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:21m | MaxSprd:0.39 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:23:22] XSP: 686.83 | VIX: 20.5 | PnL: $-13.92 (-56%Max) | TP:-56% SL:28% | 684P(+3) 696C(+9) | Hold:21m | MaxSprd:0.39 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:23:32] XSP: 687.09 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:21m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:23:43] XSP: 687.03 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:21m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:23:54] XSP: 687.30 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:21m | MaxSprd:0.52 | P_put:0.66 P_call:0.85 P_OTM:0.66
+⚠️ DANGER [10:24:05] XSP: 687.06 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:22m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:24:16] XSP: 686.90 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:22m | MaxSprd:0.52 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:24:27] XSP: 686.91 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:22m | MaxSprd:0.52 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:24:38] XSP: 686.72 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:22m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:24:49] XSP: 686.66 | VIX: 20.5 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:22m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:25:00] XSP: 686.92 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:23m | MaxSprd:0.52 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:25:11] XSP: 687.03 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:23m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:25:22] XSP: 686.90 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:23m | MaxSprd:0.52 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:25:32] XSP: 687.10 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:23m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:25:43] XSP: 687.07 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:23m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:25:54] XSP: 686.94 | VIX: 20.4 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:23m | MaxSprd:0.52 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:26:05] XSP: 687.43 | VIX: 20.5 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+3) 696C(+9) | Hold:24m | MaxSprd:0.52 | P_put:0.67 P_call:0.85 P_OTM:0.67
+⚠️ DANGER [10:26:16] XSP: 687.57 | VIX: 20.2 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+4) 696C(+8) | Hold:24m | MaxSprd:0.52 | P_put:0.67 P_call:0.85 P_OTM:0.67
+⚠️ DANGER [10:26:34] XSP: 687.76 | VIX: 20.2 | PnL: $-27.40 (-110%Max) | TP:-110% SL:55% | 684P(+4) 696C(+8) | Hold:24m | MaxSprd:0.52 | P_put:0.68 P_call:0.84 P_OTM:0.68
+⚠️ DANGER [10:26:45] XSP: 687.72 | VIX: 20.1 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+4) 696C(+8) | Hold:24m | MaxSprd:0.52 | P_put:0.68 P_call:0.84 P_OTM:0.68
+⚠️ DANGER [10:26:56] XSP: 687.87 | VIX: 20.1 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+4) 696C(+8) | Hold:25m | MaxSprd:0.52 | P_put:0.69 P_call:0.84 P_OTM:0.69
+⚠️ DANGER [10:27:07] XSP: 687.44 | VIX: 20.1 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:25m | MaxSprd:0.52 | P_put:0.67 P_call:0.85 P_OTM:0.67
+⚠️ DANGER [10:27:18] XSP: 687.02 | VIX: 20.2 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:25m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:27:29] XSP: 687.10 | VIX: 20.3 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:25m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:27:40] XSP: 686.69 | VIX: 20.3 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:25m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:27:51] XSP: 686.82 | VIX: 20.4 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:25m | MaxSprd:0.52 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:28:02] XSP: 686.93 | VIX: 20.4 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:26m | MaxSprd:0.52 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:28:13] XSP: 686.97 | VIX: 20.4 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:26m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:28:24] XSP: 686.92 | VIX: 20.4 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:26m | MaxSprd:0.52 | P_put:0.64 P_call:0.86 P_OTM:0.64
+⚠️ DANGER [10:28:34] XSP: 686.51 | VIX: 20.4 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:26m | MaxSprd:0.52 | P_put:0.62 P_call:0.88 P_OTM:0.62
+⚠️ DANGER [10:28:45] XSP: 686.43 | VIX: 20.5 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+2) 696C(+10) | Hold:26m | MaxSprd:0.52 | P_put:0.62 P_call:0.88 P_OTM:0.62
+⚠️ DANGER [10:28:56] XSP: 686.54 | VIX: 20.5 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:27m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:29:07] XSP: 686.96 | VIX: 20.4 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:27m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:29:18] XSP: 687.09 | VIX: 20.3 | PnL: $-19.92 (-80%Max) | TP:-80% SL:40% | 684P(+3) 696C(+9) | Hold:27m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:29:29] XSP: 687.21 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:27m | MaxSprd:0.52 | P_put:0.66 P_call:0.86 P_OTM:0.66
+⚠️ DANGER [10:29:40] XSP: 687.34 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:27m | MaxSprd:0.52 | P_put:0.66 P_call:0.86 P_OTM:0.66
+⚠️ DANGER [10:29:51] XSP: 687.33 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:27m | MaxSprd:0.52 | P_put:0.66 P_call:0.86 P_OTM:0.66
+⚠️ DANGER [10:30:02] XSP: 687.22 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:28m | MaxSprd:0.52 | P_put:0.66 P_call:0.86 P_OTM:0.66
+⚠️ DANGER [10:30:13] XSP: 687.11 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:28m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:30:24] XSP: 686.84 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:28m | MaxSprd:0.52 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:30:34] XSP: 686.69 | VIX: 20.3 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:28m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:30:45] XSP: 686.71 | VIX: 20.4 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:28m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:30:56] XSP: 686.79 | VIX: 20.4 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:29m | MaxSprd:0.52 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:31:07] XSP: 686.84 | VIX: 20.3 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:29m | MaxSprd:0.52 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:31:18] XSP: 686.66 | VIX: 20.4 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:29m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:31:29] XSP: 687.00 | VIX: 20.4 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:29m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:31:40] XSP: 687.10 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:29m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:31:51] XSP: 687.26 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:29m | MaxSprd:0.52 | P_put:0.66 P_call:0.86 P_OTM:0.66
+⚠️ DANGER [10:32:02] XSP: 687.12 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:30m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:32:13] XSP: 687.06 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:30m | MaxSprd:0.52 | P_put:0.65 P_call:0.86 P_OTM:0.65
+⚠️ DANGER [10:32:23] XSP: 686.75 | VIX: 20.2 | PnL: $-25.33 (-101%Max) | TP:-101% SL:51% | 684P(+3) 696C(+9) | Hold:30m | MaxSprd:0.52 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:32:34] XSP: 686.94 | VIX: 20.2 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:30m | MaxSprd:0.52 | P_put:0.65 P_call:0.87 P_OTM:0.65
+⚠️ DANGER [10:32:45] XSP: 686.97 | VIX: 20.2 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:30m | MaxSprd:0.52 | P_put:0.65 P_call:0.87 P_OTM:0.65
+⚠️ DANGER [10:32:56] XSP: 686.61 | VIX: 20.2 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:31m | MaxSprd:0.52 | P_put:0.63 P_call:0.88 P_OTM:0.63
+⚠️ DANGER [10:33:07] XSP: 686.67 | VIX: 20.3 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:31m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:33:18] XSP: 686.64 | VIX: 20.4 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:31m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:33:29] XSP: 686.64 | VIX: 20.4 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:31m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:33:40] XSP: 686.65 | VIX: 20.3 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:31m | MaxSprd:0.52 | P_put:0.63 P_call:0.87 P_OTM:0.63
+⚠️ DANGER [10:33:51] XSP: 686.75 | VIX: 20.3 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:31m | MaxSprd:0.52 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:34:02] XSP: 686.56 | VIX: 20.3 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:32m | MaxSprd:0.52 | P_put:0.63 P_call:0.88 P_OTM:0.63
+⚠️ DANGER [10:34:13] XSP: 686.08 | VIX: 20.3 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+2) 696C(+10) | Hold:32m | MaxSprd:0.52 | P_put:0.61 P_call:0.89 P_OTM:0.61
+⚠️ DANGER [10:34:23] XSP: 686.06 | VIX: 20.5 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+2) 696C(+10) | Hold:32m | MaxSprd:0.52 | P_put:0.60 P_call:0.89 P_OTM:0.60
+⚠️ DANGER [10:34:34] XSP: 686.19 | VIX: 20.5 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+2) 696C(+10) | Hold:32m | MaxSprd:0.52 | P_put:0.61 P_call:0.88 P_OTM:0.61
+⚠️ DANGER [10:34:45] XSP: 686.12 | VIX: 20.5 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+2) 696C(+10) | Hold:32m | MaxSprd:0.52 | P_put:0.61 P_call:0.89 P_OTM:0.61
+⚠️ DANGER [10:34:56] XSP: 686.09 | VIX: 20.5 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+2) 696C(+10) | Hold:33m | MaxSprd:0.52 | P_put:0.61 P_call:0.89 P_OTM:0.61
+⚠️ DANGER [10:35:07] XSP: 686.48 | VIX: 20.5 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+2) 696C(+10) | Hold:33m | MaxSprd:0.52 | P_put:0.62 P_call:0.88 P_OTM:0.62
+⚠️ DANGER [10:35:18] XSP: 686.61 | VIX: 20.3 | PnL: $-26.12 (-104%Max) | TP:-104% SL:52% | 684P(+3) 696C(+9) | Hold:33m | MaxSprd:0.52 | P_put:0.63 P_call:0.88 P_OTM:0.63
+⚠️ DANGER [10:35:29] XSP: 686.62 | VIX: 20.3 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:33m | MaxSprd:0.54 | P_put:0.63 P_call:0.88 P_OTM:0.63
+⚠️ DANGER [10:35:40] XSP: 686.90 | VIX: 20.3 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:33m | MaxSprd:0.54 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:35:51] XSP: 686.85 | VIX: 20.2 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:33m | MaxSprd:0.54 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:36:02] XSP: 686.89 | VIX: 20.2 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:34m | MaxSprd:0.54 | P_put:0.65 P_call:0.87 P_OTM:0.65
+⚠️ DANGER [10:36:13] XSP: 687.06 | VIX: 20.2 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:34m | MaxSprd:0.54 | P_put:0.65 P_call:0.87 P_OTM:0.65
+⚠️ DANGER [10:36:24] XSP: 686.79 | VIX: 20.1 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:34m | MaxSprd:0.54 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:36:34] XSP: 686.75 | VIX: 20.3 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:34m | MaxSprd:0.54 | P_put:0.64 P_call:0.87 P_OTM:0.64
+⚠️ DANGER [10:36:45] XSP: 686.97 | VIX: 20.1 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:34m | MaxSprd:0.54 | P_put:0.65 P_call:0.87 P_OTM:0.65
+⚠️ DANGER [10:36:56] XSP: 687.14 | VIX: 20.1 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:35m | MaxSprd:0.54 | P_put:0.66 P_call:0.86 P_OTM:0.66
+⚠️ DANGER [10:37:07] XSP: 687.14 | VIX: 20.1 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:35m | MaxSprd:0.54 | P_put:0.66 P_call:0.87 P_OTM:0.66
+⚠️ DANGER [10:37:18] XSP: 687.07 | VIX: 20.1 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:35m | MaxSprd:0.54 | P_put:0.65 P_call:0.87 P_OTM:0.65
+⚠️ DANGER [10:37:29] XSP: 687.34 | VIX: 20.1 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:35m | MaxSprd:0.54 | P_put:0.67 P_call:0.86 P_OTM:0.67
+⚠️ DANGER [10:37:40] XSP: 687.48 | VIX: 20.0 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:35m | MaxSprd:0.54 | P_put:0.67 P_call:0.86 P_OTM:0.67
+⚠️ DANGER [10:37:51] XSP: 687.49 | VIX: 20.0 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+3) 696C(+9) | Hold:35m | MaxSprd:0.54 | P_put:0.67 P_call:0.86 P_OTM:0.67
+⚠️ DANGER [10:38:02] XSP: 687.59 | VIX: 19.9 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+4) 696C(+8) | Hold:36m | MaxSprd:0.54 | P_put:0.68 P_call:0.85 P_OTM:0.68
+⚠️ DANGER [10:38:13] XSP: 687.61 | VIX: 19.9 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+4) 696C(+8) | Hold:36m | MaxSprd:0.54 | P_put:0.68 P_call:0.85 P_OTM:0.68
+⚠️ DANGER [10:38:24] XSP: 687.61 | VIX: 19.9 | PnL: $-29.08 (-116%Max) | TP:-116% SL:58% | 684P(+4) 696C(+8) | Hold:36m | MaxSprd:0.54 | P_put:0.68 P_call:0.85 P_OTM:0.68
+⚠️ DANGER [10:38:34] XSP: 687.76 | VIX: 19.9 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:36m | MaxSprd:0.54 | P_put:0.69 P_call:0.85 P_OTM:0.69
+⚠️ DANGER [10:38:45] XSP: 687.97 | VIX: 19.8 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:36m | MaxSprd:0.54 | P_put:0.70 P_call:0.85 P_OTM:0.70
+⚠️ DANGER [10:38:56] XSP: 688.14 | VIX: 19.8 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:37m | MaxSprd:0.54 | P_put:0.71 P_call:0.84 P_OTM:0.71
+⚠️ DANGER [10:39:07] XSP: 688.09 | VIX: 19.7 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:37m | MaxSprd:0.54 | P_put:0.70 P_call:0.84 P_OTM:0.70
+⚠️ DANGER [10:39:18] XSP: 688.10 | VIX: 19.7 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:37m | MaxSprd:0.54 | P_put:0.71 P_call:0.84 P_OTM:0.71
+⚠️ DANGER [10:39:29] XSP: 688.00 | VIX: 19.8 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:37m | MaxSprd:0.54 | P_put:0.70 P_call:0.85 P_OTM:0.70
+⚠️ DANGER [10:39:40] XSP: 687.99 | VIX: 19.8 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:37m | MaxSprd:0.54 | P_put:0.70 P_call:0.85 P_OTM:0.70
+⚠️ DANGER [10:39:51] XSP: 688.11 | VIX: 19.7 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:37m | MaxSprd:0.54 | P_put:0.71 P_call:0.84 P_OTM:0.71
+⚠️ DANGER [10:40:02] XSP: 688.17 | VIX: 19.7 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:38m | MaxSprd:0.54 | P_put:0.71 P_call:0.84 P_OTM:0.71
+⚠️ DANGER [10:40:13] XSP: 688.34 | VIX: 19.7 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:38m | MaxSprd:0.54 | P_put:0.72 P_call:0.84 P_OTM:0.72
+⚠️ DANGER [10:40:24] XSP: 688.46 | VIX: 19.7 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:38m | MaxSprd:0.54 | P_put:0.72 P_call:0.83 P_OTM:0.72
+⚠️ DANGER [10:40:34] XSP: 688.50 | VIX: 19.6 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:38m | MaxSprd:0.54 | P_put:0.72 P_call:0.83 P_OTM:0.72
+⚠️ DANGER [10:40:45] XSP: 688.39 | VIX: 19.6 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:38m | MaxSprd:0.54 | P_put:0.72 P_call:0.83 P_OTM:0.72
+⚠️ DANGER [10:40:56] XSP: 688.24 | VIX: 19.6 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:39m | MaxSprd:0.54 | P_put:0.71 P_call:0.84 P_OTM:0.71
+⚠️ DANGER [10:41:07] XSP: 688.20 | VIX: 19.7 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:39m | MaxSprd:0.54 | P_put:0.71 P_call:0.84 P_OTM:0.71
+⚠️ DANGER [10:41:18] XSP: 688.13 | VIX: 19.7 | PnL: $-15.24 (-61%Max) | TP:-61% SL:30% | 684P(+4) 696C(+8) | Hold:39m | MaxSprd:0.54 | P_put:0.71 P_call:0.84 P_OTM:0.71
+⚠️ DANGER [10:41:29] XSP: 688.43 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+4) 696C(+8) | Hold:39m | MaxSprd:0.54 | P_put:0.72 P_call:0.83 P_OTM:0.72
+⚠️ DANGER [10:41:40] XSP: 688.51 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:39m | MaxSprd:0.54 | P_put:0.72 P_call:0.83 P_OTM:0.72
+⚠️ DANGER [10:41:51] XSP: 688.48 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+4) 696C(+8) | Hold:39m | MaxSprd:0.54 | P_put:0.72 P_call:0.83 P_OTM:0.72
+⚠️ DANGER [10:42:02] XSP: 688.54 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:40m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:42:13] XSP: 688.53 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:40m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:42:24] XSP: 688.50 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+4) 696C(+8) | Hold:40m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:42:34] XSP: 688.53 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:40m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:42:45] XSP: 688.09 | VIX: 19.7 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+4) 696C(+8) | Hold:40m | MaxSprd:0.54 | P_put:0.71 P_call:0.84 P_OTM:0.71
+⚠️ DANGER [10:42:56] XSP: 688.15 | VIX: 19.7 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+4) 696C(+8) | Hold:41m | MaxSprd:0.54 | P_put:0.71 P_call:0.84 P_OTM:0.71
+⚠️ DANGER [10:43:07] XSP: 688.48 | VIX: 19.8 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+4) 696C(+8) | Hold:41m | MaxSprd:0.54 | P_put:0.72 P_call:0.83 P_OTM:0.72
+⚠️ DANGER [10:43:18] XSP: 688.59 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:41m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:43:29] XSP: 688.52 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:41m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:43:40] XSP: 688.57 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:41m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:43:51] XSP: 688.62 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:41m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:44:02] XSP: 688.52 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:42m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:44:13] XSP: 688.49 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+4) 696C(+8) | Hold:42m | MaxSprd:0.54 | P_put:0.72 P_call:0.83 P_OTM:0.72
+⚠️ DANGER [10:44:24] XSP: 688.56 | VIX: 19.6 | PnL: $-7.17 (-29%Max) | TP:-29% SL:14% | 684P(+5) 696C(+7) | Hold:42m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:44:34] XSP: 688.54 | VIX: 19.6 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:42m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:44:45] XSP: 688.65 | VIX: 19.6 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:42m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:44:56] XSP: 688.54 | VIX: 19.6 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:43m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:45:07] XSP: 688.71 | VIX: 19.6 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:43m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:45:18] XSP: 688.88 | VIX: 19.5 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:43m | MaxSprd:0.54 | P_put:0.74 P_call:0.82 P_OTM:0.74
+⚠️ DANGER [10:45:29] XSP: 688.98 | VIX: 19.5 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:43m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:45:40] XSP: 688.90 | VIX: 19.5 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:43m | MaxSprd:0.54 | P_put:0.74 P_call:0.82 P_OTM:0.74
+[10:45:51] XSP: 689.04 | VIX: 19.5 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:43m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:46:02] XSP: 689.09 | VIX: 19.4 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:44m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:46:13] XSP: 689.14 | VIX: 19.4 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:44m | MaxSprd:0.54 | P_put:0.76 P_call:0.81 P_OTM:0.76
+⚠️ DANGER [10:46:24] XSP: 688.99 | VIX: 19.4 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:44m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:46:35] XSP: 688.82 | VIX: 19.5 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:44m | MaxSprd:0.54 | P_put:0.74 P_call:0.82 P_OTM:0.74
+⚠️ DANGER [10:46:45] XSP: 688.43 | VIX: 19.6 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+4) 696C(+8) | Hold:44m | MaxSprd:0.54 | P_put:0.72 P_call:0.84 P_OTM:0.72
+⚠️ DANGER [10:46:56] XSP: 688.51 | VIX: 19.6 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+5) 696C(+7) | Hold:45m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:47:07] XSP: 688.42 | VIX: 19.6 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+4) 696C(+8) | Hold:45m | MaxSprd:0.54 | P_put:0.72 P_call:0.84 P_OTM:0.72
+⚠️ DANGER [10:47:18] XSP: 688.47 | VIX: 19.6 | PnL: $-4.01 (-16%Max) | TP:-16% SL:8% | 684P(+4) 696C(+8) | Hold:45m | MaxSprd:0.54 | P_put:0.72 P_call:0.83 P_OTM:0.72
+⚠️ DANGER [10:47:29] XSP: 688.44 | VIX: 19.6 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+4) 696C(+8) | Hold:45m | MaxSprd:0.54 | P_put:0.72 P_call:0.84 P_OTM:0.72
+⚠️ DANGER [10:47:40] XSP: 688.58 | VIX: 19.6 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:45m | MaxSprd:0.54 | P_put:0.73 P_call:0.83 P_OTM:0.73
+⚠️ DANGER [10:47:51] XSP: 688.73 | VIX: 19.6 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:45m | MaxSprd:0.54 | P_put:0.74 P_call:0.83 P_OTM:0.74
+⚠️ DANGER [10:48:02] XSP: 688.79 | VIX: 19.5 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:46m | MaxSprd:0.54 | P_put:0.74 P_call:0.83 P_OTM:0.74
+⚠️ DANGER [10:48:13] XSP: 688.99 | VIX: 19.5 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:46m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:48:24] XSP: 688.94 | VIX: 19.4 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:46m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:48:35] XSP: 688.95 | VIX: 19.4 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:46m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:48:45] XSP: 689.03 | VIX: 19.5 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:46m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:48:56] XSP: 689.09 | VIX: 19.5 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:47m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:49:07] XSP: 689.04 | VIX: 19.4 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:47m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:49:18] XSP: 689.01 | VIX: 19.5 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:47m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:49:29] XSP: 689.06 | VIX: 19.4 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:47m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:49:40] XSP: 689.28 | VIX: 19.4 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:47m | MaxSprd:0.54 | P_put:0.76 P_call:0.81 P_OTM:0.76
+[10:49:51] XSP: 689.30 | VIX: 19.3 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:47m | MaxSprd:0.54 | P_put:0.76 P_call:0.81 P_OTM:0.76
+[10:50:02] XSP: 689.15 | VIX: 19.4 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:48m | MaxSprd:0.54 | P_put:0.76 P_call:0.82 P_OTM:0.76
+⚠️ DANGER [10:50:13] XSP: 688.95 | VIX: 19.4 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:48m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:50:24] XSP: 688.96 | VIX: 19.5 | PnL: $-6.11 (-24%Max) | TP:-24% SL:12% | 684P(+5) 696C(+7) | Hold:48m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:50:35] XSP: 688.99 | VIX: 19.4 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:48m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:50:45] XSP: 688.91 | VIX: 19.5 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:48m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:50:56] XSP: 688.98 | VIX: 19.5 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:49m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:51:07] XSP: 688.85 | VIX: 19.5 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:49m | MaxSprd:0.54 | P_put:0.74 P_call:0.83 P_OTM:0.74
+⚠️ DANGER [10:51:18] XSP: 688.74 | VIX: 19.5 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:49m | MaxSprd:0.54 | P_put:0.74 P_call:0.83 P_OTM:0.74
+⚠️ DANGER [10:51:29] XSP: 688.72 | VIX: 19.5 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:49m | MaxSprd:0.54 | P_put:0.74 P_call:0.83 P_OTM:0.74
+⚠️ DANGER [10:51:40] XSP: 688.76 | VIX: 19.5 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:49m | MaxSprd:0.54 | P_put:0.74 P_call:0.83 P_OTM:0.74
+⚠️ DANGER [10:51:51] XSP: 688.81 | VIX: 19.6 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:49m | MaxSprd:0.54 | P_put:0.74 P_call:0.83 P_OTM:0.74
+⚠️ DANGER [10:52:02] XSP: 688.80 | VIX: 19.6 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:50m | MaxSprd:0.54 | P_put:0.74 P_call:0.83 P_OTM:0.74
+[10:52:13] XSP: 689.21 | VIX: 19.6 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:50m | MaxSprd:0.54 | P_put:0.76 P_call:0.81 P_OTM:0.76
+[10:52:24] XSP: 689.46 | VIX: 19.4 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:50m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[10:52:35] XSP: 689.50 | VIX: 19.3 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+6) 696C(+6) | Hold:50m | MaxSprd:0.54 | P_put:0.77 P_call:0.80 P_OTM:0.77
+[10:52:45] XSP: 689.42 | VIX: 19.4 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:50m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[10:52:56] XSP: 689.39 | VIX: 19.4 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:51m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[10:53:07] XSP: 689.37 | VIX: 19.4 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:51m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[10:53:18] XSP: 689.06 | VIX: 19.4 | PnL: $0.09 (0%Max) | TP:0% SL:-0% | 684P(+5) 696C(+7) | Hold:51m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:53:29] XSP: 688.95 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:51m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+⚠️ DANGER [10:53:40] XSP: 688.99 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:51m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:53:51] XSP: 689.14 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:51m | MaxSprd:0.54 | P_put:0.76 P_call:0.82 P_OTM:0.76
+[10:54:02] XSP: 689.11 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:52m | MaxSprd:0.54 | P_put:0.76 P_call:0.82 P_OTM:0.76
+[10:54:13] XSP: 689.01 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:52m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:54:24] XSP: 689.02 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:52m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:54:35] XSP: 689.18 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:52m | MaxSprd:0.54 | P_put:0.76 P_call:0.82 P_OTM:0.76
+[10:54:45] XSP: 689.27 | VIX: 19.4 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:52m | MaxSprd:0.54 | P_put:0.76 P_call:0.81 P_OTM:0.76
+[10:54:56] XSP: 689.26 | VIX: 19.4 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:53m | MaxSprd:0.54 | P_put:0.76 P_call:0.81 P_OTM:0.76
+[10:55:07] XSP: 689.31 | VIX: 19.4 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:53m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[10:55:18] XSP: 689.23 | VIX: 19.4 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:53m | MaxSprd:0.54 | P_put:0.76 P_call:0.81 P_OTM:0.76
+[10:55:29] XSP: 689.34 | VIX: 19.4 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:53m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[10:55:40] XSP: 689.04 | VIX: 19.4 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:53m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:55:51] XSP: 689.23 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:53m | MaxSprd:0.54 | P_put:0.76 P_call:0.81 P_OTM:0.76
+[10:56:02] XSP: 689.12 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:54m | MaxSprd:0.54 | P_put:0.76 P_call:0.82 P_OTM:0.76
+[10:56:13] XSP: 689.13 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:54m | MaxSprd:0.54 | P_put:0.76 P_call:0.82 P_OTM:0.76
+[10:56:24] XSP: 689.10 | VIX: 19.5 | PnL: $0.52 (2%Max) | TP:2% SL:-1% | 684P(+5) 696C(+7) | Hold:54m | MaxSprd:0.54 | P_put:0.76 P_call:0.82 P_OTM:0.76
+[10:56:35] XSP: 689.11 | VIX: 19.5 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+5) 696C(+7) | Hold:54m | MaxSprd:0.54 | P_put:0.76 P_call:0.82 P_OTM:0.76
+⚠️ DANGER [10:56:45] XSP: 688.97 | VIX: 19.5 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+5) 696C(+7) | Hold:54m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:56:56] XSP: 689.06 | VIX: 19.5 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+5) 696C(+7) | Hold:55m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:57:07] XSP: 689.05 | VIX: 19.5 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+5) 696C(+7) | Hold:55m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:57:18] XSP: 689.01 | VIX: 19.6 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+5) 696C(+7) | Hold:55m | MaxSprd:0.54 | P_put:0.75 P_call:0.82 P_OTM:0.75
+[10:57:29] XSP: 689.23 | VIX: 19.5 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+5) 696C(+7) | Hold:55m | MaxSprd:0.54 | P_put:0.76 P_call:0.81 P_OTM:0.76
+[10:57:40] XSP: 689.35 | VIX: 19.5 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+5) 696C(+7) | Hold:55m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[10:57:51] XSP: 689.49 | VIX: 19.4 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+5) 696C(+7) | Hold:55m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[10:58:02] XSP: 689.53 | VIX: 19.4 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+6) 696C(+6) | Hold:56m | MaxSprd:0.54 | P_put:0.78 P_call:0.81 P_OTM:0.78
+[10:58:15] XSP: 689.62 | VIX: 19.4 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+6) 696C(+6) | Hold:56m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[10:58:27] XSP: 689.64 | VIX: 19.4 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+6) 696C(+6) | Hold:56m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[10:58:37] XSP: 689.64 | VIX: 19.4 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+6) 696C(+6) | Hold:56m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[10:58:52] XSP: 689.64 | VIX: 19.4 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+6) 696C(+6) | Hold:56m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[10:59:04] XSP: 689.64 | VIX: 19.4 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(+6) 696C(+6) | Hold:57m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+⚠️ DANGER [10:59:18] XSP: 0.00 | VIX: 19.4 | PnL: $1.39 (6%Max) | TP:6% SL:-3% | 684P(-684) 696C(+696) | Hold:57m | MaxSprd:0.54 | P_OTM:N/A
+[10:59:29] XSP: 689.61 | VIX: 19.4 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+6) 696C(+6) | Hold:57m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[10:59:43] XSP: 689.44 | VIX: 19.4 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+5) 696C(+7) | Hold:57m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[10:59:57] XSP: 689.41 | VIX: 19.4 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+5) 696C(+7) | Hold:58m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[11:00:08] XSP: 689.41 | VIX: 19.4 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+5) 696C(+7) | Hold:58m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[11:00:39] XSP: 689.41 | VIX: 0.0 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+5) 696C(+7) | Hold:58m | MaxSprd:0.54 | P_OTM:N/A
+[11:00:50] XSP: 689.69 | VIX: 19.4 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+6) 696C(+6) | Hold:58m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[11:01:01] XSP: 689.71 | VIX: 19.3 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+6) 696C(+6) | Hold:59m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[11:01:13] XSP: 689.69 | VIX: 19.3 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+6) 696C(+6) | Hold:59m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[11:01:27] XSP: 689.68 | VIX: 19.3 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+6) 696C(+6) | Hold:59m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[11:01:43] XSP: 689.68 | VIX: 19.3 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(+6) 696C(+6) | Hold:59m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+⚠️ DANGER [11:02:01] XSP: 0.00 | VIX: 0.0 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(-684) 696C(+696) | Hold:60m | MaxSprd:0.54 | P_OTM:N/A
+⚠️ DANGER [11:02:15] XSP: 0.00 | VIX: 19.4 | PnL: $3.88 (16%Max) | TP:16% SL:-8% | 684P(-684) 696C(+696) | Hold:60m | MaxSprd:0.54 | P_OTM:N/A
+[11:02:26] XSP: 689.29 | VIX: 19.4 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(+5) 696C(+7) | Hold:60m | MaxSprd:0.54 | P_put:0.77 P_call:0.82 P_OTM:0.77
+[11:02:37] XSP: 689.34 | VIX: 19.4 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(+5) 696C(+7) | Hold:60m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[11:02:49] XSP: 689.38 | VIX: 19.5 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(+5) 696C(+7) | Hold:60m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+⚠️ DANGER [11:03:24] XSP: 0.00 | VIX: 0.0 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(-684) 696C(+696) | Hold:61m | MaxSprd:0.54 | P_OTM:N/A
+⚠️ DANGER [11:03:41] XSP: 0.00 | VIX: 0.0 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(-684) 696C(+696) | Hold:61m | MaxSprd:0.54 | P_OTM:N/A
+[11:03:52] XSP: 689.59 | VIX: 19.3 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:61m | MaxSprd:0.54 | P_put:0.78 P_call:0.81 P_OTM:0.78
+[11:04:03] XSP: 689.51 | VIX: 19.4 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:62m | MaxSprd:0.54 | P_put:0.78 P_call:0.81 P_OTM:0.78
+[11:04:14] XSP: 689.50 | VIX: 19.4 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:62m | MaxSprd:0.54 | P_put:0.78 P_call:0.81 P_OTM:0.78
+[11:04:35] XSP: 689.37 | VIX: 19.4 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(+5) 696C(+7) | Hold:62m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[11:05:26] XSP: 689.69 | VIX: 19.4 | PnL: $5.08 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:63m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[11:05:37] XSP: 689.64 | VIX: 19.4 | PnL: $5.95 (24%Max) | TP:24% SL:-12% | 684P(+6) 696C(+6) | Hold:63m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[11:05:47] XSP: 689.67 | VIX: 19.4 | PnL: $5.95 (24%Max) | TP:24% SL:-12% | 684P(+6) 696C(+6) | Hold:63m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[11:06:14] XSP: 689.67 | VIX: 19.4 | PnL: $5.95 (24%Max) | TP:24% SL:-12% | 684P(+6) 696C(+6) | Hold:64m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+Error 1100, reqId -1: Connectivity between IBKR and Trader Workstation has been lost.
+Error 1102, reqId -1: Connectivity between IBKR and Trader Workstation has been restored - data maintained. All data farms are connected: usfarm.nj; usopt.nj; usfarm; ushmds; secdefnj.
+[11:06:54] XSP: 689.38 | VIX: 19.5 | PnL: $5.95 (24%Max) | TP:24% SL:-12% | 684P(+5) 696C(+7) | Hold:64m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[11:07:05] XSP: 689.37 | VIX: 19.5 | PnL: $5.95 (24%Max) | TP:24% SL:-12% | 684P(+5) 696C(+7) | Hold:65m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[11:07:16] XSP: 689.41 | VIX: 19.5 | PnL: $5.95 (24%Max) | TP:24% SL:-12% | 684P(+5) 696C(+7) | Hold:65m | MaxSprd:0.54 | P_put:0.77 P_call:0.81 P_OTM:0.77
+[11:08:02] XSP: 689.53 | VIX: 19.5 | PnL: $5.95 (24%Max) | TP:24% SL:-12% | 684P(+6) 696C(+6) | Hold:66m | MaxSprd:0.54 | P_put:0.78 P_call:0.81 P_OTM:0.78
+[11:08:27] XSP: 689.56 | VIX: 19.4 | PnL: $5.95 (24%Max) | TP:24% SL:-12% | 684P(+6) 696C(+6) | Hold:66m | MaxSprd:0.54 | P_put:0.78 P_call:0.81 P_OTM:0.78
+[11:08:38] XSP: 689.66 | VIX: 19.4 | PnL: $4.93 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:66m | MaxSprd:0.54 | P_put:0.78 P_call:0.80 P_OTM:0.78
+[11:08:48] XSP: 689.77 | VIX: 19.4 | PnL: $4.93 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:66m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+[11:09:01] XSP: 689.72 | VIX: 19.4 | PnL: $4.93 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:67m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+[11:09:16] XSP: 689.72 | VIX: 19.4 | PnL: $4.93 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:67m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+[11:09:28] XSP: 689.72 | VIX: 19.4 | PnL: $4.93 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:67m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+⚠️ DANGER [11:10:05] XSP: 0.00 | VIX: 0.0 | PnL: $4.93 (20%Max) | TP:20% SL:-10% | 684P(-684) 696C(+696) | Hold:68m | MaxSprd:0.54 | P_OTM:N/A
+[11:10:16] XSP: 689.78 | VIX: 19.4 | PnL: $4.93 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:68m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+[11:10:27] XSP: 689.72 | VIX: 19.4 | PnL: $4.93 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:68m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+Error 1100, reqId -1: Connectivity between IBKR and Trader Workstation has been lost.
+Error 1102, reqId -1: Connectivity between IBKR and Trader Workstation has been restored - data maintained. All data farms are connected: usfarm.nj; usopt.nj; usfarm; ushmds; secdefnj.
+Error 322, reqId 1568: Error processing request.-'b1' : cause - Maximum number of account summary requests exceeded; desubscribe to previous request first
+[11:11:48] XSP: 689.52 | VIX: 19.4 | PnL: $4.93 (20%Max) | TP:20% SL:-10% | 684P(+6) 696C(+6) | Hold:69m | MaxSprd:0.54 | P_put:0.78 P_call:0.81 P_OTM:0.78
+[11:11:58] XSP: 689.63 | VIX: 19.4 | PnL: $7.16 (29%Max) | TP:29% SL:-14% | 684P(+6) 696C(+6) | Hold:70m | MaxSprd:0.54 | P_put:0.78 P_call:0.81 P_OTM:0.78
+[11:12:33] XSP: 689.77 | VIX: 19.3 | PnL: $7.16 (29%Max) | TP:29% SL:-14% | 684P(+6) 696C(+6) | Hold:70m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+Error 1100, reqId -1: Connectivity between IBKR and Trader Workstation has been lost.
+Error 322, reqId 1568: Error processing request.-'b1' : cause - Maximum number of account summary requests exceeded; desubscribe to previous request first
+Error 1102, reqId -1: Connectivity between IBKR and Trader Workstation has been restored - data maintained. All data farms are connected: usfarm.nj; usopt.nj; usfarm; ushmds; secdefnj.
+Error 322, reqId 1583: Error processing request.-'b1' : cause - Maximum number of account summary requests exceeded; desubscribe to previous request first
+[11:13:11] XSP: 689.90 | VIX: 19.3 | PnL: $7.16 (29%Max) | TP:29% SL:-14% | 684P(+6) 696C(+6) | Hold:71m | MaxSprd:0.54 | P_put:0.80 P_call:0.80 P_OTM:0.80
+[11:13:22] XSP: 689.86 | VIX: 19.3 | PnL: $7.16 (29%Max) | TP:29% SL:-14% | 684P(+6) 696C(+6) | Hold:71m | MaxSprd:0.54 | P_put:0.80 P_call:0.80 P_OTM:0.80
+[11:13:33] XSP: 689.80 | VIX: 19.3 | PnL: $7.16 (29%Max) | TP:29% SL:-14% | 684P(+6) 696C(+6) | Hold:71m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+[11:13:50] XSP: 689.81 | VIX: 19.3 | PnL: $7.16 (29%Max) | TP:29% SL:-14% | 684P(+6) 696C(+6) | Hold:71m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+[11:14:15] XSP: 689.82 | VIX: 19.3 | PnL: $7.16 (29%Max) | TP:29% SL:-14% | 684P(+6) 696C(+6) | Hold:72m | MaxSprd:0.54 | P_put:0.79 P_call:0.80 P_OTM:0.79
+[11:14:46] XSP: 690.07 | VIX: 19.3 | PnL: $7.16 (29%Max) | TP:29% SL:-14% | 684P(+6) 696C(+6) | Hold:72m | MaxSprd:0.54 | P_put:0.81 P_call:0.79 P_OTM:0.79
+[11:14:57] XSP: 690.18 | VIX: 19.3 | PnL: $9.10 (36%Max) | TP:36% SL:-18% | 684P(+6) 696C(+6) | Hold:73m | MaxSprd:0.54 | P_put:0.81 P_call:0.79 P_OTM:0.79
+Error 1100, reqId -1: Connectivity between IBKR and Trader Workstation has been lost.
+Error 322, reqId 1583: Error processing request.-'b1' : cause - Maximum number of account summary requests exceeded; desubscribe to previous request first
+Error 1102, reqId -1: Connectivity between IBKR and Trader Workstation has been restored - data maintained. The following farms are connected: ushmds; secdefnj. The following farms are not connected: usfarm.nj; usfarm.
+Error 322, reqId 1612: Error processing request.-'b1' : cause - Maximum number of account summary requests exceeded; desubscribe to previous request first
+[11:17:46] XSP: 690.32 | VIX: 0.0 | PnL: $9.10 (36%Max) | TP:36% SL:-18% | 684P(+6) 696C(+6) | Hold:75m | MaxSprd:0.54 | P_OTM:N/A
+⚠️ DANGER [11:18:02] XSP: 0.00 | VIX: 0.0 | PnL: $10.78 (43%Max) | TP:43% SL:-22% | 684P(-684) 696C(+696) | Hold:76m | MaxSprd:0.54 | P_OTM:N/A
+Error 1100, reqId -1: Connectivity between IBKR and Trader Workstation has been lost.
+Peer closed connection.
+Error getting price for XSP: Socket disconnect
+Error getting price for VIX: Not connected
+⚠️ DANGER [16:44:18] XSP: 0.00 | VIX: 0.0 | PnL: $10.78 (43%Max) | TP:43% SL:-22% | 684P(-684) 696C(+696) | Hold:402m | MaxSprd:0.54 | P_OTM:N/A
+2026-02-26 16:44:18,638 - src.strategy.execution - INFO - 
+🔴 CLOSING POSITION: EOD_TIME [Time 16:44 >= 15:45:00] | RV: 0.17%
+2026-02-26 16:44:18,638 - src.strategy.execution - INFO - 📉 Attempting atomic closure (BAG order)...
+2026-02-26 16:44:18,638 - src.strategy.execution - ERROR - ⚠️ Monitor loop exception: Not connected
+2026-02-26 16:44:18,638 - src.strategy.execution - WARNING - ⚠️ Exception at/after market close. Forcing hold-to-expiry cleanup with last known PnL.
+2026-02-26 16:44:18,639 - src.strategy.execution - INFO - ✅ Market close reached in hold-to-expiry mode; no TP close order sent.
+📝 Trade #4 closed in journal (PnL: $10.78)
+2026-02-26 16:44:18,674 - src.strategy.execution - INFO - 📊 L1 DD TRACKER: Cumulative=$40.08, HWM=$40.08, DD=$0.00/$450
+[16:45:18] Market closed. Waiting...[16:46:18] Market closed. Waiting...[16:47:18] Market closed. Waiting...[16:48:18] Market closed. Waiting...[16:49:18] Market closed. Waiting...[16:50:18] Market closed. Waiting...[16:51:18] Market closed. Waiting...[16:52:18] Market closed. Waiting...[16:53:18] Market closed. Waiting...[16:54:18] Market closed. Waiting...[16:55:18] Market closed. Waiting...[16:56:18] Market closed. Waiting...[16:57:18] Market closed. Waiting...[16:58:18] Market closed. Waiting...[16:59:18] Market closed. Waiting...[17:00:18] Market closed. Waiting...[17:01:18] Market closed. Waiting...[17:02:18] Market closed. Waiting...[17:03:18] Market closed. Waiting...[17:04:18] Market closed. Waiting...[17:05:18] Market closed. Waiting...[17:06:18] Market closed. Waiting...[17:07:18] Market closed. Waiting...[17:08:18] Market closed. Waiting...[17:09:18] Market closed. Waiting...[17:10:18] Market closed. Waiting...[17:11:18] Market closed. Waiting...[17:12:18] Market closed. Waiting...[17:13:18] Market closed. Waiting...[17:14:18] Market closed. Waiting...[17:15:18] Market closed. Waiting...

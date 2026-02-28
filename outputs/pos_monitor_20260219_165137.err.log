@@ -1,0 +1,58 @@
+2026-02-19 16:51:39,964 - src.strategy.execution - INFO - HOLD_TO_EXPIRY_MODE=True (tp_pct=1.00)
+2026-02-19 16:51:39,965 - src.strategy.execution - INFO - 🔧 Executor Config: TP=1.00 | SL=2.0x | Width=2.0 | ExitStrategy=hold_to_expiry_sl2x
+2026-02-19 16:51:39,966 - src.strategy.execution - INFO - 💸 Expected commissions: win=$2.60 | loss=$5.20 | open=$2.60 | round_trip=$5.20
+2026-02-19 16:51:39,967 - src.strategy.execution - INFO - 📌 TP mode is hold-to-expiry (tp_pct >= 1.00): skipping TP close orders; only SL/EOD can trigger active close.
+2026-02-19 16:51:39,969 - src.strategy.execution - INFO - 🛡️ Kill Switches: L1=ON (DD>15%) | L3=ON (VIX>30) | L5=ON (3 losses)
+2026-02-19 16:51:39,969 - src.strategy.execution - INFO - REMINDER: Verify TWS setting 'Download open orders on connection' is enabled
+2026-02-19 16:51:39,969 - src.strategy.execution - INFO - TWS → Global Configuration → API → Settings → ☑️ Download open orders
+2026-02-19 16:51:41,979 - src.strategy.execution - INFO -   Position: XSP 691.0 C qty=-1.0
+2026-02-19 16:51:42,012 - src.strategy.execution - INFO -   Position: XSP 693.0 C qty=1.0
+2026-02-19 16:51:42,013 - src.strategy.execution - INFO -   Position: XSP 679.0 P qty=-1.0
+2026-02-19 16:51:42,013 - src.strategy.execution - INFO -   Position: XSP 677.0 P qty=1.0
+2026-02-19 16:51:42,013 - src.strategy.execution - INFO - 🔍 Checking for existing positions to resume...
+2026-02-19 16:51:42,014 - src.strategy.execution - INFO -    ℹ️ Ignoring previously finalized hold-to-expiry position signature.
+2026-02-19 16:51:42,215 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:52:42,251 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:53:42,285 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:54:42,318 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:55:42,355 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:56:42,392 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:57:42,428 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:58:42,464 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:59:42,499 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:00:42,534 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:01:42,570 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:02:42,605 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:03:42,641 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:04:42,676 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:05:42,710 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:06:42,715 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:07:42,751 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:08:42,754 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:09:42,788 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:10:42,822 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:11:42,858 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:12:42,893 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:13:42,927 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:14:42,961 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:15:42,995 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:16:43,031 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:17:43,066 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:18:43,101 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:19:43,136 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:20:43,170 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:21:43,206 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:22:43,241 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:23:43,275 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:24:43,309 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:25:43,349 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:26:43,383 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:27:43,488 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:28:43,524 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:29:43,558 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:33:56,339 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+Error 1100, reqId -1: Connectivity between IBKR and Trader Workstation has been lost.
+Error 1100, reqId -1: Connectivity between IBKR and Trader Workstation has been lost.
+Error 1102, reqId -1: Connectivity between IBKR and Trader Workstation has been restored - data maintained. All data farms are connected: usopt.nj; usfarm.nj; usfarm; euhmds; fundfarm; ushmds; secdefnj.
+2026-02-19 17:39:04,896 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 17:40:04,900 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().

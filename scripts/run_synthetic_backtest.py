@@ -68,12 +68,14 @@ def _print_config_summary(params: Dict[str, Any]) -> None:
 
 def _print_metrics_table(metrics: Dict[str, Dict[str, float]]) -> None:
     """Print scenario comparison table."""
-    order = ["hold_to_expiry", "worst_case", "tp50_or_expiry", "tp50_sl_capped"]
+    order = ["hold_to_expiry", "worst_case", "tp50_or_expiry", "tp50_sl_capped", "dynamic_sl", "ev_based_exit"]
     labels = {
         "hold_to_expiry": "Hold-to-Expiry",
         "worst_case": "Worst Case",
         "tp50_or_expiry": "TP50/Expiry",
         "tp50_sl_capped": "TP50+SL Cap",
+        "dynamic_sl": "Dynamic SL",
+        "ev_based_exit": "EV Exit",
     }
     scenario_order = [s for s in order if s in metrics]
 

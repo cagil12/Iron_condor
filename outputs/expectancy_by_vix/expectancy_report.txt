@@ -1,0 +1,177 @@
+Expectancy by VIX Bucket - Strategy Economics
+Repo root: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research
+Output dir: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix
+
+Backtester Data Load
+--------------------
+Date range: 2020-01-01 -> 2026-02-13
+Using source data cache: data\spx_vix_daily.csv
+Source rows: 1538 | Date range: 2020-01-02 -> 2026-02-13
+
+Trade-Day Counting
+------------------
+Trading days in backtest period: 1538
+Total years (trading_days/252): 6.1032
+Trade-day source: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\_module_a_spx_vix_cache.csv
+Using backtest results snapshot (wing=2): C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\backtest_results_wing2.csv
+
+Normalize Backtest Output
+-------------------------
+Tradable rows after filters: 1223
+            n_trades
+vix_bucket          
+0-15              85
+15-20            529
+20-25            334
+25-30            187
+30+               88
+
+Analysis 1: Expectancy by VIX Bucket (Per Scenario)
+---------------------------------------------------
+      scenario vix_bucket  n_trades win_rate avg_credit_usd e_gross e_net_hold_model e_net_always_close
+hold_to_expiry       0-15        85   0.9529        28.9431 19.5313          14.3798             9.6913
+hold_to_expiry      15-20       529   0.9546        29.0434 20.1417          14.9985            10.3017
+hold_to_expiry      20-25       334   0.9641        29.0911 21.8965          16.7997            12.0565
+hold_to_expiry      25-30       187   0.8930        29.1739  7.7729           2.3267            -2.0671
+hold_to_expiry        30+        88   0.9318        29.2861 15.6497          10.3942             5.8097
+tp50_or_expiry       0-15        85   0.9529        28.9431  6.5915           1.4399            -3.2485
+tp50_or_expiry      15-20       529   0.9546        29.0434  6.8290           1.6858            -3.0110
+tp50_or_expiry      20-25       334   0.9641        29.0911  8.7463           3.6495            -1.0937
+tp50_or_expiry      25-30       187   0.8930        29.1739 -4.2394          -9.6856           -14.0794
+tp50_or_expiry        30+        88   0.9318        29.2861  3.3326          -1.9229            -6.5074
+tp50_sl_capped       0-15        85   0.9529        28.9431 10.5503           5.3987             0.7103
+tp50_sl_capped      15-20       529   0.9546        29.0434 10.4518           5.3086             0.6118
+tp50_sl_capped      20-25       334   0.9641        29.0911 11.7484           6.6516             1.9084
+tp50_sl_capped      25-30       187   0.8930        29.1739  4.5223          -0.9239            -5.3177
+tp50_sl_capped        30+        88   0.9318        29.2861  8.9997           3.7442            -0.8403
+    worst_case       0-15        85   0.8941        28.9431  7.7666           2.3257            -2.0734
+    worst_case      15-20       529   0.9168        29.0434 12.4082           7.0790             2.5682
+    worst_case      20-25       334   0.9042        29.0911  9.9294           4.5381             0.0894
+    worst_case      25-30       187   0.8235        29.1739 -6.1202         -11.9084           -15.9602
+    worst_case        30+        88   0.8409        29.2861 -2.5321          -8.2349           -12.3721
+
+Analysis 2: Breakeven Win Rate by VIX Bucket
+--------------------------------------------
+      scenario    commission_model vix_bucket  n_trades actual_wr breakeven_wr margin_of_safety    status avg_win_gross avg_loss_gross
+tp50_sl_capped hold_to_expiry_like       0-15        85    0.9529       0.9026           0.0504      THIN       15.3630       -86.9066
+tp50_sl_capped hold_to_expiry_like      15-20       529    0.9546       0.9051           0.0495      THIN       15.0959       -87.2664
+tp50_sl_capped hold_to_expiry_like      20-25       334    0.9641       0.9023           0.0618      THIN       15.4408       -87.3314
+tp50_sl_capped hold_to_expiry_like      25-30       187    0.8930       0.9016          -0.0086  NEGATIVE       15.5529       -87.5832
+tp50_sl_capped hold_to_expiry_like        30+        88    0.9318       0.8974           0.0345      THIN       16.0725       -87.6617
+tp50_sl_capped        always_close       0-15        85    0.9529       0.9460           0.0069 VERY_THIN       15.3630       -86.9066
+tp50_sl_capped        always_close      15-20       529    0.9546       0.9487           0.0060 VERY_THIN       15.0959       -87.2664
+tp50_sl_capped        always_close      20-25       334    0.9641       0.9455           0.0186 VERY_THIN       15.4408       -87.3314
+tp50_sl_capped        always_close      25-30       187    0.8930       0.9446          -0.0516  NEGATIVE       15.5529       -87.5832
+tp50_sl_capped        always_close        30+        88    0.9318       0.9399          -0.0081  NEGATIVE       16.0725       -87.6617
+
+Analysis 3: Cumulative PnL Simulation by L3 Threshold
+-----------------------------------------------------
+ l3 l3_label  n_trades total_pnl_hold_model annual_pnl_hold_model sharpe_hold_model max_dd_hold_model  max_consec_losses_hold_model total_pnl_tp50sl_always_close annual_pnl_tp50sl_always_close sharpe_tp50sl_always_close max_dd_tp50sl_always_close  max_consec_losses_tp50sl_always_close
+ 15       15        85            1222.2838              200.2702            1.3205         -579.9717                             1                       60.3737                         9.8922                     0.1355                  -345.1631                                      1
+ 18       18       431            7106.5917             1164.4091            3.7933         -580.9168                             2                      646.6723                       105.9567                     0.7214                  -479.7275                                      2
+ 20       20       614            9156.4805             1500.2816            3.8604         -502.8897                             2                      384.0400                        62.9246                     0.3263                  -743.1866                                      2
+ 22       22       772           11947.0381             1957.5121            4.6441         -513.0056                             2                      787.7205                       129.0673                     0.6133                  -604.6793                                      2
+ 25       25       948           14767.5893             2419.6570            5.2508         -469.5950                             2                     1021.4407                       167.3622                     0.7223                  -653.9541                                      2
+ 28       28      1079           14841.2567             2431.7274            4.5567        -1178.3745                             4                      185.7924                        30.4419                     0.1127                 -1258.3474                                      4
+ 30       30      1135           15202.6744             2490.9453            4.4908        -1475.2787                             4                       27.0347                         4.4296                     0.0157                 -1578.8615                                      4
+ 35       35      1223           16117.3675             2640.8170            4.5526        -1083.8456                             2                      -46.9141                        -7.6868                    -0.0260                 -1752.9919                                      2
+999  no_gate      1223           16117.3675             2640.8170            4.5526        -1083.8456                             2                      -46.9141                        -7.6868                    -0.0260                 -1752.9919                                      2
+
+Analysis 4: Credit vs Risk Tradeoff
+-----------------------------------
+      scenario vix_bucket  n_trades avg_credit_usd avg_loss_gross breach_rate_any_short breach_rate_any_wing e_net_hold_model e_net_always_close credit_per_risk
+tp50_sl_capped       0-15        85        28.9431       -86.9066                0.1059               0.0941           5.3987             0.7103          0.3330
+tp50_sl_capped      15-20       529        29.0434       -87.2664                0.0832               0.0794           5.3086             0.6118          0.3328
+tp50_sl_capped      20-25       334        29.0911       -87.3314                0.0958               0.0808           6.6516             1.9084          0.3331
+tp50_sl_capped      25-30       187        29.1739       -87.5832                0.1765               0.1604          -0.9239            -5.3177          0.3331
+tp50_sl_capped        30+        88        29.2861       -87.6617                0.1591               0.1136           3.7442            -0.8403          0.3341
+
+Analysis 5: Sensitivity to Wing Width (Projection)
+--------------------------------------------------
+Using backtest results snapshot (wing=2): C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\backtest_results_wing2.csv
+Using backtest results snapshot (wing=3): C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\backtest_results_wing3.csv
+Using backtest results snapshot (wing=5): C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\backtest_results_wing5.csv
+Using backtest results snapshot (wing=10): C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\backtest_results_wing10.csv
+Wing width 10 failed: ValueError: No tradable rows after filtering skipped/invalid rows
+ wing_width vix_bucket  n_trades win_rate avg_credit_usd avg_win_gross avg_loss_gross e_gross e_net_hold_model e_annual_net_hold_model wr_breakeven_hold_model margin_hold_model
+          2       0-15        85   0.9529        28.9431       15.3630       -86.9066 10.5503           5.3987                 75.1893                  0.9026            0.0504
+          2      15-20       529   0.9546        29.0434       15.0959       -87.2664 10.4518           5.3086                460.1321                  0.9051            0.0495
+          2      20-25       334   0.9641        29.0911       15.4408       -87.3314 11.7484           6.6516                364.0140                  0.9023            0.0618
+          2      25-30       187   0.8930        29.1739       15.5529       -87.5832  4.5223          -0.9239                -28.3076                  0.9016           -0.0086
+          2        30+        88   0.9318        29.2861       16.0725       -87.6617  8.9997           3.7442                 53.9869                  0.8974            0.0345
+          3       0-15        30   0.9667        43.1282       22.3132      -129.6988 17.2461          12.1621                 59.7825                  0.8892            0.0775
+          3      15-20       276   0.9493        43.2019       22.5077      -129.6322 14.7905           9.6209                435.0795                  0.8880            0.0613
+          3      20-25       189   0.9577        43.2759       23.3133      -129.7413 16.8348          11.7066                362.5225                  0.8836            0.0741
+          3      25-30       149   0.8859        43.2712       23.1122      -129.8233  5.6632           0.1819                  4.4397                  0.8848            0.0012
+          3        30+        84   0.9286        43.4220       23.6622      -129.9782 12.6879           7.4165                102.0752                  0.8818            0.0468
+          5       0-15         0                                                                                                                                                
+          5      15-20         1   1.0000        71.4738       35.7369                35.7369          30.8169                  5.0493                                          
+          5      20-25         9   1.0000        71.7092       39.8293                39.8293          34.9093                 51.4787                                          
+          5      25-30         8   1.0000        71.7513       40.3426                40.3426          35.4226                 46.4317                                          
+          5        30+        10   0.9000        71.7967       39.8810      -215.3048 14.3624           8.9504                 14.6652                  0.8656            0.0344
+Partial projection completed. Failed wings:
+  - wing=10: ValueError: No tradable rows after filtering skipped/invalid rows
+VIX 20-25 becomes clearly profitable (E_net>0 and margin>5%) at wing_width=2.
+
+CONSOLIDATED SUMMARY
+--------------------
+============================================================
+EXPECTANCY BY VIX - STRATEGY ECONOMICS
+============================================================
+
+SCENARIO: tp50_sl_capped (live config equivalent approximation)
+Commission model: Hold-to-expiry-like ($4.92 win / $9.84 loss)
+
+VIX Bucket | N   | WR%   | Avg Win | Avg Loss | Avg Credit | E_net  | Margin
+-----------+-----+-------+---------+----------+------------+--------+--------
+0-15      |  85 | 95.3% |  $15.36 |  $-86.91 |     $28.94 |  $5.40 |   5.0%
+15-20     | 529 | 95.5% |  $15.10 |  $-87.27 |     $29.04 |  $5.31 |   4.9%
+20-25     | 334 | 96.4% |  $15.44 |  $-87.33 |     $29.09 |  $6.65 |   6.2%
+25-30     | 187 | 89.3% |  $15.55 |  $-87.58 |     $29.17 | $-0.92 |  -0.9%
+30+       |  88 | 93.2% |  $16.07 |  $-87.66 |     $29.29 |  $3.74 |   3.4%
+
+OPTIMAL L3 DETERMINATION
+============================================================
+L3=30 (current):   E_annual=$4.43, Sharpe=0.02, N_trades=1135, MaxDD=$-1,578.86
+L3=25:             E_annual=$167.36, Sharpe=0.72, N_trades=948, MaxDD=$-653.95
+L3=20:             E_annual=$62.92, Sharpe=0.33, N_trades=614, MaxDD=$-743.19
+L3=optimal:        E_annual=$167.36, Sharpe=0.72, N_trades=948, MaxDD=$-653.95
+
+RECOMMENDATION: Set L3 = 25 based on highest Sharpe (tp50_sl_capped, always-close commissions) with minimum trade-count guard
+Key insight: Does extra credit in VIX 20-25 compensate for breach rate? YES (AvgCredit=$29.09, ShortBreach=9.6%, E_net=$6.65)
+
+BREAKEVEN ANALYSIS
+============================================================
+VIX 0-15: Actual WR=95.3% vs Breakeven=90.3% -> Margin: 5.0% [THIN]
+VIX 15-20: Actual WR=95.5% vs Breakeven=90.5% -> Margin: 4.9% [THIN]
+VIX 20-25: Actual WR=96.4% vs Breakeven=90.2% -> Margin: 6.2% [THIN]
+VIX 25-30: Actual WR=89.3% vs Breakeven=90.2% -> Margin: -0.9% [NEGATIVE]
+VIX 30+: Actual WR=93.2% vs Breakeven=89.7% -> Margin: 3.4% [THIN]
+
+COMMISSION IMPACT
+============================================================
+At wing=2, commissions consume 49.2% of gross expectancy in VIX<20
+At wing=2, commissions consume 43.4% of gross expectancy in VIX 20-25
+[Reminder: larger wings typically reduce commission drag as % of credit]
+
+WING WIDTH PROJECTION
+============================================================
+VIX 20-25 (tp50_sl_capped, hold-to-expiry-like commissions):
+  wing=2: E_net=$6.65, WR=96.4%, Margin=6.2%
+  wing=3: E_net=$11.71, WR=95.8%, Margin=7.4%
+  wing=5: E_net=$34.91, WR=100.0%, Margin=NA
+============================================================
+
+Artifacts
+---------
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\expectancy_table.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\breakeven_analysis.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\chart_breakeven_margin.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\l3_comparison.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\chart_l3_cumulative_pnl.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\chart_l3_tradeoff.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\credit_risk_tradeoff.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\chart_credit_vs_breach.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\wing_width_projection.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\chart_wing_width_expectancy.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\expectancy_by_vix\expectancy_report.txt

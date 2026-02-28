@@ -1,0 +1,25 @@
+2026-02-20 11:40:25,927 - src.strategy.execution - INFO - HOLD_TO_EXPIRY_MODE=True (tp_pct=1.00)
+2026-02-20 11:40:25,928 - src.strategy.execution - INFO - 🔧 Executor Config: TP=1.00 | SL=2.0x | Width=2.0 | ExitStrategy=hold_to_expiry_sl2x
+2026-02-20 11:40:25,953 - src.strategy.execution - INFO - 💸 Expected commissions: win=$2.60 | loss=$5.20 | open=$2.60 | round_trip=$5.20
+2026-02-20 11:40:25,954 - src.strategy.execution - INFO - 📌 TP mode is hold-to-expiry (tp_pct >= 1.00): skipping TP close orders; only SL/EOD can trigger active close.
+2026-02-20 11:40:25,956 - src.strategy.execution - INFO - Loaded active position from 2026-02-20T10:54:02.509819
+2026-02-20 11:40:25,957 - src.strategy.execution - INFO - 🛡️ Kill Switches: L1=ON (DD>15%) | L3=ON (VIX>30) | L5=ON (3 losses)
+2026-02-20 11:40:25,957 - src.strategy.execution - INFO - REMINDER: Verify TWS setting 'Download open orders on connection' is enabled
+2026-02-20 11:40:25,958 - src.strategy.execution - INFO - TWS → Global Configuration → API → Settings → ☑️ Download open orders
+2026-02-20 11:40:27,964 - src.strategy.execution - INFO -   Position: XSP 682.0 P qty=1.0
+2026-02-20 11:40:27,970 - src.strategy.execution - INFO -   Position: XSP 684.0 P qty=-1.0
+2026-02-20 11:40:27,970 - src.strategy.execution - INFO -   Position: XSP 693.0 C qty=-1.0
+2026-02-20 11:40:27,971 - src.strategy.execution - INFO -   Position: XSP 695.0 C qty=1.0
+2026-02-20 11:40:27,971 - src.strategy.execution - INFO - 🔍 Checking for existing positions to resume...
+2026-02-20 11:40:27,972 - src.strategy.execution - WARNING -    ⚠️ Found 4 existing XSP legs. Attempting recovery...
+2026-02-20 11:40:27,978 - src.strategy.execution - INFO -    ✅ Position Recovered! TradeID=2 Strikes: 684.0P/693.0C | Hold: 47m
+Error 1100, reqId -1: Connectivity between IBKR and Trader Workstation has been lost.
+Error 1102, reqId -1: Connectivity between IBKR and Trader Workstation has been restored - data maintained. All data farms are connected: usfarm.nj; usopt.nj; usopt; usfarm; euhmds; fundfarm; ushmds; secdefnj.
+Error 1100, reqId -1: Connectivity between IBKR and Trader Workstation has been lost.
+Error 1102, reqId -1: Connectivity between IBKR and Trader Workstation has been restored - data maintained. All data farms are connected: usfarm.nj; usopt.nj; usopt; usfarm; euhmds; fundfarm; ushmds; secdefnj.
+Error 322, reqId 3773: Error processing request.-'b1' : cause - Maximum number of account summary requests exceeded; desubscribe to previous request first
+2026-02-20 16:00:10,692 - src.strategy.execution - INFO - ✅ Market close reached in hold-to-expiry mode; no TP close order sent.
+2026-02-20 16:00:10,726 - src.strategy.execution - INFO - 📊 L1 DD TRACKER: Cumulative=$29.30, HWM=$29.30, DD=$0.00/$300
+2026-02-20 16:00:10,728 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-20 16:01:10,734 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-20 16:02:10,770 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().

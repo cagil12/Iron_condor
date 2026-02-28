@@ -1,0 +1,225 @@
+🔒 Acquired Instance Lock (PID 18684)
+
+    ___    _   ____________ _______  ___ _    ______________  __
+   /   |  / | / /_  __/  _// ____/ |/ / | |  / /  _/_  __/\ \/ /
+  / /| | /  |/ / / /  / / / / __ |   /  | | / // /  / /    \  / 
+ / ___ |/ /|  / / / _/ / / /_/ //   |   | |/ // /  / /     / /  
+/_/  |_/_/ |_/ /_/ /___/ \____//_/|_|   |___/___/ /_/     /_/   
+                                                                 
+                    ╔═══════════════════════════╗
+                    ║   XSP IRON CONDOR BOT     ║
+                    ║   $200 Capital Mode       ║
+                    ╚═══════════════════════════╝
+
+VIX cache loaded: 84 days
+
+══════════════════════════════════════════════════
+  📊 TRADE JOURNAL SUMMARY
+══════════════════════════════════════════════════
+  Total Trades: 0
+  Closed: 0 | Open: 0
+══════════════════════════════════════════════════
+
+
+🔌 Connecting to TWS (PAPER)...
+✅ Connected to TWS (PAPER) - Account: DUO988990
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+⚠️  FIX 7: VERIFY TWS SETTINGS!
+   TWS → Global Configuration → API → Settings
+   ☑️ 'Download open orders on connection' MUST BE ENABLED
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+💰 Account Value: $1,001,232.06
+
+══════════════════════════════════════════════════
+  🔍 SCANNING FOR OPPORTUNITIES
+  Press Ctrl+C to stop
+══════════════════════════════════════════════════
+
+[09:32:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:32)
+[09:33:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:33)
+[09:34:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:34)
+[09:35:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:35)
+[09:36:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:36)
+[09:37:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:37)
+[09:38:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:38)
+[09:39:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:39)
+[09:40:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:40)
+[09:41:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:41)
+[09:42:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:42)
+[09:43:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:43)
+[09:44:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:44)
+[09:45:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:45)
+[09:46:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:46)
+[09:47:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:47)
+[09:48:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:48)
+[09:49:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:49)
+[09:50:19] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:50)
+[09:51:20] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:51)
+[09:52:20] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:52)
+[09:53:20] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:53)
+[09:54:20] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:54)
+[09:55:20] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:55)
+[09:56:20] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:56)
+[09:57:20] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:57)
+[09:58:20] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:58)
+[09:59:20] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:59)
+📈 VIX (LIVE from IBKR): 20.48
+[10:00:21] Scanning... (VIX: 20.5)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.109), 692.0C (Δ=0.083)
+⚠️ Credit too low: $0.19 < $0.20
+📈 VIX (LIVE from IBKR): 20.33
+[10:01:34] Scanning... (VIX: 20.3)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 678.0P (Δ=-0.090), 692.0C (Δ=0.074)
+⚠️ Credit too low: $0.16 < $0.20
+📈 VIX (LIVE from IBKR): 20.33
+[10:02:46] Scanning... (VIX: 20.3)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.098), 692.0C (Δ=0.092)
+⚠️ Credit too low: $0.17 < $0.20
+📈 VIX (LIVE from IBKR): 19.98
+[10:03:58] Scanning... (VIX: 20.0)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.093), 692.0C (Δ=0.092)
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 679P / 692C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.23 ($23)                       ║
+║    (Gross: $0.43 | Prot: -$0.20)                ║
+║ 📊 VIX: 19.98 | Spot: 687.86                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 20.17
+[10:05:51] Scanning... (VIX: 20.2)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.090), 692.0C (Δ=0.099)
+⚠️ Credit too low: $0.18 < $0.20
+📈 VIX (LIVE from IBKR): 20.36
+[10:07:03] Scanning... (VIX: 20.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.101), 692.0C (Δ=0.083)
+⚠️ Credit too low: $0.18 < $0.20
+📈 VIX (LIVE from IBKR): 20.31
+[10:08:15] Scanning... (VIX: 20.3)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.107), 692.0C (Δ=0.083)
+⚠️ Credit too low: $0.19 < $0.20
+📈 VIX (LIVE from IBKR): 20.43
+[10:09:26] Scanning... (VIX: 20.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.106), 692.0C (Δ=0.079)
+⚠️ Credit too low: $0.19 < $0.20
+📈 VIX (LIVE from IBKR): 20.38
+[10:10:37] Scanning... (VIX: 20.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.110), 691.0C (Δ=0.123)
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 679P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.29 ($29)                       ║
+║    (Gross: $0.55 | Prot: -$0.26)                ║
+║ 📊 VIX: 20.38 | Spot: 686.55                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 20.43
+[10:12:47] Scanning... (VIX: 20.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.107), 691.0C (Δ=0.124)
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 679P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.23 ($23)                       ║
+║    (Gross: $0.52 | Prot: -$0.29)                ║
+║ 📊 VIX: 20.43 | Spot: 685.84                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 20.51
+[10:14:37] Scanning... (VIX: 20.5)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 678.0P (Δ=-0.093), 691.0C (Δ=0.104)
+⚠️ Credit too low: $0.18 < $0.20
+📈 VIX (LIVE from IBKR): 20.41
+[10:15:49] Scanning... (VIX: 20.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 678.0P (Δ=-0.091), 691.0C (Δ=0.099)
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 678P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.23 ($23)                       ║
+║    (Gross: $0.42 | Prot: -$0.19)                ║
+║ 📊 VIX: 20.41 | Spot: 686.35                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 20.25
+[10:17:25] Scanning... (VIX: 20.2)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.099), 691.0C (Δ=0.134)
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 679P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.25 ($25)                       ║
+║    (Gross: $0.47 | Prot: -$0.22)                ║
+║ 📊 VIX: 20.25 | Spot: 686.86                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📊 VIX (CACHE T-1): 17.44
+[10:18:42] Scanning... (VIX: 17.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.091), 692.0C (Δ=0.078)
+⚠️ Credit too low: $0.14 < $0.20
+📊 VIX (CACHE T-1): 17.44
+[10:19:56] Scanning... (VIX: 17.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.093), 691.0C (Δ=0.110)
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 679P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.22 ($22)                       ║
+║    (Gross: $0.44 | Prot: -$0.22)                ║
+║ 📊 VIX: 17.44 | Spot: 686.60                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 20.24
+[10:21:13] Scanning... (VIX: 20.2)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.089), 691.0C (Δ=0.118)
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 679P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.22 ($22)                       ║
+║    (Gross: $0.44 | Prot: -$0.22)                ║
+║ 📊 VIX: 20.24 | Spot: 686.66                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📝 Trade #1 logged to journal
+📋 Position internal log ID: 1
+
+📡 Monitoring position (checking every 10.0s)...
+⚠️ DANGER [10:21:50] XSP: 686.45 | VIX: 20.3 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+7) 691C(+5) | Hold:0m | MaxSprd:0.32
+[10:22:01] XSP: 685.98 | VIX: 20.3 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+7) 691C(+5) | Hold:0m | MaxSprd:0.32
+⚠️ DANGER [10:22:12] XSP: 686.15 | VIX: 20.5 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+7) 691C(+5) | Hold:0m | MaxSprd:0.32
+⚠️ DANGER [10:22:23] XSP: 686.21 | VIX: 20.4 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+7) 691C(+5) | Hold:1m | MaxSprd:0.32
+⚠️ DANGER [10:22:34] XSP: 686.39 | VIX: 20.4 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+7) 691C(+5) | Hold:1m | MaxSprd:0.32
+⚠️ DANGER [10:22:44] XSP: 686.42 | VIX: 20.4 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+7) 691C(+5) | Hold:1m | MaxSprd:0.32
+⚠️ DANGER [10:22:55] XSP: 686.55 | VIX: 20.4 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+8) 691C(+4) | Hold:1m | MaxSprd:0.32
+⚠️ DANGER [10:23:06] XSP: 686.78 | VIX: 20.3 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+8) 691C(+4) | Hold:1m | MaxSprd:0.32
+⚠️ DANGER [10:23:17] XSP: 686.71 | VIX: 20.3 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+8) 691C(+4) | Hold:1m | MaxSprd:0.32
+⚠️ DANGER [10:23:28] XSP: 686.60 | VIX: 20.3 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+8) 691C(+4) | Hold:2m | MaxSprd:0.32
+⚠️ DANGER [10:23:39] XSP: 686.44 | VIX: 20.3 | PnL: $-10.02 (-46%Max) | TP:-46% SL:23% | 679P(+7) 691C(+5) | Hold:2m | MaxSprd:0.32

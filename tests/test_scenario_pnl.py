@@ -38,6 +38,7 @@ def _base_config(tp_pct: float = 0.50, sl_mult: float = 3.0, min_credit: float =
         "strike_selection": {"strike_step": 1.0},
         "credit_filters": {"max_risk_reward": 1000.0},
         "timing": {"risk_free_rate": 0.05, "vix_source": "vix_open"},
+        "pricing": {"use_bs_repricing": False},
         "commissions": {
             "pricing_plan": "fixed",
             "fixed": {"per_contract": 0.65},

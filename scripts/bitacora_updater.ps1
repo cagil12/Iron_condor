@@ -11,6 +11,38 @@ $stateFile = Join-Path $outputsDir "bitacora_updater.state"
 $tradeHeaderStateFile = Join-Path $outputsDir "bitacora_updater.trade_header.state"
 $pidFile = Join-Path $outputsDir "bitacora_updater.pid"
 $runnerLog = Join-Path $outputsDir "bitacora_updater_runner.log"
+$script:StopLossMult = $null
+
+function Get-ConfiguredStopLossMult {
+    param([string]$RepoRoot)
+
+    if ($null -ne $script:StopLossMult -and $script:StopLossMult -gt 0) {
+        return [double]$script:StopLossMult
+    }
+
+    $defaultMult = 3.0
+    $configPath = Join-Path $RepoRoot "src\\utils\\config.py"
+    if (-not (Test-Path $configPath)) {
+        $script:StopLossMult = $defaultMult
+        return $defaultMult
+    }
+
+    try {
+        $raw = Get-Content -Path $configPath -Raw -Encoding UTF8
+        if ($raw -match "'stop_loss_mult'\s*:\s*([0-9]+(?:\.[0-9]+)?)") {
+            $val = [double]$matches[1]
+            if ($val -gt 0) {
+                $script:StopLossMult = $val
+                return $val
+            }
+        }
+    } catch {
+        # fall through to default
+    }
+
+    $script:StopLossMult = $defaultMult
+    return $defaultMult
+}
 
 function Get-LatestMonitorLog {
     $files = @(
@@ -280,9 +312,10 @@ function Get-ActiveTradeSnapshot {
         $journalEntryCredit = $journalOpen.EntryCredit
     }
 
+    $slMult = Get-ConfiguredStopLossMult -RepoRoot $RepoRoot
     $slReal = $null
     if ($journalEntryCredit -ne $null) {
-        $slReal = [Math]::Round(([double]$journalEntryCredit) * 2.0, 4)
+        $slReal = [Math]::Round(([double]$journalEntryCredit) * [double]$slMult, 4)
     }
 
     $discrepancyFlag = "N/A"
@@ -303,6 +336,7 @@ function Get-ActiveTradeSnapshot {
         Qty = $qty
         ShortPut = $shortPut
         ShortCall = $shortCall
+        SlMult = $slMult
         SlReal = $slReal
         DiscrepancyFlag = $discrepancyFlag
     }
@@ -431,6 +465,7 @@ function Ensure-TradeContextHeader {
         "- entry_credit_journal: $entryJournalTxt",
         "- entry_credit_state: $entryStateTxt",
         "- discrepancy_flag: $discFlag",
+        "- sl_mult_config: $([string]::Format('{0:0.##}', [double]$TradeSnapshot.SlMult))"
         "- sl_real: $slRealTxt"
     )
     Add-Content -Path $DailyLogPath -Value ($headerLines -join [Environment]::NewLine) -Encoding UTF8

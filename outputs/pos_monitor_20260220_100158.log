@@ -1,0 +1,591 @@
+🔒 Acquired Instance Lock (PID 2388)
+
+    ___    _   ____________ _______  ___ _    ______________  __
+   /   |  / | / /_  __/  _// ____/ |/ / | |  / /  _/_  __/\ \/ /
+  / /| | /  |/ / / /  / / / / __ |   /  | | / // /  / /    \  / 
+ / ___ |/ /|  / / / _/ / / /_/ //   |   | |/ // /  / /     / /  
+/_/  |_/_/ |_/ /_/ /___/ \____//_/|_|   |___/___/ /_/     /_/   
+                                                                 
+                    ╔═══════════════════════════╗
+                    ║   XSP IRON CONDOR BOT     ║
+                    ║   $200 Capital Mode       ║
+                    ╚═══════════════════════════╝
+
+VIX cache loaded: 84 days
+
+══════════════════════════════════════════════════
+  📊 TRADE JOURNAL SUMMARY
+══════════════════════════════════════════════════
+  Total Trades: 1
+  Closed: 1 | Open: 0
+
+  💰 Total PnL: $17.01
+  📈 Win Rate: 100.0%
+  🏆 Best Trade: $17.01
+  💀 Worst Trade: $17.01
+  📉 Avg Pain (MAE): $0.00
+  💸 Total Slippage: $0.00
+══════════════════════════════════════════════════
+
+
+🔌 Connecting to TWS (PAPER)...
+✅ Connected to TWS (PAPER) - Account: DUO988990
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+⚠️  FIX 7: VERIFY TWS SETTINGS!
+   TWS → Global Configuration → API → Settings
+   ☑️ 'Download open orders on connection' MUST BE ENABLED
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+💰 Account Value: $1,001,335.47
+
+══════════════════════════════════════════════════
+  🔍 SCANNING FOR OPPORTUNITIES
+  Press Ctrl+C to stop
+══════════════════════════════════════════════════
+
+📈 VIX (LIVE from IBKR): 19.32
+[10:02:03] Scanning... (VIX: 19.3)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 678.0P (Δ=-0.074), 694.0C (Δ=0.045) | best candidate credit: $0.16
+⚠️ Credit too low: $0.16 < $0.18
+📈 VIX (LIVE from IBKR): 19.62
+[10:03:21] Scanning... (VIX: 19.6)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 683.0P (Δ=-0.119), 694.0C (Δ=0.171) | best candidate credit: $0.27
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 683P / 694C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.27 ($27)                       ║
+║    (Gross: $1.00 | Prot: -$0.73)                ║
+║ 📊 VIX: 19.62 | Spot: 689.22                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 20.29
+[10:06:24] Scanning... (VIX: 20.3)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 678.0P (Δ=-0.109), 683.0C (Δ=0.740) | best candidate credit: $1.25
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 678P / 683C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $1.25 ($125)                      ║
+║    (Gross: $5.42 | Prot: -$4.17)                ║
+║ 📊 VIX: 20.29 | Spot: 687.42                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.87
+[10:10:17] Scanning... (VIX: 19.9)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 681.0P (Δ=-0.125), 694.0C (Δ=0.136) | best candidate credit: $0.22
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 681P / 694C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.22 ($22)                       ║
+║    (Gross: $0.68 | Prot: -$0.46)                ║
+║ 📊 VIX: 19.87 | Spot: 689.08                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.83
+[10:12:48] Scanning... (VIX: 19.8)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 680.0P (Δ=-0.086), 694.0C (Δ=0.122) | best candidate credit: $0.21
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 680P / 694C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.21 ($21)                       ║
+║    (Gross: $0.52 | Prot: -$0.31)                ║
+║ 📊 VIX: 19.83 | Spot: 688.43                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 20.04
+[10:14:49] Scanning... (VIX: 20.0)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 680.0P (Δ=-0.099), 693.0C (Δ=0.111) | best candidate credit: $0.21
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 680P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.21 ($21)                       ║
+║    (Gross: $0.57 | Prot: -$0.36)                ║
+║ 📊 VIX: 20.04 | Spot: 687.23                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 20.36
+[10:17:17] Scanning... (VIX: 20.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 679.0P (Δ=-0.125), 692.0C (Δ=0.117) | best candidate credit: $0.20
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 679P / 692C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.20 ($20)                       ║
+║    (Gross: $0.62 | Prot: -$0.42)                ║
+║ 📊 VIX: 20.36 | Spot: 686.65                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.77
+[10:20:04] Scanning... (VIX: 19.8)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.133), 693.0C (Δ=0.173) | best candidate credit: $0.31
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.31 ($31)                       ║
+║    (Gross: $0.75 | Prot: -$0.44)                ║
+║ 📊 VIX: 19.77 | Spot: 688.32                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.31
+[10:22:48] Scanning... (VIX: 19.3)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.123), 694.0C (Δ=0.116) | best candidate credit: $0.23
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 694C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.23 ($23)                       ║
+║    (Gross: $0.53 | Prot: -$0.30)                ║
+║ 📊 VIX: 19.31 | Spot: 689.40                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.28
+[10:24:30] Scanning... (VIX: 19.3)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 683.0P (Δ=-0.136), 694.0C (Δ=0.122) | best candidate credit: $0.26
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 683P / 694C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.26 ($26)                       ║
+║    (Gross: $0.62 | Prot: -$0.36)                ║
+║ 📊 VIX: 19.28 | Spot: 689.09                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.43
+[10:26:41] Scanning... (VIX: 19.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.109), 693.0C (Δ=0.169) | best candidate credit: $0.31
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.31 ($31)                       ║
+║    (Gross: $0.67 | Prot: -$0.36)                ║
+║ 📊 VIX: 19.43 | Spot: 689.29                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.49
+[10:29:24] Scanning... (VIX: 19.5)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.112), 693.0C (Δ=0.168) | best candidate credit: $0.29
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.29 ($29)                       ║
+║    (Gross: $0.65 | Prot: -$0.36)                ║
+║ 📊 VIX: 19.49 | Spot: 688.78                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.62
+[10:31:18] Scanning... (VIX: 19.6)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.131), 693.0C (Δ=0.126) | best candidate credit: $0.27
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.27 ($27)                       ║
+║    (Gross: $0.65 | Prot: -$0.38)                ║
+║ 📊 VIX: 19.62 | Spot: 688.45                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.98
+[10:33:47] Scanning... (VIX: 20.0)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 681.0P (Δ=-0.105), 692.0C (Δ=0.161) | best candidate credit: $0.30
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 681P / 692C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.30 ($30)                       ║
+║    (Gross: $0.66 | Prot: -$0.36)                ║
+║ 📊 VIX: 19.98 | Spot: 687.29                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 20.00
+[10:36:17] Scanning... (VIX: 20.0)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 681.0P (Δ=-0.114), 692.0C (Δ=0.163) | best candidate credit: $0.30
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 681P / 692C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.30 ($30)                       ║
+║    (Gross: $0.65 | Prot: -$0.35)                ║
+║ 📊 VIX: 20.00 | Spot: 687.40                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.71
+[10:39:00] Scanning... (VIX: 19.7)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.117), 693.0C (Δ=0.131) | best candidate credit: $0.23
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.23 ($23)                       ║
+║    (Gross: $0.53 | Prot: -$0.30)                ║
+║ 📊 VIX: 19.71 | Spot: 688.60                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.81
+[10:41:11] Scanning... (VIX: 19.8)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.109), 693.0C (Δ=0.136) | best candidate credit: $0.22
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.22 ($22)                       ║
+║    (Gross: $0.47 | Prot: -$0.25)                ║
+║ 📊 VIX: 19.81 | Spot: 687.83                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.55
+[10:43:25] Scanning... (VIX: 19.6)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 683.0P (Δ=-0.141), 693.0C (Δ=0.125) | best candidate credit: $0.28
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 683P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.28 ($28)                       ║
+║    (Gross: $0.58 | Prot: -$0.30)                ║
+║ 📊 VIX: 19.55 | Spot: 688.93                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.18
+[10:45:53] Scanning... (VIX: 19.2)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 684.0P (Δ=-0.144), 694.0C (Δ=0.106) | best candidate credit: $0.20
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 684P / 694C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.20 ($20)                       ║
+║    (Gross: $0.51 | Prot: -$0.31)                ║
+║ 📊 VIX: 19.18 | Spot: 689.75                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.17
+[10:47:50] Scanning... (VIX: 19.2)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 684.0P (Δ=-0.128), 693.0C (Δ=0.172) | best candidate credit: $0.32
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 684P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.32 ($32)                       ║
+║    (Gross: $0.64 | Prot: -$0.32)                ║
+║ 📊 VIX: 19.17 | Spot: 689.67                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 19.06
+[10:50:19] Scanning... (VIX: 19.1)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 684.0P (Δ=-0.115), 693.0C (Δ=0.174) | best candidate credit: $0.31
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 684P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.31 ($31)                       ║
+║    (Gross: $0.63 | Prot: -$0.32)                ║
+║ 📊 VIX: 19.06 | Spot: 689.85                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📈 VIX (LIVE from IBKR): 18.97
+[10:52:46] Scanning... (VIX: 19.0)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 684.0P (Δ=-0.134), 693.0C (Δ=0.165) | best candidate credit: $0.33
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 684P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.33 ($33)                       ║
+║    (Gross: $0.64 | Prot: -$0.31)                ║
+║ 📊 VIX: 18.97 | Spot: 690.25                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+📝 Trade #2 logged to journal
+📋 Position internal log ID: 2
+
+📡 Monitoring position (checking every 10.0s)...
+⚠️ DANGER [10:54:03] XSP: 690.50 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+6) 693C(+2) | Hold:0m | MaxSprd:0.53
+⚠️ DANGER [10:54:14] XSP: 690.62 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:0m | MaxSprd:0.53
+⚠️ DANGER [10:54:25] XSP: 690.47 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+6) 693C(+3) | Hold:0m | MaxSprd:0.53
+⚠️ DANGER [10:54:36] XSP: 690.46 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+6) 693C(+3) | Hold:1m | MaxSprd:0.53
+⚠️ DANGER [10:54:47] XSP: 690.54 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:1m | MaxSprd:0.53
+⚠️ DANGER [10:54:57] XSP: 690.47 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+6) 693C(+3) | Hold:1m | MaxSprd:0.53
+⚠️ DANGER [10:55:08] XSP: 690.63 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:1m | MaxSprd:0.53
+⚠️ DANGER [10:55:19] XSP: 690.70 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:1m | MaxSprd:0.53
+⚠️ DANGER [10:55:30] XSP: 690.71 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:1m | MaxSprd:0.53
+⚠️ DANGER [10:55:41] XSP: 690.65 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:2m | MaxSprd:0.53
+⚠️ DANGER [10:55:52] XSP: 690.61 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:2m | MaxSprd:0.53
+⚠️ DANGER [10:56:03] XSP: 690.66 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:2m | MaxSprd:0.53
+⚠️ DANGER [10:56:14] XSP: 690.57 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:2m | MaxSprd:0.53
+⚠️ DANGER [10:56:25] XSP: 690.44 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+6) 693C(+3) | Hold:2m | MaxSprd:0.53
+⚠️ DANGER [10:56:36] XSP: 690.58 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:3m | MaxSprd:0.53
+⚠️ DANGER [10:56:47] XSP: 690.67 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:3m | MaxSprd:0.53
+⚠️ DANGER [10:56:58] XSP: 690.72 | VIX: 18.9 | PnL: $-17.59 (-50%Max) | TP:-50% SL:25% | 684P(+7) 693C(+2) | Hold:3m | MaxSprd:0.53
+⚠️ DANGER [10:57:08] XSP: 690.57 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:3m | MaxSprd:0.55
+⚠️ DANGER [10:57:19] XSP: 690.56 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:3m | MaxSprd:0.55
+⚠️ DANGER [10:57:30] XSP: 690.63 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:3m | MaxSprd:0.55
+⚠️ DANGER [10:57:41] XSP: 690.65 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:4m | MaxSprd:0.55
+⚠️ DANGER [10:57:52] XSP: 690.65 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:4m | MaxSprd:0.55
+⚠️ DANGER [10:58:03] XSP: 690.49 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+6) 693C(+3) | Hold:4m | MaxSprd:0.55
+⚠️ DANGER [10:58:14] XSP: 690.47 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+6) 693C(+3) | Hold:4m | MaxSprd:0.55
+⚠️ DANGER [10:58:25] XSP: 690.43 | VIX: 19.0 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+6) 693C(+3) | Hold:4m | MaxSprd:0.55
+⚠️ DANGER [10:58:36] XSP: 690.58 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:5m | MaxSprd:0.55
+⚠️ DANGER [10:58:47] XSP: 690.41 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+6) 693C(+3) | Hold:5m | MaxSprd:0.55
+⚠️ DANGER [10:58:58] XSP: 690.58 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:5m | MaxSprd:0.55
+⚠️ DANGER [10:59:09] XSP: 690.66 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:5m | MaxSprd:0.55
+⚠️ DANGER [10:59:20] XSP: 690.55 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:5m | MaxSprd:0.55
+⚠️ DANGER [10:59:31] XSP: 690.56 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:5m | MaxSprd:0.55
+⚠️ DANGER [10:59:42] XSP: 690.58 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:6m | MaxSprd:0.55
+⚠️ DANGER [10:59:52] XSP: 690.61 | VIX: 18.9 | PnL: $-19.62 (-56%Max) | TP:-56% SL:28% | 684P(+7) 693C(+2) | Hold:6m | MaxSprd:0.55
+⚠️ DANGER [11:00:03] XSP: 690.64 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+7) 693C(+2) | Hold:6m | MaxSprd:0.55
+⚠️ DANGER [11:00:14] XSP: 690.49 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:6m | MaxSprd:0.55
+⚠️ DANGER [11:00:25] XSP: 690.53 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+7) 693C(+2) | Hold:6m | MaxSprd:0.55
+⚠️ DANGER [11:00:36] XSP: 690.42 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:7m | MaxSprd:0.55
+⚠️ DANGER [11:00:47] XSP: 690.18 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:7m | MaxSprd:0.55
+⚠️ DANGER [11:00:58] XSP: 690.13 | VIX: 19.0 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:7m | MaxSprd:0.55
+⚠️ DANGER [11:01:09] XSP: 690.19 | VIX: 19.0 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:7m | MaxSprd:0.55
+⚠️ DANGER [11:01:20] XSP: 690.16 | VIX: 19.0 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:7m | MaxSprd:0.55
+⚠️ DANGER [11:01:31] XSP: 690.17 | VIX: 19.0 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:7m | MaxSprd:0.55
+⚠️ DANGER [11:01:42] XSP: 690.28 | VIX: 19.0 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:8m | MaxSprd:0.55
+⚠️ DANGER [11:01:53] XSP: 690.27 | VIX: 19.0 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:8m | MaxSprd:0.55
+⚠️ DANGER [11:02:04] XSP: 690.36 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+6) 693C(+3) | Hold:8m | MaxSprd:0.55
+⚠️ DANGER [11:02:14] XSP: 690.52 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+7) 693C(+2) | Hold:8m | MaxSprd:0.55
+⚠️ DANGER [11:02:25] XSP: 690.52 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+7) 693C(+2) | Hold:8m | MaxSprd:0.55
+⚠️ DANGER [11:02:36] XSP: 690.63 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+7) 693C(+2) | Hold:9m | MaxSprd:0.55
+⚠️ DANGER [11:02:47] XSP: 690.71 | VIX: 18.9 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+7) 693C(+2) | Hold:9m | MaxSprd:0.55
+⚠️ DANGER [11:02:58] XSP: 690.76 | VIX: 18.8 | PnL: $-12.91 (-37%Max) | TP:-37% SL:18% | 684P(+7) 693C(+2) | Hold:9m | MaxSprd:0.55
+⚠️ DANGER [11:03:09] XSP: 690.77 | VIX: 18.8 | PnL: $-20.84 (-60%Max) | TP:-60% SL:30% | 684P(+7) 693C(+2) | Hold:9m | MaxSprd:0.56
+⚠️ DANGER [11:03:20] XSP: 690.68 | VIX: 18.8 | PnL: $-20.84 (-60%Max) | TP:-60% SL:30% | 684P(+7) 693C(+2) | Hold:9m | MaxSprd:0.56
+⚠️ DANGER [11:03:31] XSP: 690.50 | VIX: 18.8 | PnL: $-9.15 (-26%Max) | TP:-26% SL:13% | 684P(+6) 693C(+2) | Hold:9m | MaxSprd:0.56
+⚠️ DANGER [11:03:42] XSP: 690.38 | VIX: 18.9 | PnL: $-9.15 (-26%Max) | TP:-26% SL:13% | 684P(+6) 693C(+3) | Hold:10m | MaxSprd:0.56
+⚠️ DANGER [11:03:53] XSP: 690.43 | VIX: 18.9 | PnL: $-9.15 (-26%Max) | TP:-26% SL:13% | 684P(+6) 693C(+3) | Hold:10m | MaxSprd:0.56
+⚠️ DANGER [11:04:04] XSP: 690.53 | VIX: 18.9 | PnL: $-9.15 (-26%Max) | TP:-26% SL:13% | 684P(+7) 693C(+2) | Hold:10m | MaxSprd:0.56
+⚠️ DANGER [11:04:15] XSP: 690.82 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+7) 693C(+2) | Hold:10m | MaxSprd:0.56
+⚠️ DANGER [11:04:26] XSP: 690.72 | VIX: 18.8 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+7) 693C(+2) | Hold:10m | MaxSprd:0.56
+⚠️ DANGER [11:04:37] XSP: 690.75 | VIX: 18.8 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+7) 693C(+2) | Hold:11m | MaxSprd:0.56
+⚠️ DANGER [11:04:48] XSP: 690.64 | VIX: 18.8 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+7) 693C(+2) | Hold:11m | MaxSprd:0.56
+⚠️ DANGER [11:04:58] XSP: 690.58 | VIX: 18.8 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+7) 693C(+2) | Hold:11m | MaxSprd:0.56
+⚠️ DANGER [11:05:09] XSP: 690.48 | VIX: 18.8 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:11m | MaxSprd:0.56
+⚠️ DANGER [11:05:20] XSP: 690.32 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:11m | MaxSprd:0.56
+⚠️ DANGER [11:05:31] XSP: 690.20 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:11m | MaxSprd:0.56
+⚠️ DANGER [11:05:42] XSP: 690.30 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:12m | MaxSprd:0.56
+⚠️ DANGER [11:05:53] XSP: 690.25 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:12m | MaxSprd:0.56
+⚠️ DANGER [11:06:04] XSP: 690.16 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:12m | MaxSprd:0.56
+⚠️ DANGER [11:06:15] XSP: 690.29 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:12m | MaxSprd:0.56
+⚠️ DANGER [11:06:26] XSP: 690.49 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:12m | MaxSprd:0.56
+⚠️ DANGER [11:06:37] XSP: 690.41 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:13m | MaxSprd:0.56
+⚠️ DANGER [11:06:48] XSP: 690.31 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:13m | MaxSprd:0.56
+⚠️ DANGER [11:06:59] XSP: 690.48 | VIX: 18.9 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+6) 693C(+3) | Hold:13m | MaxSprd:0.56
+⚠️ DANGER [11:07:09] XSP: 690.52 | VIX: 18.8 | PnL: $-7.08 (-20%Max) | TP:-20% SL:10% | 684P(+7) 693C(+2) | Hold:13m | MaxSprd:0.56
+⚠️ DANGER [11:07:20] XSP: 690.40 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:13m | MaxSprd:0.56
+⚠️ DANGER [11:07:31] XSP: 690.35 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:13m | MaxSprd:0.56
+⚠️ DANGER [11:07:42] XSP: 690.25 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:14m | MaxSprd:0.56
+⚠️ DANGER [11:07:53] XSP: 690.15 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:14m | MaxSprd:0.56
+⚠️ DANGER [11:08:04] XSP: 690.19 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:14m | MaxSprd:0.56
+⚠️ DANGER [11:08:15] XSP: 690.19 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:14m | MaxSprd:0.56
+⚠️ DANGER [11:08:26] XSP: 690.12 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:14m | MaxSprd:0.56
+⚠️ DANGER [11:08:37] XSP: 690.14 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:15m | MaxSprd:0.56
+⚠️ DANGER [11:08:48] XSP: 690.25 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:15m | MaxSprd:0.56
+⚠️ DANGER [11:08:59] XSP: 690.34 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:15m | MaxSprd:0.56
+⚠️ DANGER [11:09:10] XSP: 690.41 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:15m | MaxSprd:0.56
+⚠️ DANGER [11:09:21] XSP: 690.34 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:15m | MaxSprd:0.56
+⚠️ DANGER [11:09:31] XSP: 690.29 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:15m | MaxSprd:0.56
+⚠️ DANGER [11:09:42] XSP: 690.22 | VIX: 18.9 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:16m | MaxSprd:0.56
+⚠️ DANGER [11:09:53] XSP: 690.07 | VIX: 19.0 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:16m | MaxSprd:0.56
+⚠️ DANGER [11:10:04] XSP: 690.14 | VIX: 19.0 | PnL: $-2.96 (-8%Max) | TP:-8% SL:4% | 684P(+6) 693C(+3) | Hold:16m | MaxSprd:0.56
+⚠️ DANGER [11:10:15] XSP: 690.16 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:16m | MaxSprd:0.56
+⚠️ DANGER [11:10:26] XSP: 690.14 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:16m | MaxSprd:0.56
+⚠️ DANGER [11:10:37] XSP: 690.13 | VIX: 18.9 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:17m | MaxSprd:0.56
+⚠️ DANGER [11:10:48] XSP: 690.08 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:17m | MaxSprd:0.56
+⚠️ DANGER [11:10:59] XSP: 689.92 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:17m | MaxSprd:0.56
+⚠️ DANGER [11:11:10] XSP: 689.85 | VIX: 19.1 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:17m | MaxSprd:0.56
+⚠️ DANGER [11:11:21] XSP: 689.95 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:17m | MaxSprd:0.56
+⚠️ DANGER [11:11:32] XSP: 690.02 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:17m | MaxSprd:0.56
+⚠️ DANGER [11:11:42] XSP: 690.11 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:18m | MaxSprd:0.56
+⚠️ DANGER [11:11:53] XSP: 690.15 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:18m | MaxSprd:0.56
+⚠️ DANGER [11:12:04] XSP: 690.17 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:18m | MaxSprd:0.56
+⚠️ DANGER [11:12:15] XSP: 690.16 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:18m | MaxSprd:0.56
+⚠️ DANGER [11:12:26] XSP: 690.20 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:18m | MaxSprd:0.56
+⚠️ DANGER [11:12:37] XSP: 690.23 | VIX: 19.0 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:19m | MaxSprd:0.56
+⚠️ DANGER [11:12:48] XSP: 690.43 | VIX: 18.9 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:19m | MaxSprd:0.56
+⚠️ DANGER [11:12:59] XSP: 690.43 | VIX: 18.9 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:19m | MaxSprd:0.56
+⚠️ DANGER [11:13:10] XSP: 690.25 | VIX: 18.9 | PnL: $-1.02 (-3%Max) | TP:-3% SL:1% | 684P(+6) 693C(+3) | Hold:19m | MaxSprd:0.56
+⚠️ DANGER [11:13:21] XSP: 690.30 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:19m | MaxSprd:0.56
+⚠️ DANGER [11:13:32] XSP: 690.21 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:19m | MaxSprd:0.56
+⚠️ DANGER [11:13:43] XSP: 690.06 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:20m | MaxSprd:0.56
+⚠️ DANGER [11:13:53] XSP: 690.16 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:20m | MaxSprd:0.56
+⚠️ DANGER [11:14:04] XSP: 690.13 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:20m | MaxSprd:0.56
+⚠️ DANGER [11:14:15] XSP: 690.16 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:20m | MaxSprd:0.56
+⚠️ DANGER [11:14:26] XSP: 689.95 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:20m | MaxSprd:0.56
+⚠️ DANGER [11:14:37] XSP: 689.79 | VIX: 19.1 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:21m | MaxSprd:0.56
+⚠️ DANGER [11:14:48] XSP: 689.81 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:21m | MaxSprd:0.56
+⚠️ DANGER [11:14:59] XSP: 689.68 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:21m | MaxSprd:0.56
+⚠️ DANGER [11:15:10] XSP: 689.81 | VIX: 19.1 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:21m | MaxSprd:0.56
+⚠️ DANGER [11:15:21] XSP: 689.86 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:21m | MaxSprd:0.56
+⚠️ DANGER [11:15:32] XSP: 689.75 | VIX: 19.0 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:21m | MaxSprd:0.56
+⚠️ DANGER [11:15:43] XSP: 689.60 | VIX: 19.1 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+6) 693C(+3) | Hold:22m | MaxSprd:0.56
+⚠️ DANGER [11:15:54] XSP: 689.48 | VIX: 19.1 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+5) 693C(+4) | Hold:22m | MaxSprd:0.56
+⚠️ DANGER [11:16:05] XSP: 689.14 | VIX: 19.2 | PnL: $-0.20 (-1%Max) | TP:-1% SL:0% | 684P(+5) 693C(+4) | Hold:22m | MaxSprd:0.56
+⚠️ DANGER [11:16:15] XSP: 689.12 | VIX: 19.2 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:22m | MaxSprd:0.56
+⚠️ DANGER [11:16:26] XSP: 689.25 | VIX: 19.2 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:22m | MaxSprd:0.56
+⚠️ DANGER [11:16:37] XSP: 689.30 | VIX: 19.2 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:23m | MaxSprd:0.56
+⚠️ DANGER [11:16:48] XSP: 689.24 | VIX: 19.2 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:23m | MaxSprd:0.56
+⚠️ DANGER [11:16:59] XSP: 689.21 | VIX: 19.2 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:23m | MaxSprd:0.56
+⚠️ DANGER [11:17:10] XSP: 689.10 | VIX: 19.2 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:23m | MaxSprd:0.56
+⚠️ DANGER [11:17:21] XSP: 689.07 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:23m | MaxSprd:0.56
+⚠️ DANGER [11:17:32] XSP: 688.98 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:23m | MaxSprd:0.56
+⚠️ DANGER [11:17:43] XSP: 688.92 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:24m | MaxSprd:0.56
+⚠️ DANGER [11:17:54] XSP: 688.82 | VIX: 19.4 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:24m | MaxSprd:0.56
+⚠️ DANGER [11:18:05] XSP: 688.82 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:24m | MaxSprd:0.56
+⚠️ DANGER [11:18:15] XSP: 689.07 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:24m | MaxSprd:0.56
+⚠️ DANGER [11:18:26] XSP: 689.03 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:24m | MaxSprd:0.56
+⚠️ DANGER [11:18:37] XSP: 688.99 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:25m | MaxSprd:0.56
+⚠️ DANGER [11:18:48] XSP: 689.08 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:25m | MaxSprd:0.56
+⚠️ DANGER [11:18:59] XSP: 689.02 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:25m | MaxSprd:0.56
+⚠️ DANGER [11:19:10] XSP: 689.04 | VIX: 19.3 | PnL: $-0.44 (-1%Max) | TP:-1% SL:1% | 684P(+5) 693C(+4) | Hold:25m | MaxSprd:0.56
+⚠️ DANGER [11:19:21] XSP: 689.00 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:25m | MaxSprd:0.56
+⚠️ DANGER [11:19:32] XSP: 689.29 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:25m | MaxSprd:0.56
+⚠️ DANGER [11:19:43] XSP: 689.34 | VIX: 19.2 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:26m | MaxSprd:0.56
+⚠️ DANGER [11:19:54] XSP: 689.27 | VIX: 19.2 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:26m | MaxSprd:0.56
+⚠️ DANGER [11:20:05] XSP: 689.27 | VIX: 19.2 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:26m | MaxSprd:0.56
+⚠️ DANGER [11:20:16] XSP: 689.10 | VIX: 19.2 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:26m | MaxSprd:0.56
+⚠️ DANGER [11:20:27] XSP: 688.85 | VIX: 19.2 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:26m | MaxSprd:0.56
+⚠️ DANGER [11:20:38] XSP: 688.93 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:27m | MaxSprd:0.56
+⚠️ DANGER [11:20:49] XSP: 688.87 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:27m | MaxSprd:0.56
+⚠️ DANGER [11:21:00] XSP: 688.78 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:27m | MaxSprd:0.56
+⚠️ DANGER [11:21:11] XSP: 688.96 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:27m | MaxSprd:0.56
+⚠️ DANGER [11:21:22] XSP: 688.92 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:27m | MaxSprd:0.56
+⚠️ DANGER [11:21:33] XSP: 688.83 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:28m | MaxSprd:0.56
+⚠️ DANGER [11:21:44] XSP: 688.79 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:28m | MaxSprd:0.56
+⚠️ DANGER [11:21:55] XSP: 688.78 | VIX: 19.3 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:28m | MaxSprd:0.56
+⚠️ DANGER [11:22:06] XSP: 688.87 | VIX: 19.4 | PnL: $-1.25 (-4%Max) | TP:-4% SL:2% | 684P(+5) 693C(+4) | Hold:28m | MaxSprd:0.56
+⚠️ DANGER [11:22:17] XSP: 688.88 | VIX: 19.4 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:28m | MaxSprd:0.56
+⚠️ DANGER [11:22:28] XSP: 689.03 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:28m | MaxSprd:0.56
+⚠️ DANGER [11:22:39] XSP: 689.01 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:29m | MaxSprd:0.56
+⚠️ DANGER [11:22:50] XSP: 688.78 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:29m | MaxSprd:0.56
+⚠️ DANGER [11:23:01] XSP: 688.56 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:29m | MaxSprd:0.56
+⚠️ DANGER [11:23:12] XSP: 688.55 | VIX: 19.4 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:29m | MaxSprd:0.56
+⚠️ DANGER [11:23:22] XSP: 688.72 | VIX: 19.4 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:29m | MaxSprd:0.56
+⚠️ DANGER [11:23:33] XSP: 688.72 | VIX: 19.4 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:30m | MaxSprd:0.56
+⚠️ DANGER [11:23:44] XSP: 688.75 | VIX: 19.4 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:30m | MaxSprd:0.56
+⚠️ DANGER [11:23:55] XSP: 688.81 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:30m | MaxSprd:0.56
+⚠️ DANGER [11:24:06] XSP: 688.91 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:30m | MaxSprd:0.56
+⚠️ DANGER [11:24:17] XSP: 688.84 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:30m | MaxSprd:0.56
+⚠️ DANGER [11:24:28] XSP: 688.83 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:30m | MaxSprd:0.56
+⚠️ DANGER [11:24:39] XSP: 688.80 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:31m | MaxSprd:0.56
+⚠️ DANGER [11:24:50] XSP: 688.68 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:31m | MaxSprd:0.56
+⚠️ DANGER [11:25:01] XSP: 688.67 | VIX: 19.3 | PnL: $3.13 (9%Max) | TP:9% SL:-4% | 684P(+5) 693C(+4) | Hold:31m | MaxSprd:0.56
+⚠️ DANGER [11:25:12] XSP: 688.29 | VIX: 19.3 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:31m | MaxSprd:0.56
+⚠️ DANGER [11:25:23] XSP: 688.36 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:31m | MaxSprd:0.56
+⚠️ DANGER [11:25:34] XSP: 688.24 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:32m | MaxSprd:0.56
+⚠️ DANGER [11:25:45] XSP: 688.12 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:32m | MaxSprd:0.56
+⚠️ DANGER [11:25:55] XSP: 688.14 | VIX: 19.5 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:32m | MaxSprd:0.56
+⚠️ DANGER [11:26:06] XSP: 688.19 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:32m | MaxSprd:0.56
+⚠️ DANGER [11:26:17] XSP: 688.38 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:32m | MaxSprd:0.56
+⚠️ DANGER [11:26:28] XSP: 688.22 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:32m | MaxSprd:0.56
+⚠️ DANGER [11:26:39] XSP: 688.29 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:33m | MaxSprd:0.56
+⚠️ DANGER [11:26:50] XSP: 688.56 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+5) 693C(+4) | Hold:33m | MaxSprd:0.56
+⚠️ DANGER [11:27:01] XSP: 688.55 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+5) 693C(+4) | Hold:33m | MaxSprd:0.56
+⚠️ DANGER [11:27:12] XSP: 688.42 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:33m | MaxSprd:0.56
+⚠️ DANGER [11:27:23] XSP: 688.22 | VIX: 19.5 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:33m | MaxSprd:0.56
+⚠️ DANGER [11:27:34] XSP: 688.20 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:34m | MaxSprd:0.56
+⚠️ DANGER [11:27:45] XSP: 688.15 | VIX: 19.4 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:34m | MaxSprd:0.56
+⚠️ DANGER [11:27:56] XSP: 688.11 | VIX: 19.5 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:34m | MaxSprd:0.56
+⚠️ DANGER [11:28:06] XSP: 688.21 | VIX: 19.5 | PnL: $3.55 (10%Max) | TP:10% SL:-5% | 684P(+4) 693C(+5) | Hold:34m | MaxSprd:0.56
+⚠️ DANGER [11:28:17] XSP: 688.35 | VIX: 19.5 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:34m | MaxSprd:0.56
+⚠️ DANGER [11:28:28] XSP: 688.45 | VIX: 19.4 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:34m | MaxSprd:0.56
+⚠️ DANGER [11:28:39] XSP: 688.44 | VIX: 19.4 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:35m | MaxSprd:0.56
+⚠️ DANGER [11:28:50] XSP: 688.63 | VIX: 19.4 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+5) 693C(+4) | Hold:35m | MaxSprd:0.56
+⚠️ DANGER [11:29:01] XSP: 688.66 | VIX: 19.4 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+5) 693C(+4) | Hold:35m | MaxSprd:0.56
+⚠️ DANGER [11:29:12] XSP: 688.52 | VIX: 19.4 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+5) 693C(+4) | Hold:35m | MaxSprd:0.56
+⚠️ DANGER [11:29:23] XSP: 688.27 | VIX: 19.4 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:35m | MaxSprd:0.56
+⚠️ DANGER [11:29:34] XSP: 688.13 | VIX: 19.5 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:36m | MaxSprd:0.56
+⚠️ DANGER [11:29:45] XSP: 688.11 | VIX: 19.5 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:36m | MaxSprd:0.56
+⚠️ DANGER [11:29:56] XSP: 687.93 | VIX: 19.5 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:36m | MaxSprd:0.56
+⚠️ DANGER [11:30:07] XSP: 687.73 | VIX: 19.6 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:36m | MaxSprd:0.56
+⚠️ DANGER [11:30:17] XSP: 687.64 | VIX: 19.6 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:36m | MaxSprd:0.56
+⚠️ DANGER [11:30:28] XSP: 687.82 | VIX: 19.6 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:36m | MaxSprd:0.56
+⚠️ DANGER [11:30:39] XSP: 687.78 | VIX: 19.6 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:37m | MaxSprd:0.56
+⚠️ DANGER [11:30:50] XSP: 687.79 | VIX: 19.6 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:37m | MaxSprd:0.56
+⚠️ DANGER [11:31:01] XSP: 687.91 | VIX: 19.6 | PnL: $3.22 (9%Max) | TP:9% SL:-5% | 684P(+4) 693C(+5) | Hold:37m | MaxSprd:0.56
+⚠️ DANGER [11:31:12] XSP: 687.84 | VIX: 19.6 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+4) 693C(+5) | Hold:37m | MaxSprd:0.56
+⚠️ DANGER [11:31:23] XSP: 687.98 | VIX: 19.5 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+4) 693C(+5) | Hold:37m | MaxSprd:0.56
+⚠️ DANGER [11:31:34] XSP: 687.92 | VIX: 19.5 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+4) 693C(+5) | Hold:38m | MaxSprd:0.56
+⚠️ DANGER [11:31:45] XSP: 687.96 | VIX: 19.5 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+4) 693C(+5) | Hold:38m | MaxSprd:0.56
+⚠️ DANGER [11:31:56] XSP: 687.90 | VIX: 19.5 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+4) 693C(+5) | Hold:38m | MaxSprd:0.56
+⚠️ DANGER [11:32:07] XSP: 687.93 | VIX: 19.5 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+4) 693C(+5) | Hold:38m | MaxSprd:0.56
+⚠️ DANGER [11:32:18] XSP: 688.20 | VIX: 19.5 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+4) 693C(+5) | Hold:38m | MaxSprd:0.56
+⚠️ DANGER [11:32:29] XSP: 688.50 | VIX: 19.5 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+4) 693C(+4) | Hold:38m | MaxSprd:0.56
+⚠️ DANGER [11:32:39] XSP: 688.60 | VIX: 19.4 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+5) 693C(+4) | Hold:39m | MaxSprd:0.56
+⚠️ DANGER [11:32:50] XSP: 688.68 | VIX: 19.3 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+5) 693C(+4) | Hold:39m | MaxSprd:0.56
+⚠️ DANGER [11:33:01] XSP: 688.77 | VIX: 19.3 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+5) 693C(+4) | Hold:39m | MaxSprd:0.56
+⚠️ DANGER [11:33:12] XSP: 688.95 | VIX: 19.3 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+5) 693C(+4) | Hold:39m | MaxSprd:0.56
+⚠️ DANGER [11:33:23] XSP: 689.09 | VIX: 19.3 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+5) 693C(+4) | Hold:39m | MaxSprd:0.56
+⚠️ DANGER [11:33:34] XSP: 689.06 | VIX: 19.3 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+5) 693C(+4) | Hold:40m | MaxSprd:0.56
+⚠️ DANGER [11:33:45] XSP: 688.81 | VIX: 19.3 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+5) 693C(+4) | Hold:40m | MaxSprd:0.56
+⚠️ DANGER [11:33:56] XSP: 688.98 | VIX: 19.3 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+5) 693C(+4) | Hold:40m | MaxSprd:0.56
+⚠️ DANGER [11:34:07] XSP: 688.96 | VIX: 19.3 | PnL: $0.30 (1%Max) | TP:1% SL:-0% | 684P(+5) 693C(+4) | Hold:40m | MaxSprd:0.56
+⚠️ DANGER [11:34:18] XSP: 689.04 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:40m | MaxSprd:0.56
+⚠️ DANGER [11:34:29] XSP: 689.02 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:40m | MaxSprd:0.56
+⚠️ DANGER [11:34:40] XSP: 688.98 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:41m | MaxSprd:0.56
+⚠️ DANGER [11:34:51] XSP: 688.82 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:41m | MaxSprd:0.56
+⚠️ DANGER [11:35:01] XSP: 688.99 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:41m | MaxSprd:0.56
+⚠️ DANGER [11:35:12] XSP: 688.88 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:41m | MaxSprd:0.56
+⚠️ DANGER [11:35:23] XSP: 688.76 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:41m | MaxSprd:0.56
+⚠️ DANGER [11:35:34] XSP: 688.72 | VIX: 19.4 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:42m | MaxSprd:0.56
+⚠️ DANGER [11:35:45] XSP: 688.88 | VIX: 19.4 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:42m | MaxSprd:0.56
+⚠️ DANGER [11:35:56] XSP: 688.87 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:42m | MaxSprd:0.56
+⚠️ DANGER [11:36:07] XSP: 688.87 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:42m | MaxSprd:0.56
+⚠️ DANGER [11:36:18] XSP: 688.90 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:42m | MaxSprd:0.56
+⚠️ DANGER [11:36:29] XSP: 688.61 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:42m | MaxSprd:0.56
+⚠️ DANGER [11:36:40] XSP: 688.64 | VIX: 19.4 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:43m | MaxSprd:0.56
+⚠️ DANGER [11:36:51] XSP: 688.78 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:43m | MaxSprd:0.56
+⚠️ DANGER [11:37:02] XSP: 688.86 | VIX: 19.3 | PnL: $3.72 (11%Max) | TP:11% SL:-5% | 684P(+5) 693C(+4) | Hold:43m | MaxSprd:0.56
+⚠️ DANGER [11:37:12] XSP: 688.89 | VIX: 19.3 | PnL: $6.90 (20%Max) | TP:20% SL:-10% | 684P(+5) 693C(+4) | Hold:43m | MaxSprd:0.56
+⚠️ DANGER [11:37:23] XSP: 688.96 | VIX: 19.3 | PnL: $6.90 (20%Max) | TP:20% SL:-10% | 684P(+5) 693C(+4) | Hold:43m | MaxSprd:0.56
+⚠️ DANGER [11:37:34] XSP: 689.04 | VIX: 19.3 | PnL: $6.90 (20%Max) | TP:20% SL:-10% | 684P(+5) 693C(+4) | Hold:44m | MaxSprd:0.56
+⚠️ DANGER [11:37:45] XSP: 689.09 | VIX: 19.3 | PnL: $6.90 (20%Max) | TP:20% SL:-10% | 684P(+5) 693C(+4) | Hold:44m | MaxSprd:0.56
+⚠️ DANGER [11:37:56] XSP: 689.06 | VIX: 19.3 | PnL: $6.90 (20%Max) | TP:20% SL:-10% | 684P(+5) 693C(+4) | Hold:44m | MaxSprd:0.56

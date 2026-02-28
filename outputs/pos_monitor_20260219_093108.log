@@ -1,0 +1,48 @@
+🔒 Acquired Instance Lock (PID 9812)
+
+    ___    _   ____________ _______  ___ _    ______________  __
+   /   |  / | / /_  __/  _// ____/ |/ / | |  / /  _/_  __/\ \/ /
+  / /| | /  |/ / / /  / / / / __ |   /  | | / // /  / /    \  / 
+ / ___ |/ /|  / / / _/ / / /_/ //   |   | |/ // /  / /     / /  
+/_/  |_/_/ |_/ /_/ /___/ \____//_/|_|   |___/___/ /_/     /_/   
+                                                                 
+                    ╔═══════════════════════════╗
+                    ║   XSP IRON CONDOR BOT     ║
+                    ║   $200 Capital Mode       ║
+                    ╚═══════════════════════════╝
+
+VIX cache loaded: 84 days
+
+══════════════════════════════════════════════════
+  📊 TRADE JOURNAL SUMMARY
+══════════════════════════════════════════════════
+  Total Trades: 0
+  Closed: 0 | Open: 0
+══════════════════════════════════════════════════
+
+
+🔌 Connecting to TWS (PAPER)...
+✅ Connected to TWS (PAPER) - Account: DUO988990
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+⚠️  FIX 7: VERIFY TWS SETTINGS!
+   TWS → Global Configuration → API → Settings
+   ☑️ 'Download open orders on connection' MUST BE ENABLED
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+💰 Account Value: $1,001,232.06
+
+══════════════════════════════════════════════════
+  🔍 SCANNING FOR OPPORTUNITIES
+  Press Ctrl+C to stop
+══════════════════════════════════════════════════
+
+📊 Active position - monitoring exits...
+
+📡 Monitoring position (checking every 10s)...
+⚠️ DANGER [09:31:14] XSP: 686.09 | VIX: 20.4 | PnL: $0.00 (0%Max) | TP:0% SL:-0% | 673P(+13) 688C(+2) | Hold:2861m | MaxSprd:0.19
+⚠️ DANGER [09:31:25] XSP: 685.84 | VIX: 20.4 | PnL: $0.00 (0%Max) | TP:0% SL:-0% | 673P(+13) 688C(+2) | Hold:2862m | MaxSprd:0.19
+⚠️ DANGER [09:31:35] XSP: 685.88 | VIX: 20.4 | PnL: $0.00 (0%Max) | TP:0% SL:-0% | 673P(+13) 688C(+2) | Hold:2862m | MaxSprd:0.19
+⚠️ DANGER [09:31:46] XSP: 686.08 | VIX: 20.4 | PnL: $0.00 (0%Max) | TP:0% SL:-0% | 673P(+13) 688C(+2) | Hold:2862m | MaxSprd:0.19
+⚠️ DANGER [09:31:57] XSP: 686.05 | VIX: 20.4 | PnL: $0.00 (0%Max) | TP:0% SL:-0% | 673P(+13) 688C(+2) | Hold:2862m | MaxSprd:0.19
+⚠️ DANGER [09:32:08] XSP: 686.05 | VIX: 20.4 | PnL: $0.00 (0%Max) | TP:0% SL:-0% | 673P(+13) 688C(+2) | Hold:2862m | MaxSprd:0.19

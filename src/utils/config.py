@@ -75,7 +75,10 @@ LIVE_CONFIG = {
     
     # Exit Parameters (Phase 1)
     'take_profit_pct': 1.00,  # Hold winners to expiry (skip TP close orders)
-    'stop_loss_mult': 2.0,    # Cut losers at 2x collected credit
+    # Definition B (spread-cost basis): exit when cost_to_close >= stop_loss_mult * entry_credit.
+    # 3.0 preserves the historical effective trigger of old Definition A @ 2.0x
+    # (old formula triggered near spread_cost >= 3x credit).
+    'stop_loss_mult': 3.0,
     'commission_per_leg': 0.65,  # IBKR fixed pricing per contract-leg
     'legs_per_ic': 4,            # Iron condor = 4 legs
     

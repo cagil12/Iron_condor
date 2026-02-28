@@ -1,0 +1,26 @@
+2026-02-19 16:41:54,814 - src.strategy.execution - INFO - HOLD_TO_EXPIRY_MODE=True (tp_pct=1.00)
+2026-02-19 16:41:54,815 - src.strategy.execution - INFO - 🔧 Executor Config: TP=1.00 | SL=2.0x | Width=2.0 | ExitStrategy=hold_to_expiry_sl2x
+2026-02-19 16:41:54,816 - src.strategy.execution - INFO - 💸 Expected commissions: win=$2.60 | loss=$5.20 | open=$2.60 | round_trip=$5.20
+2026-02-19 16:41:54,817 - src.strategy.execution - INFO - 📌 TP mode is hold-to-expiry (tp_pct >= 1.00): skipping TP close orders; only SL/EOD can trigger active close.
+2026-02-19 16:41:54,818 - src.strategy.execution - INFO - 🛡️ Kill Switches: L1=ON (DD>15%) | L3=ON (VIX>30) | L5=ON (3 losses)
+2026-02-19 16:41:54,819 - src.strategy.execution - INFO - REMINDER: Verify TWS setting 'Download open orders on connection' is enabled
+2026-02-19 16:41:54,819 - src.strategy.execution - INFO - TWS → Global Configuration → API → Settings → ☑️ Download open orders
+2026-02-19 16:41:56,833 - src.strategy.execution - INFO -   Position: XSP 691.0 C qty=-1.0
+2026-02-19 16:41:56,866 - src.strategy.execution - INFO -   Position: XSP 693.0 C qty=1.0
+2026-02-19 16:41:56,867 - src.strategy.execution - INFO -   Position: XSP 679.0 P qty=-1.0
+2026-02-19 16:41:56,867 - src.strategy.execution - INFO -   Position: XSP 677.0 P qty=1.0
+2026-02-19 16:41:56,867 - src.strategy.execution - INFO - 🔍 Checking for existing positions to resume...
+2026-02-19 16:41:56,868 - src.strategy.execution - WARNING -    ⚠️ Found 4 existing XSP legs. Attempting recovery...
+2026-02-19 16:41:56,874 - src.strategy.execution - WARNING -    ⚠️ Position recovered without OPEN journal row (trade_id=0): 679.0P/691.0C
+2026-02-19 16:41:57,109 - src.strategy.execution - INFO - ✅ Market close reached in hold-to-expiry mode; no TP close order sent.
+2026-02-19 16:41:57,109 - src.strategy.execution - WARNING - ⚠️ Skipping journal/DD update for recovered position with trade_id<=0 (unmapped position).
+2026-02-19 16:41:57,111 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:42:57,113 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:43:57,148 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:44:57,181 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:45:57,216 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:46:57,251 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:47:57,412 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:48:57,447 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:49:57,484 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().
+2026-02-19 16:50:57,518 - src.strategy.execution - INFO - ℹ️ Ignoring already-finalized hold-to-expiry signature in has_active_position().

@@ -1,0 +1,1915 @@
+﻿[2026-02-20 09:26:05] started pid=26936 interval=60s
+[2026-02-20 09:26:06] monitor=UP(pid=9168) updater=UP(pid=20448)
+[2026-02-20 09:27:06] monitor=UP(pid=9168) updater=UP(pid=20448)
+[2026-02-20 11:41:16] started pid=5540 interval=60s
+[2026-02-20 11:41:16] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:42:17] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:43:17] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:44:17] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:45:17] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:46:17] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:47:18] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:48:18] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:49:18] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:50:18] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:51:18] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:52:19] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:53:19] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:54:19] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:55:19] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:56:20] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:57:20] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:58:20] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 11:59:20] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:00:20] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:01:21] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:02:21] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:03:21] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:04:21] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:05:22] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:06:22] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:07:22] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:08:22] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:09:23] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:10:23] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:11:23] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:12:23] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:13:23] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:14:24] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:15:24] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:16:24] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:17:24] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:18:25] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:19:25] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:20:25] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:21:25] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:22:26] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:23:26] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:24:26] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:25:26] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:26:26] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:27:27] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:28:27] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:29:27] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:30:27] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:31:28] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:32:28] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:33:28] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:34:28] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:35:29] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:36:29] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:37:29] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:38:29] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:39:29] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:40:30] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:41:30] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:42:30] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:43:30] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:44:31] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:45:31] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:46:31] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:47:31] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:48:32] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:49:32] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:50:32] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:51:32] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:52:32] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:53:33] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:54:33] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:55:33] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:56:33] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:57:34] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:58:34] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 12:59:34] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:00:34] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:01:34] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:02:35] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:03:35] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:04:35] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:05:35] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:25:30] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:26:30] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:27:31] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:28:31] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:29:31] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:30:31] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:31:32] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:32:32] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:33:32] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:34:32] monitor=UP(pid=8260) updater=UP(pid=11204)
+[2026-02-20 13:35:33] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:36:33] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:37:33] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:38:33] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:39:34] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:40:34] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:41:34] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:42:34] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:43:35] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:44:35] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:45:35] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:46:35] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:47:35] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:48:36] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:49:36] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:50:36] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:51:36] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:52:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:53:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:54:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:55:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:56:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:57:38] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:58:38] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 13:59:38] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:00:38] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:01:38] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:02:39] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:03:39] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:04:39] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:05:39] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:06:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:07:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:08:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:09:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:10:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:11:41] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:12:41] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:13:41] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:14:41] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:15:42] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:16:42] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:17:42] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:18:42] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:19:42] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:20:43] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:21:43] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:22:43] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:23:43] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:24:44] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:25:44] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:26:44] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:27:44] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:28:45] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:29:45] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:30:45] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:35:33] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:36:34] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:37:34] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:38:34] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:39:34] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:40:35] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:41:35] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:42:35] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:43:35] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:44:36] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:45:36] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:46:36] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:47:36] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:48:36] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:49:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:50:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:51:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:52:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:53:37] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:54:38] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:55:38] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:56:38] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:57:38] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:58:39] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 14:59:39] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:00:39] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:01:39] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:02:39] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:03:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:04:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:05:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:06:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:07:40] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:08:41] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:09:41] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:10:41] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:11:41] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:12:42] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:13:42] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:14:42] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:15:42] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:16:43] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:17:43] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:18:43] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:19:43] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:20:43] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:21:44] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:22:44] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:23:44] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:24:44] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:25:44] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:26:45] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:27:45] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:28:45] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:29:45] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:30:46] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:31:46] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:32:46] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:33:46] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:34:47] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:35:47] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:36:47] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:37:47] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:38:47] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:39:48] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:40:48] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:41:48] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:42:48] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:43:49] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:44:49] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:45:49] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:46:49] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:47:49] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:48:50] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:49:50] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:50:50] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:51:50] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:52:51] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:53:51] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:54:51] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:55:51] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:56:51] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:57:52] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:58:52] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 15:59:52] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 16:00:53] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 16:01:53] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-20 16:02:53] monitor=UP(pid=8260) updater=UP(pid=26916)
+[2026-02-26 08:20:01] started pid=26256 interval=60s
+[2026-02-26 08:20:01] monitor=UP(pid=11376) updater=UP(pid=6556)
+[2026-02-26 08:21:02] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:22:02] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:23:02] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:24:02] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:25:02] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:26:02] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:27:03] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:28:03] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:29:03] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:30:03] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:31:03] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:32:03] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:33:04] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:34:04] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:35:04] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:36:04] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:37:04] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:38:04] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:39:05] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:40:05] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:41:05] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:42:05] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:43:05] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:44:05] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:45:06] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:46:06] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:47:06] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:48:06] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:49:06] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:50:06] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:51:06] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:52:07] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:53:07] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:54:07] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:55:07] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:56:07] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:57:07] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:58:08] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 08:59:08] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:00:08] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:01:08] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:02:08] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:03:08] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:04:08] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:05:09] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:06:09] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:07:09] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:08:09] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:09:09] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:10:09] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:11:10] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:12:10] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:13:10] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:14:10] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:15:10] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:16:11] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:17:11] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:18:11] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:19:11] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:20:11] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:21:11] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:22:11] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:23:12] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:24:12] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:25:12] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:26:12] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:27:12] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:28:12] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:29:13] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:30:13] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:31:13] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:32:13] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:33:13] monitor=DOWN updater=UP(pid=6556)
+[2026-02-26 09:33:57] started pid=15616 interval=60s
+[2026-02-26 09:33:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:34:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:34:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:35:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:35:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:36:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:36:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:37:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:37:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:38:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:38:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:39:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:39:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:40:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:40:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:41:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:41:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:42:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:42:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:43:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:43:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:44:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:44:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:45:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:46:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:46:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:47:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:47:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:48:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:48:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:49:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:49:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:50:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:50:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:51:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:51:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:52:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:52:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:53:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:53:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:54:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:54:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:55:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:55:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:56:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:56:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:57:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:57:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:58:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:58:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:59:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 09:59:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:00:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:00:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:01:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:01:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:02:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:02:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:03:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:03:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:04:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:04:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:05:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:05:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:06:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:06:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:07:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:07:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:08:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:08:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:09:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:09:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:10:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:10:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:11:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:11:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:12:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:12:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:13:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:13:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:14:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:14:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:15:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:15:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:16:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:16:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:17:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:17:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:18:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:18:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:19:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:19:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:20:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:20:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:21:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:21:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:22:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:22:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:23:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:23:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:24:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:24:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:25:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:25:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:26:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:26:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:27:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:27:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:28:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:28:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:29:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:29:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:30:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:30:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:31:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:31:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:32:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:32:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:33:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:33:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:34:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:34:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:35:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:35:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:36:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:36:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:37:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:37:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:38:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:38:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:39:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:39:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:40:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:40:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:41:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:41:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:42:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:42:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:43:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:43:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:44:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:44:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:45:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:45:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:46:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:46:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:47:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:47:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:48:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:48:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:49:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:49:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:50:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:50:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:51:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:51:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:52:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:52:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:53:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:53:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:54:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:54:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:55:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:55:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:56:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:56:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:57:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:57:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:58:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:58:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:59:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 10:59:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:00:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:00:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:01:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:01:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:02:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:02:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:03:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:03:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:04:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:04:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:05:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:05:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:06:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:06:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:07:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:07:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:08:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:08:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:09:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:09:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:10:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:10:33] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:11:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:11:33] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:12:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:12:33] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:13:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:13:33] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:14:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:14:33] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:15:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:15:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:16:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:16:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:17:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:17:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:18:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:18:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:19:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:19:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:20:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:20:35] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:21:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:21:35] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:22:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:22:35] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:23:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:23:35] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:24:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:24:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:25:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:25:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:26:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:26:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:27:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:27:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:28:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:28:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:29:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:29:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:30:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:30:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:31:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:31:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:32:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:32:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:33:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:33:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:34:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:34:38] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:35:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:35:38] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:36:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:36:38] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:37:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:37:38] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:38:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:38:38] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:39:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:39:39] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:40:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:40:39] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:41:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:41:39] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:42:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:42:39] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:43:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:43:39] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:44:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:44:40] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:45:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:45:40] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:46:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:46:40] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:47:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:47:40] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:48:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:48:40] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:49:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:49:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:50:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:50:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:51:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:51:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:52:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:52:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:53:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:53:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:54:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:54:42] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:55:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:55:42] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:56:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:56:42] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:57:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:57:42] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:58:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:58:42] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:59:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 11:59:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:00:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:00:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:01:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:01:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:02:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:02:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:03:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:03:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:04:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:04:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:05:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:05:44] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:06:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:06:44] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:07:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:07:44] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:08:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:08:44] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:09:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:09:44] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:10:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:10:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:11:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:11:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:12:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:12:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:13:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:13:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:14:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:14:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:15:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:15:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:16:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:16:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:17:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:17:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:18:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:18:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:19:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:19:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:20:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:20:47] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:21:32] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:21:47] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:22:33] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:22:47] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:23:33] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:23:47] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:24:33] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:24:47] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:25:33] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:25:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:26:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:26:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:27:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:27:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:28:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:28:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:29:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:29:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:30:34] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:30:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:31:35] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:31:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:32:35] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:32:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:33:35] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:33:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:34:35] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:34:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:35:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:35:50] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:36:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:36:50] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:37:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:37:50] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:38:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:38:50] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:39:36] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:39:50] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:40:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:40:51] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:41:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:41:51] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:42:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:42:51] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:43:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:43:51] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:44:37] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:44:52] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:45:38] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:45:52] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:46:40] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:46:54] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:47:40] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:47:54] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:48:40] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:48:54] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:49:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:49:55] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:50:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:50:55] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:51:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:51:55] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:52:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:52:55] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:53:41] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:53:55] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:54:42] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:54:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:55:42] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:55:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:56:42] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:56:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:57:42] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:57:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:58:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:58:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:59:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 12:59:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:00:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:00:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:01:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:01:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:02:43] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:02:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:03:44] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:03:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:04:44] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:04:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:05:44] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:05:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:06:44] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:06:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:07:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:07:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:08:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:08:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:09:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:09:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:10:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:10:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:11:45] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:11:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:12:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:12:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:13:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:13:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:14:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:15:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:15:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:16:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:16:46] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:17:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:17:47] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:18:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:18:47] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:19:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:19:47] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:20:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:20:47] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:21:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:21:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:22:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:22:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:23:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:23:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:24:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:24:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:25:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:25:48] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:26:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:26:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:27:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:27:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:28:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:28:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:29:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:29:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:30:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:30:49] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:31:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:31:50] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:32:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:32:50] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:33:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:33:50] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:34:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:34:50] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:35:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:35:51] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:36:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:36:51] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:37:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:37:51] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:38:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:38:51] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:39:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:39:51] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:40:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:40:52] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:41:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:41:52] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:42:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:42:52] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:43:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:43:52] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:44:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:44:52] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:45:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:45:53] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:46:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:46:53] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:47:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:47:53] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:48:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:48:53] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:49:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:49:54] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:50:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:50:54] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:51:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:51:54] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:52:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:52:54] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:53:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:53:54] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:54:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:54:55] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:55:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:55:55] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:56:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:56:55] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:57:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:57:55] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:58:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:58:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:59:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 13:59:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:00:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:00:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:01:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:01:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:02:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:02:56] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:03:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:03:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:04:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:04:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:05:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:05:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:06:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:06:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:07:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:07:57] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:08:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:08:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:09:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:09:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:10:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:10:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:11:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:11:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:12:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:12:58] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:13:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:13:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:14:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:14:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:15:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:15:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:16:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:16:59] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:17:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:18:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:18:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:19:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:19:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:20:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:20:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:21:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:21:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:22:00] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:22:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:23:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:23:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:24:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:24:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:25:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:25:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:26:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:26:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:27:01] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:27:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:28:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:28:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:29:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:29:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:30:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:30:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:31:02] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:31:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:32:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:32:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:33:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:33:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:34:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:34:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:35:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:35:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:36:03] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:36:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:37:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:37:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:38:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:38:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:39:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:39:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:40:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:40:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:41:04] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:41:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:42:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:42:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:43:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:43:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:44:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:44:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:45:05] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:45:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:46:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:46:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:47:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:47:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:48:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:48:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:49:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:49:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:50:06] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:50:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:51:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:51:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:52:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:52:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:53:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:53:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:54:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:54:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:55:07] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:55:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:56:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:56:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:57:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:57:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:58:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:58:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:59:08] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 14:59:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:00:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:00:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:01:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:01:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:02:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:02:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:03:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:03:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:04:09] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:04:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:05:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:05:21] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:06:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:06:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:07:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:07:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:08:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:08:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:09:10] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:09:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:10:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:10:22] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:11:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:11:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:12:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:12:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:13:11] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:13:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:14:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:14:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:15:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:15:23] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:16:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:16:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:17:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:17:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:18:12] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:18:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:19:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:19:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:20:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:20:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:21:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:21:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:22:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:22:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:23:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:23:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:24:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:24:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:25:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:25:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:26:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:26:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:27:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:27:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:28:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:28:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:29:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:29:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:30:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:30:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:31:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:31:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:32:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:32:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:33:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:33:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:34:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:34:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:35:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:35:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:36:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:36:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:37:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:37:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:38:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:38:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:39:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:39:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:40:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:40:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:41:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:41:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:42:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:42:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:43:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:43:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:44:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:44:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:45:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:45:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:46:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:46:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:47:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:47:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:48:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:48:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:49:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:49:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:50:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:50:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:51:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:51:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:52:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:52:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:53:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:53:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:54:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:54:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 15:55:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:43:24] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:44:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:44:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:45:13] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:45:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:46:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:46:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:47:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:47:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:48:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:48:25] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:49:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:49:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:50:14] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:50:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:51:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:51:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:52:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:52:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:53:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:53:26] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:54:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:54:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:55:15] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:55:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:56:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:56:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:57:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:57:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:58:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:58:27] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:59:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 16:59:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:00:16] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:00:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:01:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:01:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:02:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:02:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:03:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:03:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:04:17] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:04:28] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:05:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:05:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:06:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:06:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:07:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:07:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:08:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:08:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:09:18] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:09:29] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:09:50] started pid=18084 interval=60s
+[2026-02-26 17:09:50] monitor=UP(pid=5712) updater=UP(pid=13512) | data=NO_MARKET_LINE
+[2026-02-26 17:10:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:10:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:11:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:11:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:12:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:12:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:13:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:13:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:14:19] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:14:30] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:15:20] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:15:31] monitor=UP(pid=5712) updater=UP(pid=13512)
+[2026-02-26 17:43:51] started pid=23048 interval=60s
+[2026-02-26 17:43:51] monitor=DOWN updater=DOWN | data=NO_MARKET_LINE
+[2026-02-27 08:51:48] started pid=20316 interval=60s
+[2026-02-27 08:51:48] monitor=DOWN updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 08:52:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 08:53:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 08:54:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 08:55:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 08:56:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 08:57:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 08:58:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 08:59:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:00:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:01:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:02:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:03:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:04:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:05:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:06:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:07:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:08:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:09:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:10:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:11:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:12:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:13:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:14:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:15:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:16:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:17:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:18:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:19:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:20:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:21:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:22:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:23:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:24:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:25:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:26:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:27:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:28:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:29:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:30:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:31:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:32:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:33:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:34:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:35:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:36:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:37:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:38:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:39:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:40:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:41:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:43:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:44:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:45:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:46:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:47:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:48:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:49:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:50:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:51:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:52:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:53:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:54:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:55:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:56:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:57:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:58:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 09:59:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:00:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:01:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:02:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:03:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:04:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:05:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:06:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:07:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:08:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:09:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:10:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:11:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:12:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:13:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:14:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:15:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:16:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:17:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:18:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:19:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:20:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:21:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:22:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:23:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:24:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:25:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:26:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:27:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:28:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:29:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:30:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:31:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:32:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:33:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:34:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:35:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:36:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:37:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:38:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:39:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:40:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:41:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:42:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:43:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:44:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:45:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:46:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:47:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:48:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:49:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:50:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:51:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:52:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:53:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:54:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:55:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:56:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:57:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:58:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 10:59:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:00:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:01:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:02:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:03:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:04:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:05:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:06:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:07:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:08:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:09:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:10:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:11:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:12:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:13:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:14:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:15:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:16:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:17:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:18:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:19:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:20:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:21:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:22:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:23:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:24:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:25:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:26:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:27:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:28:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:29:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:30:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:31:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:32:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:33:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:34:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:35:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:36:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:37:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:38:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:39:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:40:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:41:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:42:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:43:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:44:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:45:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:46:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:47:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:48:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:49:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:50:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:51:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:52:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:53:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:54:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:55:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:56:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:57:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:58:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 11:59:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:00:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:01:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:02:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:03:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:04:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:05:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:06:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:07:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:08:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:09:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:10:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:11:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:12:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:13:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:14:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:15:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:16:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:17:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:18:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:19:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:20:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:21:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:22:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:23:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:24:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:25:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:26:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:27:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:28:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:29:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:30:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:31:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:32:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:33:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:34:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:35:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:36:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:37:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:38:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:39:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:40:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:41:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:42:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:43:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:44:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:45:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:46:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:47:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:48:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:49:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:50:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:51:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:52:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:53:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:54:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:55:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:56:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:57:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:58:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 12:59:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:00:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:01:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:02:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:03:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:04:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:05:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:06:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:07:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:08:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:09:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:10:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:11:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:12:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:13:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:14:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:15:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:16:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:17:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:18:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:19:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:20:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:21:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:22:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:23:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:24:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:25:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:26:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:27:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:28:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:29:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:30:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:31:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:32:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:33:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:34:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:35:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:36:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:37:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:38:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:39:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:40:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:41:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:42:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:43:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:44:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:45:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:46:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:47:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:48:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:50:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:51:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:52:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:53:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:54:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:55:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:56:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:57:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:58:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 13:59:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:00:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:01:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:02:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:03:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:04:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:05:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:06:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:07:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:08:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:09:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:10:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:11:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:12:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:13:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:14:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:15:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:16:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:17:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:18:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:19:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:20:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:21:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:22:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:23:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:24:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:25:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:26:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:27:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:28:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:29:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:30:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:31:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:32:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:33:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:34:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:35:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:36:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:37:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:38:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:39:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:40:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:41:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:42:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:43:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:44:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:45:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:46:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:47:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:48:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:49:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:50:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:51:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:52:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:53:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:54:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:55:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:56:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:57:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:58:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 14:59:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:00:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:01:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:02:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:03:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:04:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:05:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:06:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:07:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:08:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:09:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:10:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:11:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:12:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:13:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:14:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:15:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:16:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:17:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:18:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:19:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:20:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:21:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:22:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:23:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:24:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:25:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:26:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:27:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:28:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:29:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:30:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:31:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:32:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:33:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:34:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:35:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:36:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:37:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:38:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:39:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:40:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:41:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:42:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:43:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:44:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:45:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:46:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:47:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:48:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:49:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:50:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:51:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:52:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:53:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:54:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:55:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:56:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:57:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:58:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 15:59:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:00:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:01:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:02:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:03:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:04:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:05:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:06:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:07:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:08:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:09:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:10:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:11:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:12:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:13:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:14:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:15:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:16:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:17:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:18:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:19:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:20:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:21:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:22:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:23:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:24:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:25:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:26:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:27:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:28:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:29:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:30:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:31:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:32:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:33:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:34:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:35:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:36:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:37:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:38:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:39:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:40:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:41:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:42:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:43:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:44:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:45:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:46:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:47:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:48:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:49:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:50:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:51:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:52:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:53:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:54:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:55:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:56:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:57:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:58:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 16:59:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:00:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:01:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:02:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:03:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:04:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:05:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:06:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:07:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:08:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:09:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:10:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:11:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:12:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:13:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:14:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:15:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:16:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:17:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:18:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:19:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:20:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:21:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:22:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:23:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:24:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:25:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:26:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:27:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:28:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:29:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:30:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:31:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:32:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:33:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:34:53] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:35:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:36:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:37:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:38:54] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:39:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:40:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:41:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:42:55] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:43:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:44:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:45:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:46:56] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:47:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:48:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:49:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:50:57] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:51:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:52:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:53:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:54:58] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:55:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:56:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:57:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 17:58:59] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:00:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:01:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:02:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:03:00] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:04:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:05:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:06:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:07:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:08:01] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:09:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:10:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:11:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:12:02] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:13:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:14:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:15:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:16:03] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:17:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:18:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:19:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:20:04] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:21:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:22:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:23:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:24:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:25:05] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:26:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:27:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:28:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:29:06] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:30:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:31:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:32:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:33:07] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:34:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:35:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:36:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:37:08] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:38:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:39:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:40:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:41:09] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:42:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:43:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:44:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:45:10] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:46:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:47:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:48:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:49:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:50:11] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:51:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:52:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:53:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:54:12] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:55:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:56:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:57:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:58:13] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 18:59:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:00:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:01:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:02:14] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:03:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:04:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:05:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:06:15] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:07:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:08:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:09:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:10:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:11:16] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:12:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:13:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:14:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:15:17] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:16:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:17:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:18:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:19:18] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:20:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:21:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:22:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:23:19] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:24:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:25:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:26:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:27:20] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:28:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:29:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:30:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:31:21] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:32:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:33:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:34:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:35:22] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:36:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:37:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:38:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:39:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:40:23] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:41:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:42:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:43:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:44:24] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:45:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:46:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:47:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:48:25] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:49:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:50:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:51:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:52:26] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:53:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:54:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:55:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:56:27] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:57:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:58:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 19:59:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:00:28] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:01:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:02:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:03:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:04:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:05:29] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:06:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:07:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:08:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:09:30] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:10:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:11:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:12:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:13:31] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:14:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:15:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:16:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:17:32] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:18:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:19:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:20:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:21:33] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:22:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:23:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:24:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:25:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:26:34] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:27:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:28:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:29:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:30:35] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:31:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:32:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:33:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:34:36] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:35:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:36:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:37:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:38:37] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:39:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:40:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:41:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:42:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:43:38] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:44:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:45:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:46:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:47:39] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:48:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:49:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:50:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:51:40] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:52:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:53:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:54:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:55:41] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:56:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:57:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:58:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 20:59:42] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:00:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:01:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:02:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:03:43] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:04:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:05:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:06:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:07:44] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:08:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:09:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:10:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:11:45] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:12:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:13:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:14:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:15:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:16:46] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:17:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:18:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:19:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:20:47] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:21:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:22:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:23:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:24:48] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:25:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:26:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:27:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:28:49] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:29:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:30:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:31:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:32:50] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:33:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:34:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:35:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:36:51] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:37:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE
+[2026-02-27 21:38:52] monitor=UP(pid=3640) updater=UP(pid=11444) | data=NO_MARKET_LINE

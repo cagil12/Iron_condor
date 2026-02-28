@@ -1,0 +1,296 @@
+🔒 Acquired Instance Lock (PID 19196)
+
+    ___    _   ____________ _______  ___ _    ______________  __
+   /   |  / | / /_  __/  _// ____/ |/ / | |  / /  _/_  __/\ \/ /
+  / /| | /  |/ / / /  / / / / __ |   /  | | / // /  / /    \  / 
+ / ___ |/ /|  / / / _/ / / /_/ //   |   | |/ // /  / /     / /  
+/_/  |_/_/ |_/ /_/ /___/ \____//_/|_|   |___/___/ /_/     /_/   
+                                                                 
+                    ╔═══════════════════════════╗
+                    ║   XSP IRON CONDOR BOT     ║
+                    ║   $200 Capital Mode       ║
+                    ╚═══════════════════════════╝
+
+VIX cache loaded: 84 days
+
+══════════════════════════════════════════════════
+  📊 TRADE JOURNAL SUMMARY
+══════════════════════════════════════════════════
+  Total Trades: 2
+  Closed: 2 | Open: 0
+
+  💰 Total PnL: $46.38
+  📈 Win Rate: 100.0%
+  🏆 Best Trade: $29.30
+  💀 Worst Trade: $17.08
+  📉 Avg Pain (MAE): $0.00
+  💸 Total Slippage: $0.00
+══════════════════════════════════════════════════
+
+
+🔌 Connecting to TWS (PAPER)...
+✅ Connected to TWS (PAPER) - Account: DUO988990
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+⚠️  FIX 7: VERIFY TWS SETTINGS!
+   TWS → Global Configuration → API → Settings
+   ☑️ 'Download open orders on connection' MUST BE ENABLED
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+💰 Account Value: $1,001,435.04
+2026-02-23 09:41:34,128 - src.strategy.execution - INFO - HOLD_TO_EXPIRY_MODE=True (tp_pct=1.00)
+2026-02-23 09:41:34,128 - src.strategy.execution - INFO - 🔧 Executor Config: TP=1.00 | SL=2.0x | Width=2.0 | ExitStrategy=hold_to_expiry_sl2x
+2026-02-23 09:41:34,128 - src.strategy.execution - INFO - 💸 Expected commissions: win=$2.60 | loss=$5.20 | open=$2.60 | round_trip=$5.20
+2026-02-23 09:41:34,128 - src.strategy.execution - INFO - 📌 TP mode is hold-to-expiry (tp_pct >= 1.00): skipping TP close orders; only SL/EOD can trigger active close.
+2026-02-23 09:41:34,129 - src.strategy.execution - INFO - 🛡️ Kill Switches: L1=ON (DD>15%) | L3=ON (VIX>25) | L5=ON (3 losses)
+2026-02-23 09:41:34,129 - src.strategy.execution - INFO - REMINDER: Verify TWS setting 'Download open orders on connection' is enabled
+2026-02-23 09:41:34,129 - src.strategy.execution - INFO - TWS → Global Configuration → API → Settings → ☑️ Download open orders
+2026-02-23 09:41:36,134 - src.strategy.execution - INFO - 🔍 Checking for existing positions to resume...
+2026-02-23 09:41:36,134 - src.strategy.execution - INFO -    ✅ No existing positions found. Ready for new entries.
+
+══════════════════════════════════════════════════
+  🔍 SCANNING FOR OPPORTUNITIES
+  Press Ctrl+C to stop
+══════════════════════════════════════════════════
+
+[09:41:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:41)
+[09:42:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:42)
+[09:43:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:43)
+[09:44:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:44)
+[09:45:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:45)
+[09:46:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:46)
+[09:47:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:47)
+[09:48:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:48)
+[09:49:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:49)
+[09:50:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:50)
+[09:51:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:51)
+[09:52:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:52)
+[09:53:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:53)
+[09:54:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:54)
+[09:55:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:55)
+[09:56:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:56)
+[09:57:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:57)
+[09:58:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:58)
+[09:59:36] ⏳ MARKET WARMUP: Waiting until 10:00 AM... (Current: 09:59)
+📈 VIX (LIVE from IBKR): 20.42
+[10:00:37] Scanning... (VIX: 20.4)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.132), 692.0C (Δ=0.173) | best candidate credit: $0.34
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 692C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.34 ($34)                       ║
+║    (Gross: $0.70 | Prot: -$0.36)                ║
+║ 📊 VIX: 20.42 | Spot: 688.00                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+2026-02-23 10:00:57,642 - src.strategy.execution - INFO - ⏳ Getting leg prices (Bid/Ask) for snapshot...
+2026-02-23 10:01:01,724 - src.strategy.execution - INFO - 📊 Calculated Mid Credit: $0.36 per contract (min: $0.18)
+Error 10349, reqId 160: Order TIF was set to DAY based on order preset., contract: Contract(secType='BAG', symbol='XSP', exchange='SMART', currency='USD', comboLegs=[ComboLeg(conId=844415619, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849647980, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646871, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646977, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1)])
+2026-02-23 10:01:04,595 - src.strategy.execution - WARNING - ⚠️ Margin Check empty (Paper mode) — BYPASSING. Would block in LIVE.
+2026-02-23 10:01:04,595 - src.strategy.execution - INFO -    📡 Placing order at $-0.36 (Chase 0)
+2026-02-23 10:01:04,596 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=161, limit=-0.36, reason=submit_chase_0, elapsed=1170.5s)
+2026-02-23 10:01:19,730 - src.strategy.execution - INFO -    🔄 Chase #1: Cancelling previous order...
+2026-02-23 10:01:19,730 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=161, reason=chase_retry_1, elapsed=15.1s)
+2026-02-23 10:01:29,887 - src.strategy.execution - WARNING - ⚠️ Cancel timeout after 10.0s for order 161. Verifying positions...
+2026-02-23 10:01:29,888 - src.strategy.execution - ERROR - ❌ Cancel timeout for order 161 after 10s. Aborting chase — manual review required.
+2026-02-23 10:01:29,888 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (reason=reset, elapsed=10.2s)
+📈 VIX (LIVE from IBKR): 20.26
+[10:02:31] Scanning... (VIX: 20.3)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.138), 693.0C (Δ=0.115) | best candidate credit: $0.22
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 693C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.22 ($22)                       ║
+║    (Gross: $0.50 | Prot: -$0.28)                ║
+║ 📊 VIX: 20.26 | Spot: 688.32                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+2026-02-23 10:02:50,180 - src.strategy.execution - INFO - ⏳ Getting leg prices (Bid/Ask) for snapshot...
+2026-02-23 10:02:54,210 - src.strategy.execution - INFO - 📊 Calculated Mid Credit: $0.27 per contract (min: $0.18)
+Error 10349, reqId 320: Order TIF was set to DAY based on order preset., contract: Contract(secType='BAG', symbol='XSP', exchange='SMART', currency='USD', comboLegs=[ComboLeg(conId=844415619, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849647980, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646920, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=844414380, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1)])
+2026-02-23 10:02:55,719 - src.strategy.execution - WARNING - ⚠️ Margin Check empty (Paper mode) — BYPASSING. Would block in LIVE.
+2026-02-23 10:02:55,719 - src.strategy.execution - INFO -    📡 Placing order at $-0.27 (Chase 0)
+2026-02-23 10:02:55,720 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=321, limit=-0.27, reason=submit_chase_0, elapsed=85.8s)
+2026-02-23 10:03:10,850 - src.strategy.execution - INFO -    🔄 Chase #1: Cancelling previous order...
+2026-02-23 10:03:10,850 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=321, reason=chase_retry_1, elapsed=15.1s)
+2026-02-23 10:03:20,907 - src.strategy.execution - WARNING - ⚠️ Cancel timeout after 10.0s for order 321. Verifying positions...
+2026-02-23 10:03:20,909 - src.strategy.execution - ERROR - ❌ Cancel timeout for order 321 after 10s. Aborting chase — manual review required.
+2026-02-23 10:03:20,909 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (reason=reset, elapsed=10.1s)
+📈 VIX (LIVE from IBKR): 20.68
+[10:04:22] Scanning... (VIX: 20.7)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 682.0P (Δ=-0.127), 692.0C (Δ=0.157) | best candidate credit: $0.28
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 682P / 692C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.28 ($28)                       ║
+║    (Gross: $0.70 | Prot: -$0.42)                ║
+║ 📊 VIX: 20.68 | Spot: 687.19                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+2026-02-23 10:04:41,482 - src.strategy.execution - INFO - ⏳ Getting leg prices (Bid/Ask) for snapshot...
+2026-02-23 10:04:45,527 - src.strategy.execution - INFO - 📊 Calculated Mid Credit: $0.37 per contract (min: $0.18)
+Error 10349, reqId 480: Order TIF was set to DAY based on order preset., contract: Contract(secType='BAG', symbol='XSP', exchange='SMART', currency='USD', comboLegs=[ComboLeg(conId=844415619, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849647980, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646871, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646977, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1)])
+2026-02-23 10:04:45,536 - src.strategy.execution - WARNING - ⚠️ Margin Check empty (Paper mode) — BYPASSING. Would block in LIVE.
+2026-02-23 10:04:45,536 - src.strategy.execution - INFO -    📡 Placing order at $-0.37 (Chase 0)
+2026-02-23 10:04:45,537 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=481, limit=-0.37, reason=submit_chase_0, elapsed=84.6s)
+2026-02-23 10:05:00,630 - src.strategy.execution - INFO -    🔄 Chase #1: Cancelling previous order...
+2026-02-23 10:05:00,630 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=481, reason=chase_retry_1, elapsed=15.1s)
+2026-02-23 10:05:10,689 - src.strategy.execution - WARNING - ⚠️ Cancel timeout after 10.0s for order 481. Verifying positions...
+2026-02-23 10:05:10,690 - src.strategy.execution - ERROR - ❌ Cancel timeout for order 481 after 10s. Aborting chase — manual review required.
+2026-02-23 10:05:10,690 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (reason=reset, elapsed=10.1s)
+📈 VIX (LIVE from IBKR): 20.75
+[10:06:11] Scanning... (VIX: 20.8)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 680.0P (Δ=-0.126), 691.0C (Δ=0.169) | best candidate credit: $0.33
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 680P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.33 ($33)                       ║
+║    (Gross: $0.68 | Prot: -$0.35)                ║
+║ 📊 VIX: 20.75 | Spot: 686.80                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+2026-02-23 10:06:27,708 - src.strategy.execution - INFO - ⏳ Getting leg prices (Bid/Ask) for snapshot...
+2026-02-23 10:06:31,736 - src.strategy.execution - INFO - 📊 Calculated Mid Credit: $0.37 per contract (min: $0.18)
+Error 10349, reqId 640: Order TIF was set to DAY based on order preset., contract: Contract(secType='BAG', symbol='XSP', exchange='SMART', currency='USD', comboLegs=[ComboLeg(conId=849647810, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=844415619, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646815, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646920, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1)])
+2026-02-23 10:06:33,432 - src.strategy.execution - WARNING - ⚠️ Margin Check empty (Paper mode) — BYPASSING. Would block in LIVE.
+2026-02-23 10:06:33,432 - src.strategy.execution - INFO -    📡 Placing order at $-0.37 (Chase 0)
+2026-02-23 10:06:33,433 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=641, limit=-0.37, reason=submit_chase_0, elapsed=82.7s)
+2026-02-23 10:06:48,548 - src.strategy.execution - INFO -    🔄 Chase #1: Cancelling previous order...
+2026-02-23 10:06:48,548 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=641, reason=chase_retry_1, elapsed=15.1s)
+2026-02-23 10:06:58,691 - src.strategy.execution - WARNING - ⚠️ Cancel timeout after 10.0s for order 641. Verifying positions...
+2026-02-23 10:06:58,693 - src.strategy.execution - ERROR - ❌ Cancel timeout for order 641 after 10s. Aborting chase — manual review required.
+2026-02-23 10:06:58,693 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (reason=reset, elapsed=10.1s)
+📈 VIX (LIVE from IBKR): 20.53
+[10:07:59] Scanning... (VIX: 20.5)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 681.0P (Δ=-0.128), 691.0C (Δ=0.176) | best candidate credit: $0.34
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 681P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.34 ($34)                       ║
+║    (Gross: $0.69 | Prot: -$0.35)                ║
+║ 📊 VIX: 20.53 | Spot: 687.23                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+2026-02-23 10:08:16,857 - src.strategy.execution - INFO - ⏳ Getting leg prices (Bid/Ask) for snapshot...
+2026-02-23 10:08:20,891 - src.strategy.execution - INFO - 📊 Calculated Mid Credit: $0.39 per contract (min: $0.18)
+Error 10349, reqId 800: Order TIF was set to DAY based on order preset., contract: Contract(secType='BAG', symbol='XSP', exchange='SMART', currency='USD', comboLegs=[ComboLeg(conId=849647867, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849647917, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646815, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646920, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1)])
+2026-02-23 10:08:22,398 - src.strategy.execution - WARNING - ⚠️ Margin Check empty (Paper mode) — BYPASSING. Would block in LIVE.
+2026-02-23 10:08:22,398 - src.strategy.execution - INFO -    📡 Placing order at $-0.39 (Chase 0)
+2026-02-23 10:08:22,399 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=801, limit=-0.39, reason=submit_chase_0, elapsed=83.7s)
+2026-02-23 10:08:37,511 - src.strategy.execution - INFO -    🔄 Chase #1: Cancelling previous order...
+2026-02-23 10:08:37,512 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=801, reason=chase_retry_1, elapsed=15.1s)
+2026-02-23 10:08:39,493 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (order_id=801, reason=cancel_confirmed, elapsed=2.0s)
+2026-02-23 10:08:39,546 - src.strategy.execution - INFO -    📡 Placing order at $-0.34 (Chase 1)
+2026-02-23 10:08:39,547 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=802, limit=-0.34, reason=submit_chase_1, elapsed=0.1s)
+2026-02-23 10:08:54,672 - src.strategy.execution - INFO -    🔄 Chase #2: Cancelling previous order...
+2026-02-23 10:08:54,673 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=802, reason=chase_retry_2, elapsed=15.1s)
+2026-02-23 10:08:57,751 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (order_id=802, reason=cancel_confirmed, elapsed=3.1s)
+2026-02-23 10:08:57,753 - src.strategy.execution - INFO -    📡 Placing order at $-0.29 (Chase 2)
+2026-02-23 10:08:57,754 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=803, limit=-0.29, reason=submit_chase_2, elapsed=0.0s)
+2026-02-23 10:09:12,854 - src.strategy.execution - INFO -    🔄 Chase #3: Cancelling previous order...
+2026-02-23 10:09:12,854 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=803, reason=chase_retry_3, elapsed=15.1s)
+2026-02-23 10:09:15,336 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (order_id=803, reason=cancel_confirmed, elapsed=2.5s)
+2026-02-23 10:09:15,419 - src.strategy.execution - INFO -    📡 Placing order at $-0.24 (Chase 3)
+2026-02-23 10:09:15,422 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=804, limit=-0.24, reason=submit_chase_3, elapsed=0.1s)
+2026-02-23 10:09:30,504 - src.strategy.execution - INFO -    🔄 Chase #4: Cancelling previous order...
+2026-02-23 10:09:30,504 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=804, reason=chase_retry_4, elapsed=15.1s)
+2026-02-23 10:09:40,749 - src.strategy.execution - WARNING - ⚠️ Cancel timeout after 10.0s for order 804. Verifying positions...
+2026-02-23 10:09:40,750 - src.strategy.execution - ERROR - ❌ Cancel timeout for order 804 after 10s. Aborting chase — manual review required.
+2026-02-23 10:09:40,750 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (reason=reset, elapsed=10.2s)
+📈 VIX (LIVE from IBKR): 20.67
+[10:10:41] Scanning... (VIX: 20.7)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 680.0P (Δ=-0.124), 691.0C (Δ=0.144) | best candidate credit: $0.29
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 680P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.29 ($29)                       ║
+║    (Gross: $0.59 | Prot: -$0.30)                ║
+║ 📊 VIX: 20.67 | Spot: 686.83                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+2026-02-23 10:10:58,208 - src.strategy.execution - INFO - ⏳ Getting leg prices (Bid/Ask) for snapshot...
+2026-02-23 10:11:02,231 - src.strategy.execution - INFO - 📊 Calculated Mid Credit: $0.35 per contract (min: $0.18)
+Error 10349, reqId 963: Order TIF was set to DAY based on order preset., contract: Contract(secType='BAG', symbol='XSP', exchange='SMART', currency='USD', comboLegs=[ComboLeg(conId=849647810, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=844415619, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646815, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646920, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1)])
+2026-02-23 10:11:02,238 - src.strategy.execution - WARNING - ⚠️ Margin Check empty (Paper mode) — BYPASSING. Would block in LIVE.
+2026-02-23 10:11:02,238 - src.strategy.execution - INFO -    📡 Placing order at $-0.35 (Chase 0)
+2026-02-23 10:11:02,239 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=964, limit=-0.35, reason=submit_chase_0, elapsed=81.5s)
+2026-02-23 10:11:17,365 - src.strategy.execution - INFO -    🔄 Chase #1: Cancelling previous order...
+2026-02-23 10:11:17,365 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=964, reason=chase_retry_1, elapsed=15.1s)
+2026-02-23 10:11:27,480 - src.strategy.execution - WARNING - ⚠️ Cancel timeout after 10.0s for order 964. Verifying positions...
+2026-02-23 10:11:27,481 - src.strategy.execution - ERROR - ❌ Cancel timeout for order 964 after 10s. Aborting chase — manual review required.
+2026-02-23 10:11:27,481 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (reason=reset, elapsed=10.1s)
+📈 VIX (LIVE from IBKR): 20.68
+[10:12:28] Scanning... (VIX: 20.7)
+   🎯 Finding strikes with Delta ~0.1...
+   ✅ Delta selection: 681.0P (Δ=-0.137), 691.0C (Δ=0.153) | best candidate credit: $0.32
+╔════════════════ NEW TRADE DETECTED ════════════════╗
+║ 🟢 OPENING IRON CONDOR (XSP)                       ║
+║ -------------------------------------------------- ║
+║ 🎯 Short Strikes: 681P / 691C                    ║
+║ 🛡️  Wings: 2.0 wide                             ║
+║ 💰 Net Credit: $0.32 ($32)                       ║
+║    (Gross: $0.68 | Prot: -$0.36)                ║
+║ 📊 VIX: 20.68 | Spot: 686.63                     ║
+║ ⚡ Delta Net: 0.0000                             ║
+╚════════════════════════════════════════════════════╝
+2026-02-23 10:12:46,093 - src.strategy.execution - INFO - ⏳ Getting leg prices (Bid/Ask) for snapshot...
+2026-02-23 10:12:50,140 - src.strategy.execution - INFO - 📊 Calculated Mid Credit: $0.35 per contract (min: $0.18)
+Error 10349, reqId 1123: Order TIF was set to DAY based on order preset., contract: Contract(secType='BAG', symbol='XSP', exchange='SMART', currency='USD', comboLegs=[ComboLeg(conId=849647867, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849647917, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646815, ratio=1, action='SELL', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1), ComboLeg(conId=849646920, ratio=1, action='BUY', exchange='SMART', openClose=0, shortSaleSlot=0, designatedLocation='', exemptCode=-1)])
+2026-02-23 10:12:50,148 - src.strategy.execution - WARNING - ⚠️ Margin Check empty (Paper mode) — BYPASSING. Would block in LIVE.
+2026-02-23 10:12:50,148 - src.strategy.execution - INFO -    📡 Placing order at $-0.35 (Chase 0)
+2026-02-23 10:12:50,148 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=1124, limit=-0.35, reason=submit_chase_0, elapsed=82.7s)
+2026-02-23 10:13:05,263 - src.strategy.execution - INFO -    🔄 Chase #1: Cancelling previous order...
+2026-02-23 10:13:05,263 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=1124, reason=chase_retry_1, elapsed=15.1s)
+2026-02-23 10:13:05,666 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (order_id=1124, reason=cancel_confirmed, elapsed=0.4s)
+2026-02-23 10:13:05,773 - src.strategy.execution - INFO -    📡 Placing order at $-0.30 (Chase 1)
+2026-02-23 10:13:05,774 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=1125, limit=-0.30, reason=submit_chase_1, elapsed=0.1s)
+2026-02-23 10:13:20,864 - src.strategy.execution - INFO -    🔄 Chase #2: Cancelling previous order...
+2026-02-23 10:13:20,864 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=1125, reason=chase_retry_2, elapsed=15.1s)
+2026-02-23 10:13:21,532 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (order_id=1125, reason=cancel_confirmed, elapsed=0.7s)
+2026-02-23 10:13:21,620 - src.strategy.execution - INFO -    📡 Placing order at $-0.25 (Chase 2)
+2026-02-23 10:13:21,622 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=1126, limit=-0.25, reason=submit_chase_2, elapsed=0.1s)
+2026-02-23 10:13:36,742 - src.strategy.execution - INFO -    🔄 Chase #3: Cancelling previous order...
+2026-02-23 10:13:36,742 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> AWAITING_CANCEL (order_id=1126, reason=chase_retry_3, elapsed=15.1s)
+2026-02-23 10:13:37,096 - src.strategy.execution - INFO - Chase state: AWAITING_CANCEL -> IDLE (order_id=1126, reason=cancel_confirmed, elapsed=0.4s)
+2026-02-23 10:13:37,262 - src.strategy.execution - INFO -    📡 Placing order at $-0.20 (Chase 3)
+2026-02-23 10:13:37,263 - src.strategy.execution - INFO - Chase state: IDLE -> PENDING_FILL (order_id=1127, limit=-0.20, reason=submit_chase_3, elapsed=0.2s)
+2026-02-23 10:13:39,510 - src.strategy.execution - INFO - Chase state: PENDING_FILL -> FILLED (order_id=1127, reason=fill_confirmed, elapsed=2.2s)
+2026-02-23 10:13:40,299 - src.strategy.execution - INFO - Chase state: FILLED -> FILLED (order_id=1127, reason=fill_detected_wait_loop, elapsed=0.8s)
+2026-02-23 10:13:40,299 - src.strategy.execution - INFO - Chase state: FILLED -> IDLE (reason=reset, elapsed=0.0s)
+2026-02-23 10:13:42,304 - src.strategy.execution - INFO - ✅ Credit verified from fills: $0.29 (combo price was $0.20, delta=$0.09)
+2026-02-23 10:13:42,304 - src.strategy.execution - WARNING - ⚠️ CREDIT DISCREPANCY: combo=$0.20 vs fills=$0.29. Using fills value for all PnL/SL calculations.
+📝 Trade #3 logged to journal
+2026-02-23 10:13:42,306 - src.strategy.execution - INFO - ✅ Iron Condor Opened [ID:3] and State Saved
+📋 Position internal log ID: 3
+
+📡 Monitoring position (checking every 10.0s)...
+⚠️ DANGER [10:13:43] XSP: 686.37 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:0m | MaxSprd:0.44
+⚠️ DANGER [10:13:54] XSP: 686.25 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:0m | MaxSprd:0.44
+⚠️ DANGER [10:14:05] XSP: 686.29 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:0m | MaxSprd:0.44
+⚠️ DANGER [10:14:15] XSP: 686.44 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:1m | MaxSprd:0.44
+⚠️ DANGER [10:14:26] XSP: 686.44 | VIX: 20.7 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:1m | MaxSprd:0.44
+⚠️ DANGER [10:14:37] XSP: 686.36 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:1m | MaxSprd:0.44
+⚠️ DANGER [10:14:48] XSP: 686.36 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:1m | MaxSprd:0.44
+⚠️ DANGER [10:14:59] XSP: 686.38 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:1m | MaxSprd:0.44
+⚠️ DANGER [10:15:11] XSP: 686.31 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:1m | MaxSprd:0.44
+⚠️ DANGER [10:15:22] XSP: 686.38 | VIX: 20.7 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:2m | MaxSprd:0.44
+⚠️ DANGER [10:15:33] XSP: 686.32 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:2m | MaxSprd:0.44
+⚠️ DANGER [10:15:44] XSP: 686.31 | VIX: 20.8 | PnL: $-15.36 (-53%Max) | TP:-53% SL:26% | 681P(+5) 691C(+5) | Hold:2m | MaxSprd:0.44

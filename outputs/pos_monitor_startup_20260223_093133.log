@@ -1,0 +1,9 @@
+2026-02-23 09:31:36,699 - src.strategy.execution - INFO - HOLD_TO_EXPIRY_MODE=True (tp_pct=1.00)
+2026-02-23 09:31:36,699 - src.strategy.execution - INFO - 🔧 Executor Config: TP=1.00 | SL=2.0x | Width=2.0 | ExitStrategy=hold_to_expiry_sl2x
+2026-02-23 09:31:36,699 - src.strategy.execution - INFO - 💸 Expected commissions: win=$2.60 | loss=$5.20 | open=$2.60 | round_trip=$5.20
+2026-02-23 09:31:36,699 - src.strategy.execution - INFO - 📌 TP mode is hold-to-expiry (tp_pct >= 1.00): skipping TP close orders; only SL/EOD can trigger active close.
+2026-02-23 09:31:36,704 - src.strategy.execution - INFO - 🛡️ Kill Switches: L1=ON (DD>15%) | L3=ON (VIX>25) | L5=ON (3 losses)
+2026-02-23 09:31:36,704 - src.strategy.execution - INFO - REMINDER: Verify TWS setting 'Download open orders on connection' is enabled
+2026-02-23 09:31:36,704 - src.strategy.execution - INFO - TWS → Global Configuration → API → Settings → ☑️ Download open orders
+2026-02-23 09:31:38,719 - src.strategy.execution - INFO - 🔍 Checking for existing positions to resume...
+2026-02-23 09:31:38,719 - src.strategy.execution - INFO -    ✅ No existing positions found. Ready for new entries.

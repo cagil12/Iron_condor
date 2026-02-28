@@ -1,0 +1,230 @@
+VIX x Intraday Range x Breach Analysis (Dual Module)
+Repo root: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research
+Output dir: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda
+
+MODULE A.0: Data Acquisition (SPX + VIX)
+----------------------------------------
+Target range: 2005-01-01 -> 2026-02-22
+Data source: Yahoo Finance (^GSPC, ^VIX)
+Optional XSP status: unavailable (KeyError)
+Cached merged dataset: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\_module_a_spx_vix_cache.csv
+Final merged rows: 5317 | Date range: 2005-01-03 -> 2026-02-20
+
+MODULE A.1: Intraday Range Metrics
+----------------------------------
+Usable rows for VIX-conditioned analyses (vix_prev_close): 5316
+Median max_directional=0.752% | P90=1.888% | P99=4.443%
+
+MODULE A.2: Threshold Exceedance by VIX Bucket
+----------------------------------------------
+            n_days p_exceed_0p7 p_exceed_1p0 p_exceed_1p3 p_exceed_1p5 p_exceed_2p0
+vix_bucket                                                                         
+0-15          1990       0.2789       0.1106       0.0412       0.0196       0.0030
+15-20         1585       0.5420       0.3028       0.1521       0.1028       0.0290
+20-25          873       0.7434       0.5052       0.3127       0.2131       0.0848
+25-30          421       0.8812       0.6936       0.5131       0.4252       0.2257
+30-40          268       0.9664       0.8694       0.7351       0.6231       0.3694
+40+            179       0.9888       0.9665       0.8994       0.8659       0.7709
+A.2 (1.0% exceed): chi2=1452.1903, dof=5, p=0.000000, Cramer's V=0.5227
+
+MODULE A.3: Distribution of Ranges by VIX Bucket
+------------------------------------------------
+            n_days maxdir_mean maxdir_median maxdir_p75 maxdir_p90 maxdir_p95 maxdir_p99 range_mean range_median range_p75 range_p90 range_p95 range_p99
+vix_bucket                                                                                                                                              
+0-15          1990      0.5852        0.4998     0.7382     1.0335     1.2290     1.7439     0.7148       0.6382    0.8764    1.1782    1.3690    1.7811
+15-20         1585      0.8589        0.7436     1.0909     1.5143     1.8200     2.5329     1.0369       0.9461    1.2736    1.6758    1.9849    2.7314
+20-25          873      1.1449        1.0048     1.4144     1.9360     2.3903     3.0723     1.4112       1.2789    1.7080    2.2742    2.6475    3.2995
+25-30          421      1.5066        1.3128     1.8816     2.5093     3.0250     3.8826     1.8559       1.7187    2.2968    2.9253    3.4182    3.9498
+30-40          268      1.9500        1.7584     2.3444     3.1127     4.1980     4.7663     2.3643       2.1120    2.7687    3.7520    4.2707    5.8697
+40+            179      3.4013        2.9290     4.3237     5.8243     7.2846    10.3348     4.2166       3.6971    5.1333    7.2516    8.5681   10.8038
+A.3 Kruskal-Wallis on max_directional across VIX buckets: H=1962.4776, p=0.000000
+
+MODULE A.4: Directional Asymmetry (Put vs Call Risk)
+----------------------------------------------------
+            n_days p_down_only p_up_only  p_both p_neither down_share_of_total_breaches total_breach_rate
+vix_bucket                                                                                               
+0-15          1990      0.0734    0.0367  0.0005    0.8894                       0.6682            0.1106
+15-20         1585      0.1767    0.1237  0.0025    0.6972                       0.5917            0.3028
+20-25          873      0.2577    0.2337  0.0137    0.4948                       0.5374            0.5052
+25-30          421      0.3040    0.3468  0.0428    0.3064                       0.5000            0.6936
+30-40          268      0.3657    0.4216  0.0821    0.1306                       0.5150            0.8694
+40+            179      0.3240    0.3240  0.3184    0.0335                       0.6647            0.9665
+Overall down-side share of 1.0% breaches (all buckets): 57.0%
+
+MODULE A.5: Day-of-Week Effect (Conditional on VIX)
+---------------------------------------------------
+            n_days  weekdays_present kruskal_h p_value  p_gt_0_10
+vix_bucket                                                       
+0-15          1990                 5   26.1238  0.0000      False
+15-20         1585                 5   12.8020  0.0123      False
+20-25          873                 5    4.8780  0.3001       True
+25-30          421                 5    3.3911  0.4946       True
+30-40          268                 5    4.7088  0.3185       True
+40+            179                 5    6.5267  0.1631       True
+A.5 conclusion (all buckets p>0.10): NO
+
+MODULE A.6: Temporal Stability (5-year windows)
+-----------------------------------------------
+vix_bucket    0-15   15-20   20-25   25-30   30-40     40+
+era                                                       
+2005-09     0.1467  0.4027  0.5560  0.7348  0.8382  0.9600
+2010-14     0.1147  0.3241  0.5135  0.6176  0.8929  1.0000
+2015-19     0.0797  0.3602  0.6522  0.8824  1.0000  1.0000
+2020-24     0.1245  0.2424  0.3952  0.6536  0.8700  0.9714
+2025+       0.0370  0.1872  0.5400  0.7500  0.7500  1.0000
+A.6 stability heuristic: REGIME-DEPENDENT (bucket range max=0.265)
+
+MODULE A.7: VIX as Predictor (ROC for max_directional > 1.0%)
+-------------------------------------------------------------
+ n_days positive_rate_gt_1p0    auc optimal_threshold_youden optimal_tpr optimal_fpr optimal_youden_j current_l3_threshold current_l3_tpr current_l3_fpr recommendation
+   5316               0.3459 0.8107                  17.9400      0.7357      0.2609           0.4749              30.0000         0.2208         0.0118  LOWER TO 18.0
+Optimal VIX threshold by Youden: 17.94 (AUC=0.811). Current L3=30. Recommendation: LOWER TO 18.0
+
+MODULE B: Backtester Strategy Outcomes
+--------------------------------------
+
+Module B Setup: Backtester Data Load
+------------------------------------
+Config date range: 2020-01-01 -> 2026-02-13
+Backtester cache (read-only preference): data\spx_vix_daily.csv
+Using existing backtester cache (read-only).
+Source rows: 1538 | Date range: 2020-01-02 -> 2026-02-13
+Running backtester with wing_width=2.0, tp_pct=0.50, sl_mult=3.0, entry_hour=10.00
+Backtester output rows: 1538 | Tradable rows: 1223
+
+MODULE B Prep: Normalize Backtester Output
+------------------------------------------
+Module B analysis rows: 1223
+            n_trades
+vix_bucket          
+0-15              85
+15-20            529
+20-25            334
+25-30            187
+30-40             88
+40+                0
+
+MODULE B.1: Breach Rate by VIX Bucket
+-------------------------------------
+            n_trades short_touch_rate_put short_touch_rate_call wing_breach_rate_put wing_breach_rate_call any_short_touch_rate any_wing_breach_rate
+vix_bucket                                                                                                                                          
+0-15         85.0000               0.1059                0.0000               0.0941                0.0000               0.1059               0.0941
+15-20       529.0000               0.0718                0.0113               0.0699                0.0095               0.0832               0.0794
+20-25       334.0000               0.0659                0.0299               0.0509                0.0299               0.0958               0.0808
+25-30       187.0000               0.1337                0.0428               0.1283                0.0321               0.1765               0.1604
+30-40        88.0000               0.1364                0.0227               0.0909                0.0227               0.1591               0.1136
+40+                                                                                                                                                 
+any_short_touch: chi2=15.3966, dof=4, p=0.003946, Cramer's V=0.1122
+any_wing_breach: chi2=11.8639, dof=4, p=0.018392, Cramer's V=0.0985
+
+MODULE B.2: Loss Severity by VIX Bucket
+---------------------------------------
+Touched-short trades: 132
+Actual losses (outcome_tp50_sl_capped < 0): 67
+           n_touched n_losses mean_pnl_usd median_pnl_usd worst_pnl_usd pct_losses_wing_breached mean_abs_loss_x_entry_credit
+vix_bucket                                                                                                                   
+0-15          9.0000   4.0000     -92.1066       -92.0472      -93.2219                   1.0000                       3.1795
+15-20        44.0000  24.0000     -92.4664       -92.4362      -93.8687                   0.9583                       3.1788
+20-25        32.0000  12.0000     -92.5314       -92.6247      -93.6629                   1.0000                       3.1786
+25-30        33.0000  21.0000     -88.5705       -92.9272      -93.5280                   1.0000                       3.0339
+30-40        14.0000   6.0000     -92.8617       -92.6711      -94.0685                   1.0000                       3.1780
+40+                                                                                                                          
+
+MODULE B.3: MAE Proxy (Underlying)
+----------------------------------
+                   n    mean  median     p90     p99
+vix_bucket                                          
+0-15         85.0000  0.0272  0.0000  0.0083  0.5066
+15-20       529.0000  0.0347  0.0000  0.0000  0.7608
+20-25       334.0000  0.0481  0.0000  0.0000  1.0373
+25-30       187.0000  0.1013  0.0000  0.3031  1.8446
+30-40        88.0000  0.1169  0.0000  0.2914  1.9385
+40+                                                 
+
+Module B (Feasibility): Entry Hour Availability Check
+-----------------------------------------------------
+Hour analysis not feasible with current backtester outputs. TradeResult fields: ['date', 'spx_open', 'spx_high', 'spx_low', 'spx_close', 'vix', 'short_put', 'short_call', 'long_put', 'long_call', 'wing_width', 'entry_credit', 'entry_credit_usd', 'max_loss_usd', 'settlement_pnl_usd', 'put_breached', 'call_breached', 'put_wing_breached', 'call_wing_breached', 'outcome_hold_to_expiry', 'outcome_worst_case', 'outcome_tp50_or_expiry', 'outcome_tp50_sl_capped', 'risk_reward_ratio', 'selection_method', 'commission_usd', 'skipped', 'skip_reason']. Recommend adding per-trade entry_hour or intraday path timestamps.
+
+MODULE B.4: Cross-Validation (Module A vs Module B)
+---------------------------------------------------
+            n_days_A module_a_pred_exceed_1p0 n_trades_B module_b_actual_any_short_touch module_b_actual_any_wing_breach abs_diff
+vix_bucket                                                                                                                       
+0-15            1990                   0.1106    85.0000                          0.1059                          0.0941   0.0047
+15-20           1585                   0.3028   529.0000                          0.0832                          0.0794   0.2197
+20-25            873                   0.5052   334.0000                          0.0958                          0.0808   0.4093
+25-30            421                   0.6936   187.0000                          0.1765                          0.1604   0.5171
+30-40            268                   0.8694    88.0000                          0.1591                          0.1136   0.7103
+40+              179                   0.9665                                                                                    
+Pearson r (A predicted exceedance vs B actual any short touch): 0.7664
+
+Final Summary
+-------------
+============================================================
+VIX x BREACH ANALYSIS - CONSOLIDATED FINDINGS
+============================================================
+
+MODULE A: SPX MARKET DATA (N=5316 days, 2005-present, VIX_prev_close buckets)
+---------------------------------------------------
+[A.2] Exceedance probability at 1.0% threshold:
+      VIX 0-15: 11.1%
+      VIX 15-20: 30.3%
+      VIX 20-25: 50.5%
+      VIX 25-30: 69.4%
+      VIX 30-40: 86.9%
+      VIX 40+: 96.6%
+[A.4] Directional asymmetry (down/total at 1.0%): 57.0%
+      Confirms put-side dominance: NO
+[A.7] Optimal VIX threshold (ROC): 17.94
+      Current L3=30 is: TOO HIGH (AUC=0.811; LOWER TO 18.0)
+
+MODULE B: BACKTESTER OUTCOMES (N=1223 trades, wing=2)
+---------------------------------------------------
+[B.1] Wing breach rate:
+      VIX <20:  8.1%
+      VIX 20-25: 8.1%
+      VIX 25-30: 16.0%
+      VIX 30+:   11.4%
+[B.2] When loss occurs, wing also breached: 98.5% of losses
+      -> SL reliability: UNRELIABLE in VIX>25
+[B.4] Module A predicts Module B: r=0.77
+      -> Raw SPX data INSUFFICIENT as proxy
+
+============================================================
+ACTIONABLE CONCLUSIONS
+============================================================
+[1] VIX gate threshold: LOWER TO 18.0
+    Evidence: A7 ROC optimal=17.94, AUC=0.811; B1 any wing breach VIX>=25 14.5% vs VIX<20 8.1%
+[2] Wing=2 viability by regime:
+    VIX <20: MARGINAL (wing breach 8.1%)
+    VIX 20-25: MARGINAL (wing breach 8.1%)
+    VIX 25-30: UNVIABLE (wing breach 16.0%)
+[3] Put-side asymmetry: NOT CONFIRMED
+    Implication for future: no asymmetry change justified yet (down-side share=57.0%)
+[4] Day-of-week after VIX: INDEPENDENT
+[5] Temporal stability: REGIME-DEPENDENT
+    If unstable: largest bucket drift in 25-30 (range=0.265 in P(exceed>1.0%))
+[6] Hour analysis: NOT FEASIBLE - requires intraday data
+============================================================
+
+Artifacts
+---------
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\A2_exceedance_table.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\chart_A2_exceedance_heatmap.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\A3_range_percentiles.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\chart_A3_range_distributions.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\A4_directional_asymmetry.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\chart_A4_asymmetry_by_vix.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\A5_dow_given_vix.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\A6_temporal_stability.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\chart_A6_stability_by_era.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\A7_roc_analysis.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\chart_A7_roc_curve.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\B1_breach_by_vix.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\chart_B1_breach_rates.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\B2_loss_severity.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\chart_B2_loss_severity.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\B3_mae_proxy.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\chart_B3_mae_by_vix.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\B4_cross_validation.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\chart_B4_predicted_vs_actual.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\vix_breach_eda\vix_breach_eda_report.txt

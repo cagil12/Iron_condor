@@ -227,7 +227,8 @@ def find_trade_opportunity(
     min_put_diff = 999.0
     min_call_diff = 999.0
     target_delta = config.get('target_delta', 0.10)
-    min_credit = config.get('min_credit', 0.20)
+    min_credit = config.get('min_credit', 0.18)
+    precomputed_leg_quotes = None
 
     # Get current XSP spot price
     spot = connector.get_live_price('XSP')
@@ -278,7 +279,9 @@ def find_trade_opportunity(
                 tickers = [connector.ib.reqMktData(c, '', False, False) for c in contracts]
                 connector.ib.sleep(3)
                 
-                # Find best delta matches (using variables initialized at top of function)
+                # Find delta candidates first
+                candidate_puts = []
+                candidate_calls = []
                 
                 for t in tickers:
                     if t.modelGreeks and t.modelGreeks.delta is not None:
@@ -287,12 +290,14 @@ def find_trade_opportunity(
                         
                         if t.contract.right == 'P':
                             diff = abs(delta - (-target_delta))
+                            candidate_puts.append({'strike': strike, 'delta': delta, 'diff': diff})
                             if diff < min_put_diff:
                                 min_put_diff = diff
                                 best_put_strike = strike
                                 best_put_delta = delta
                         else:
                             diff = abs(delta - target_delta)
+                            candidate_calls.append({'strike': strike, 'delta': delta, 'diff': diff})
                             if diff < min_call_diff:
                                 min_call_diff = diff
                                 best_call_strike = strike
@@ -305,7 +310,98 @@ def find_trade_opportunity(
                     except:
                         pass
                 
-                if best_put_strike and best_call_strike:
+                if candidate_puts and candidate_calls:
+                    # Prefer higher net credits among close-delta candidates.
+                    max_candidates = int(config.get('credit_search_candidates', 4))
+                    max_candidates = max(1, min(max_candidates, 8))
+                    top_puts = sorted(candidate_puts, key=lambda x: x['diff'])[:max_candidates]
+                    top_calls = sorted(candidate_calls, key=lambda x: x['diff'])[:max_candidates]
+                    wing_width = config.get('wing_width', 2.0)
+
+                    quote_cache = {}
+
+                    def get_leg_bid_ask(strike: float, right: str):
+                        key = (right, float(strike))
+                        if key not in quote_cache:
+                            quote_cache[key] = connector.get_option_quote('XSP', expiry, strike, right)
+                        return quote_cache[key]
+
+                    best_combo = None
+                    for put_leg in top_puts:
+                        for call_leg in top_calls:
+                            short_put_candidate = put_leg['strike']
+                            short_call_candidate = call_leg['strike']
+                            if short_put_candidate >= short_call_candidate:
+                                continue
+
+                            long_put_candidate = short_put_candidate - wing_width
+                            long_call_candidate = short_call_candidate + wing_width
+
+                            bid_short_put, _ = get_leg_bid_ask(short_put_candidate, 'P')
+                            bid_short_call, _ = get_leg_bid_ask(short_call_candidate, 'C')
+                            _, ask_long_put = get_leg_bid_ask(long_put_candidate, 'P')
+                            _, ask_long_call = get_leg_bid_ask(long_call_candidate, 'C')
+
+                            if None in [bid_short_put, bid_short_call, ask_long_put, ask_long_call]:
+                                continue
+
+                            gross_credit = bid_short_put + bid_short_call
+                            protection_cost = ask_long_put + ask_long_call
+                            net_credit = gross_credit - protection_cost
+                            delta_diff = put_leg['diff'] + call_leg['diff']
+
+                            if (
+                                best_combo is None
+                                or net_credit > (best_combo['net_credit'] + 1e-9)
+                                or (
+                                    abs(net_credit - best_combo['net_credit']) <= 1e-9
+                                    and delta_diff < best_combo['delta_diff']
+                                )
+                            ):
+                                best_combo = {
+                                    'short_put': short_put_candidate,
+                                    'short_call': short_call_candidate,
+                                    'delta_put': put_leg['delta'],
+                                    'delta_call': call_leg['delta'],
+                                    'gross_credit': gross_credit,
+                                    'protection_cost': protection_cost,
+                                    'net_credit': net_credit,
+                                    'delta_diff': delta_diff,
+                                    'bid_short_put': bid_short_put,
+                                    'bid_short_call': bid_short_call,
+                                    'ask_long_put': ask_long_put,
+                                    'ask_long_call': ask_long_call,
+                                }
+
+                    if best_combo:
+                        short_put = best_combo['short_put']
+                        short_call = best_combo['short_call']
+                        delta_put = best_combo['delta_put']
+                        delta_call = best_combo['delta_call']
+                        selection_method = "DELTA_TARGET_BEST_CREDIT"
+                        precomputed_leg_quotes = {
+                            'bid_short_put': best_combo['bid_short_put'],
+                            'bid_short_call': best_combo['bid_short_call'],
+                            'ask_long_put': best_combo['ask_long_put'],
+                            'ask_long_call': best_combo['ask_long_call'],
+                            'gross_credit': best_combo['gross_credit'],
+                            'protection_cost': best_combo['protection_cost'],
+                            'net_credit': best_combo['net_credit'],
+                        }
+                        print(
+                            f"   ✅ Delta selection: {short_put}P (Δ={delta_put:.3f}), "
+                            f"{short_call}C (Δ={delta_call:.3f}) | best candidate credit: ${best_combo['net_credit']:.2f}"
+                        )
+                    elif best_put_strike and best_call_strike:
+                        short_put = best_put_strike
+                        short_call = best_call_strike
+                        delta_put = best_put_delta
+                        delta_call = best_call_delta
+                        selection_method = "DELTA_TARGET_FALLBACK"
+                        print(f"   ✅ Delta selection: {short_put}P (Δ={delta_put:.3f}), {short_call}C (Δ={delta_call:.3f})")
+                    else:
+                        raise ValueError("No valid delta strikes found")
+                elif best_put_strike and best_call_strike:
                     short_put = best_put_strike
                     short_call = best_call_strike
                     delta_put = best_put_delta
@@ -334,26 +430,35 @@ def find_trade_opportunity(
     long_put = short_put - WING_WIDTH
     long_call = short_call + WING_WIDTH
     
-    # Quotes for Shorts (Bid)
-    bid_short_put, _ = connector.get_option_quote('XSP', expiry, short_put, 'P')
-    bid_short_call, _ = connector.get_option_quote('XSP', expiry, short_call, 'C')
-    
-    # Quotes for Longs (Ask) - Cost of protection
-    _, ask_long_put = connector.get_option_quote('XSP', expiry, long_put, 'P')
-    _, ask_long_call = connector.get_option_quote('XSP', expiry, long_call, 'C')
-    
-    if None in [bid_short_put, bid_short_call, ask_long_put, ask_long_call]:
-        print("⏳ Waiting for option quotes (all legs)...")
-        return None
-    
-    # Calculate Net Credit
-    # Conservative: Sell at Bid, Buy at Ask
-    gross_credit = bid_short_put + bid_short_call
-    protection_cost = ask_long_put + ask_long_call
-    net_credit_est = gross_credit - protection_cost
+    if precomputed_leg_quotes:
+        bid_short_put = precomputed_leg_quotes['bid_short_put']
+        bid_short_call = precomputed_leg_quotes['bid_short_call']
+        ask_long_put = precomputed_leg_quotes['ask_long_put']
+        ask_long_call = precomputed_leg_quotes['ask_long_call']
+        gross_credit = precomputed_leg_quotes['gross_credit']
+        protection_cost = precomputed_leg_quotes['protection_cost']
+        net_credit_est = precomputed_leg_quotes['net_credit']
+    else:
+        # Quotes for Shorts (Bid)
+        bid_short_put, _ = connector.get_option_quote('XSP', expiry, short_put, 'P')
+        bid_short_call, _ = connector.get_option_quote('XSP', expiry, short_call, 'C')
+        
+        # Quotes for Longs (Ask) - Cost of protection
+        _, ask_long_put = connector.get_option_quote('XSP', expiry, long_put, 'P')
+        _, ask_long_call = connector.get_option_quote('XSP', expiry, long_call, 'C')
+
+        if None in [bid_short_put, bid_short_call, ask_long_put, ask_long_call]:
+            print("⏳ Waiting for option quotes (all legs)...")
+            return None
+        
+        # Calculate Net Credit
+        # Conservative: Sell at Bid, Buy at Ask
+        gross_credit = bid_short_put + bid_short_call
+        protection_cost = ask_long_put + ask_long_call
+        net_credit_est = gross_credit - protection_cost
     
     # Minimum credit filter
-    min_credit = config.get('min_credit', 0.20)
+    min_credit = config.get('min_credit', 0.18)
     if net_credit_est < min_credit:
         print(f"⚠️ Credit too low: ${net_credit_est:.2f} < ${min_credit:.2f}")
         return None

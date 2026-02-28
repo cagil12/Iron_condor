@@ -1,0 +1,198 @@
+Intraday Range Analysis - When Does the Move Happen?
+Repo root: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research
+Output dir: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda
+
+Data Acquisition
+----------------
+Using cache: C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\_intraday_cache.csv
+
+Data Validation
+---------------
+Date range (ET): 2025-11-24 -> 2026-02-20
+Trading days: 60
+Bars: 6668
+Timezone handling: timestamps converted to ET and stored as ET-naive values
+Bars by interval:
+ interval_min  n_bars  n_days
+            1    2730       7
+            5    3938      53
+Days with missing RTH bars (vs full session expectation): 8
+Sample gap days:
+      date  interval_min  bars expected_bars gap_bars
+2026-01-30             5    13            78       65
+2026-02-02             5    24            78       54
+2025-11-28             5    42            78       36
+2025-12-24             5    42            78       36
+2026-02-06             5    76            78        2
+2026-01-06             5    77            78        1
+2026-01-20             5    77            78        1
+2026-01-21             5    77            78        1
+
+Build Intraday Checkpoint Panel
+-------------------------------
+Checkpoint panel rows: 780 (60 days x 13 checkpoints)
+
+Analysis 1: Cumulative Range by Hour
+------------------------------------
+checkpoint  checkpoint_minute  n_days   mean median    p25    p75
+     10:00                600      59 0.4940 0.4976 0.3736 0.5876
+     10:30                630      59 0.6488 0.6539 0.5117 0.7832
+     11:00                660      59 0.7332 0.7636 0.6091 0.8527
+     11:30                690      59 0.7815 0.7974 0.6744 0.9013
+     12:00                720      59 0.8218 0.8428 0.7322 0.9763
+     12:30                750      59 0.8516 0.8773 0.7902 1.0000
+     13:00                780      59 0.8840 0.9337 0.8185 1.0000
+     13:30                810      59 0.8975 0.9799 0.8485 1.0000
+     14:00                840      59 0.9230 1.0000 0.8844 1.0000
+     14:30                870      60 0.9253 1.0000 0.9128 1.0000
+     15:00                900      60 0.9545 1.0000 0.9666 1.0000
+     15:30                930      60 0.9753 1.0000 0.9999 1.0000
+     16:00                960      60 1.0000 1.0000 1.0000 1.0000
+
+Analysis 2: Cumulative Range by Hour x VIX Bucket
+-------------------------------------------------
+vix_bucket checkpoint  checkpoint_minute  n_days   mean median    p25    p75
+      0-15      10:00                600       7 0.5999 0.5472 0.5137 0.6535
+      0-15      10:30                630       7 0.6986 0.6846 0.6230 0.7604
+      0-15      11:00                660       7 0.7407 0.6904 0.6682 0.7838
+      0-15      11:30                690       7 0.7771 0.7641 0.6744 0.8375
+      0-15      12:00                720       7 0.8208 0.8070 0.7035 0.9277
+      0-15      12:30                750       7 0.8795 0.8977 0.7871 1.0000
+      0-15      13:00                780       7 0.9042 1.0000 0.7967 1.0000
+      0-15      13:30                810       7 0.9264 1.0000 0.8657 1.0000
+      0-15      14:00                840       7 0.9550 1.0000 0.9040 1.0000
+      0-15      14:30                870       7 0.9772 1.0000 0.9520 1.0000
+      0-15      15:00                900       7 0.9862 1.0000 0.9835 1.0000
+      0-15      15:30                930       7 0.9889 1.0000 0.9866 1.0000
+      0-15      16:00                960       7 1.0000 1.0000 1.0000 1.0000
+     15-20      10:00                600      30 0.4716 0.4651 0.3575 0.5771
+     15-20      10:30                630      30 0.6322 0.6001 0.4767 0.7899
+     15-20      11:00                660      30 0.7182 0.7509 0.6089 0.8528
+     15-20      11:30                690      30 0.7545 0.7844 0.6120 0.8922
+     15-20      12:00                720      30 0.8003 0.8330 0.7281 0.9556
+     15-20      12:30                750      30 0.8314 0.8611 0.7713 0.9796
+     15-20      13:00                780      30 0.8618 0.9022 0.7932 1.0000
+
+Analysis 3: Incremental Range per Hour Block
+--------------------------------------------
+      block          block_key  n_days   mean median    p25    p75
+09:30-10:00    open_volatility      59 0.4940 0.4976 0.3736 0.5876
+10:00-10:30 early_entry_window      59 0.1548 0.1296 0.0479 0.2212
+10:30-11:00  late_entry_window      59 0.0843 0.0461 0.0000 0.1318
+11:00-12:00        mid_morning      59 0.0886 0.0646 0.0000 0.1311
+12:00-13:00              lunch      59 0.0622 0.0373 0.0000 0.1125
+13:00-14:00    early_afternoon      59 0.0390 0.0000 0.0000 0.0706
+14:00-15:00        fomc_window      59 0.0334 0.0000 0.0000 0.0182
+15:00-16:00        close_gamma      60 0.0455 0.0000 0.0000 0.0334
+
+Analysis 4: "Residual Risk" After Entry Time
+--------------------------------------------
+entry_time vix_bucket  n_days mean_residual_max_pct median_residual_max_pct p90_residual_max_pct p95_residual_max_pct p_residual_gt_1p0 p_residual_gt_1p3 entry_source_exact_rate
+     10:00        ALL      60                0.5929                  0.4599               1.0756               1.2250            0.1167            0.0333                  0.9833
+     10:30        ALL      60                0.5208                  0.4252               1.0688               1.1482            0.1167            0.0167                  0.9833
+     11:00        ALL      59                0.4882                  0.3751               0.9647               1.0693            0.0678            0.0169                  0.9667
+     11:30        ALL      59                0.4202                  0.3652               0.7792               0.9599            0.0169            0.0000                  0.9667
+     12:00        ALL      59                0.4225                  0.3937               0.7177               0.8951            0.0339            0.0000                  0.9667
+
+Analysis 5: Premium Decay Profile (Theoretical)
+-----------------------------------------------
+entry_time hours_to_expiry premium_fraction_theoretical premium_lost_by_waiting p90_residual_all_vix p90_residual_vix_20_25 p_residual_gt_1p0_all_vix p_residual_gt_1p0_vix_20_25 risk_reward_ratio_p90_all_vix risk_reward_ratio_p90_vix_20_25
+     10:00          6.0000                       0.9608                  0.0392               1.0756                 1.5174                    0.1167                      0.3333                        1.1195                          1.5793
+     10:30          5.5000                       0.9199                  0.0801               1.0688                 1.4706                    0.1167                      0.5000                        1.1620                          1.5987
+     11:00          5.0000                       0.8771                  0.1229               0.9647                 1.1177                    0.0678                      0.3333                        1.1000                          1.2744
+     11:30          4.5000                       0.8321                  0.1679               0.7792                 0.7856                    0.0169                      0.1667                        0.9365                          0.9442
+     12:00          4.0000                       0.7845                  0.2155               0.7177                 0.8937                    0.0339                      0.1667                        0.9149                          1.1392
+Sweet spot (min P90 residual / premium fraction, all-VIX): 12:00
+
+Analysis 6: Worst Moves - When Do They Start?
+---------------------------------------------
+vix_bucket timing_bucket  n_breaches  n_total_vix share_within_vix
+     15-20      11_to_14           3            6           0.5000
+     15-20      after_14           2            6           0.3333
+     15-20     before_11           1            6           0.1667
+     20-25      11_to_14           2            3           0.6667
+     20-25      after_14           1            3           0.3333
+
+CONSOLIDATED SUMMARY
+--------------------
+============================================================
+INTRADAY RANGE ANALYSIS - WHEN DOES THE MOVE HAPPEN?
+============================================================
+
+DATA: Intraday bars (mixed 5m/1m), N=60 trading days (2025-11-24 to 2026-02-20), times in ET
+
+RANGE CONSUMPTION PROFILE
+============================================================
+By 10:00: 49.8% of daily range consumed (median)
+By 10:30: 65.4% of daily range consumed (median)
+By 11:00: 76.4% of daily range consumed (median)
+By 12:00: 84.3% of daily range consumed (median)
+By 14:00: 100.0% of daily range consumed (median)
+-> FRONT-LOADED
+
+HIGH-VIX DAYS: range consumption is SIMILAR than low-VIX
+
+RESIDUAL RISK BY ENTRY TIME (all VIX)
+============================================================
+Entry 10:00: P(residual>1%) = 11.7%, P(residual>1.3%) = 3.3%, P90 residual = 1.08%
+Entry 10:30: P(residual>1%) = 11.7%, P(residual>1.3%) = 1.7%, P90 residual = 1.07%
+Entry 11:00: P(residual>1%) = 6.8%, P(residual>1.3%) = 1.7%, P90 residual = 0.96%
+Entry 11:30: P(residual>1%) = 1.7%, P(residual>1.3%) = 0.0%, P90 residual = 0.78%
+Entry 12:00: P(residual>1%) = 3.4%, P(residual>1.3%) = 0.0%, P90 residual = 0.72%
+
+RESIDUAL RISK BY ENTRY TIME (VIX 20-25 only)
+============================================================
+Entry 10:00: P(residual>1%) = 33.3%, P(residual>1.3%) = 16.7%, P90 residual = 1.52%
+Entry 10:30: P(residual>1%) = 50.0%, P(residual>1.3%) = 16.7%, P90 residual = 1.47%
+Entry 11:00: P(residual>1%) = 33.3%, P(residual>1.3%) = 0.0%, P90 residual = 1.12%
+Entry 11:30: P(residual>1%) = 16.7%, P(residual>1.3%) = 0.0%, P90 residual = 0.79%
+Entry 12:00: P(residual>1%) = 16.7%, P(residual>1.3%) = 0.0%, P90 residual = 0.89%
+
+RISK-REWARD SWEET SPOT
+============================================================
+Optimal entry time (proxy): 12:00 ET
+Rationale: P90 residual risk = 0.72% while premium remains at 78.4%
+Current bot behavior: enters at first valid fill after 10:00
+Recommendation: DELAY ENTRY TO 11:00
+
+BREACH TIMING (days where range > 1%)
+============================================================
+16.7% of breaches occur before 11:00
+58.3% of breaches occur between 11:00-14:00
+25.0% of breaches occur after 14:00
+-> Dangerous moves are SPREAD THROUGHOUT
+Breach-day count: 12
+
+============================================================
+ACTIONABLE CONCLUSIONS
+============================================================
+[1] Entry window: SHIFT TO 11:00-12:00
+    Evidence: waiting 10:00->11:00 changes P(breach) by 4.9% (relative 41.9%) while premium cost is ~8.7%
+[2] VIX interaction with hour: DOES NOT EXIST
+    High-VIX timing profile appears similar to low-VIX timing profile
+[3] For wing=2 specifically (range-threshold proxy):
+    Entry at 10:00 -> P(short breach ~1.0%) = 11.7% | P(wing breach ~1.3%) = 3.3%
+    Entry at 11:00 -> P(short breach ~1.0%) = 6.8% | P(wing breach ~1.3%) = 1.7%
+    Premium lost by waiting: ~8.7%
+    Net effect (risk proxy vs premium proxy): POSITIVE
+[4] FOMC days specifically: NOT IDENTIFIABLE in current dataset
+    Requires external event calendar (e.g., FOMC schedule) to separate pre/post-14:00 behavior on actual FOMC dates.
+============================================================
+
+Artifacts
+---------
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\_intraday_cache.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\A1_cumulative_range_fraction.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\chart_A1_range_consumption.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\A2_range_by_hour_vix.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\chart_A2_range_by_vix.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\A3_incremental_range.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\chart_A3_incremental_bars.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\A4_residual_risk.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\chart_A4_residual_by_entry.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\chart_A4_residual_boxplot.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\A5_premium_decay.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\chart_A5_risk_reward_tradeoff.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\A6_breach_timing.csv
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\chart_A6_breach_timing.png
+- C:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research\outputs\hourly_range_eda\hourly_range_report.txt

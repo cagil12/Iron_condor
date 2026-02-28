@@ -1,0 +1,55 @@
+{
+  "active_position": {
+    "trade_id": 1,
+    "entry_time": "2026-02-17 09:49:50.805979",
+    "short_put_strike": 673.0,
+    "long_put_strike": 671.0,
+    "short_call_strike": 688.0,
+    "long_call_strike": 690.0,
+    "entry_credit": 0.19,
+    "qty": 1,
+    "max_profit": 19.0,
+    "max_loss": 181.0,
+    "spot_at_entry": 681.89,
+    "vix_at_entry": 21.71,
+    "delta_net": 0.0,
+    "snapshot_json": "{\"short_put_bid\": 0.36, \"short_put_ask\": 0.38, \"short_put_mid\": 0.37, \"delta_put\": -0.08742726888441883, \"theta_put\": -0.2925817714082868, \"gamma_put\": 0.021985280140678506, \"iv_put\": 0.39715076712821445, \"long_put_bid\": 0.21, \"long_put_ask\": 0.25, \"long_put_mid\": 0.22999999999999998, \"short_call_bid\": 0.35, \"short_call_ask\": 0.45, \"short_call_mid\": 0.4, \"delta_call\": 0.11734431497808151, \"theta_call\": -0.3106682652474575, \"gamma_call\": 0.036291027921840226, \"iv_call\": 0.29928420857276217, \"long_call_bid\": 0.14, \"long_call_ask\": 0.16, \"long_call_mid\": 0.15000000000000002}",
+    "delta_put": -0.08742726888441883,
+    "delta_call": 0.11734431497808151,
+    "theta": -0.6032500366557443,
+    "gamma": 0.05827630806251873,
+    "order_ids": [],
+    "legs": [
+      {
+        "conId": 848018597,
+        "action": "BUY",
+        "strike": 671.0,
+        "right": "P"
+      },
+      {
+        "conId": 848018636,
+        "action": "SELL",
+        "strike": 673.0,
+        "right": "P"
+      },
+      {
+        "conId": 848018269,
+        "action": "SELL",
+        "strike": 688.0,
+        "right": "C"
+      },
+      {
+        "conId": 846696843,
+        "action": "BUY",
+        "strike": 690.0,
+        "right": "C"
+      }
+    ]
+  },
+  "consecutive_losses": 0,
+  "streak_pause_until": null,
+  "cumulative_pnl": 0.0,
+  "pnl_high_water_mark": 0.0,
+  "dd_pause_until": null,
+  "last_updated": "2026-02-17T09:49:50.806081"
+}
