@@ -1,10 +1,13 @@
 param(
     [string]$RepoRoot = "c:\Users\Usuario\.gemini\antigravity\scratch\ingresarios_options_research",
-    [int]$IntervalSec = 180
+    [int]$IntervalSec = 1200
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+# Enforce 20-minute cadence for bitacora updates.
+$IntervalSec = [Math]::Max(1200, [int]$IntervalSec)
 
 $outputsDir = Join-Path $RepoRoot "outputs"
 $stateFile = Join-Path $outputsDir "bitacora_updater.state"
@@ -537,7 +540,7 @@ while ($true) {
 
         $logPath = Get-LatestMonitorLog
         if (-not $logPath) {
-            Start-Sleep -Seconds ([Math]::Min($IntervalSec, 30))
+            Start-Sleep -Seconds $IntervalSec
             continue
         }
 
@@ -590,7 +593,7 @@ while ($true) {
                 }
             }
 
-            Start-Sleep -Seconds ([Math]::Min($IntervalSec, 30))
+            Start-Sleep -Seconds $IntervalSec
             continue
         }
 
