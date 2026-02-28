@@ -130,6 +130,41 @@ def calc_p_otm(
     }
 
 
+def calc_current_spread_cost_from_pnl(entry_credit: float, pnl: float, qty: int) -> Optional[float]:
+    """Invert PnL formula to estimate current spread cost (per-share)."""
+    try:
+        qty_i = int(qty)
+        if qty_i <= 0:
+            return None
+        return float(entry_credit) - (float(pnl) / (100.0 * qty_i))
+    except (TypeError, ValueError, ZeroDivisionError):
+        return None
+
+
+def calc_sl_threshold_cost(entry_credit: float, stop_loss_mult: float) -> Optional[float]:
+    """Definition B stop threshold: cost_to_close >= sl_mult * entry_credit."""
+    try:
+        credit = float(entry_credit)
+        mult = float(stop_loss_mult)
+    except (TypeError, ValueError):
+        return None
+    if credit <= 0.0 or mult <= 0.0:
+        return None
+    return credit * mult
+
+
+def calc_sl_pct_cost_basis(current_spread_cost: float, sl_threshold_cost: float) -> float:
+    """Return SL utilization % on spread-cost basis (100% == at stop)."""
+    try:
+        current = float(current_spread_cost)
+        threshold = float(sl_threshold_cost)
+    except (TypeError, ValueError):
+        return 0.0
+    if threshold <= 0.0:
+        return 0.0
+    return (current / threshold) * 100.0
+
+
 class LiveExecutor:
     """
     Live execution engine for XSP Iron Condors.
@@ -187,7 +222,9 @@ class LiveExecutor:
         
         # Load dynamic settings
         self.TAKE_PROFIT_PCT = float(self.config.get('take_profit_pct', self.TAKE_PROFIT_PCT))
-        self.STOP_LOSS_MULT = float(self.config.get('stop_loss_mult', 2.0))
+        # Definition B semantics (spread-cost basis). Default 3.0 preserves
+        # the historical effective trigger of old Definition A @ 2.0x.
+        self.STOP_LOSS_MULT = float(self.config.get('stop_loss_mult', 3.0))
         self.WING_WIDTH = float(self.config.get('wing_width', 2.0))  # FIX 1
         self.HOLD_TO_EXPIRY_MODE = self.TAKE_PROFIT_PCT >= 1.00
         self.logger.info(
@@ -209,7 +246,9 @@ class LiveExecutor:
             self.expected_commission_win = self.ROUND_TRIP_COMMISSION
             self.expected_commission_loss = self.ROUND_TRIP_COMMISSION
 
-        if self.HOLD_TO_EXPIRY_MODE and abs(self.STOP_LOSS_MULT - 2.0) < 1e-9:
+        # Preserve legacy label for the Phase 1 baseline while using Definition B
+        # semantics (3x cost basis ~= old 2x PnL basis).
+        if self.HOLD_TO_EXPIRY_MODE and abs(self.STOP_LOSS_MULT - 3.0) < 1e-9:
             self.exit_strategy_label = "hold_to_expiry_sl2x"
         else:
             tp_label = int(round(self.TAKE_PROFIT_PCT * 100))
@@ -1196,9 +1235,19 @@ class LiveExecutor:
                  self.logger.error("   ❌ Structure mismatch (Long/Short logic error).")
                  return
                  
-            entry_credit = total_credit_collected / qty / 100
-            max_profit = total_credit_collected
             wing_width = short_put.contract.strike - long_put.contract.strike
+            recovered_trade_id = self._find_open_trade_id(
+                short_put.contract.strike,
+                short_call.contract.strike,
+                wing_width,
+            )
+
+            avgcost_credit = (total_credit_collected / qty / 100) if qty > 0 else None
+            entry_credit = self._recover_entry_credit(
+                recovered_trade_id,
+                fallback_avgcost_credit=avgcost_credit,
+            )
+            max_profit = entry_credit * qty * 100
             max_loss = (wing_width * qty * 100) - max_profit
             
             # Populate legs for Atomic Closure (FIX 4 compatibility)
@@ -1226,11 +1275,7 @@ class LiveExecutor:
                 entry_time = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
             
             self.active_position = IronCondorPosition(
-                trade_id=self._find_open_trade_id(
-                    short_put.contract.strike,
-                    short_call.contract.strike,
-                    wing_width,
-                ),
+                trade_id=recovered_trade_id,
                 entry_time=entry_time,
                 short_put_strike=short_put.contract.strike,
                 long_put_strike=long_put.contract.strike,
@@ -1261,6 +1306,71 @@ class LiveExecutor:
             
         except Exception as e:
             self.logger.error(f"   ❌ Recovery Failed: {e}")
+
+    def _recover_entry_credit(
+        self,
+        trade_id: int,
+        fallback_avgcost_credit: Optional[float] = None,
+    ) -> float:
+        """
+        Recover entry_credit from authoritative sources.
+        Priority: state.json > journal OPEN row > IBKR avgCost fallback.
+        """
+        # 1) state.json (saved at entry time from verified fills)
+        try:
+            if self.STATE_FILE.exists():
+                state = json.loads(self.STATE_FILE.read_text())
+                pos = state.get("active_position") or {}
+                raw_credit = pos.get("entry_credit", None)
+                if raw_credit is not None:
+                    credit = float(raw_credit)
+                    state_trade_id = int(pos.get("trade_id", 0) or 0)
+                    # Accept state credit if positive and trade_id matches (or one side is unknown).
+                    if credit > 0 and (
+                        trade_id <= 0 or state_trade_id <= 0 or state_trade_id == trade_id
+                    ):
+                        self.logger.info(f"   ℹ️ Recovery: entry_credit=${credit:.4f} from state.json")
+                        return credit
+        except Exception as e:
+            self.logger.warning(f"   ⚠️ Recovery: could not read state.json entry_credit: {e}")
+
+        # 2) trade journal (latest OPEN row for trade_id)
+        if trade_id > 0:
+            journal_path = Path(getattr(self, "TRADE_JOURNAL_PATH", "data/trade_journal.csv"))
+            if journal_path.exists():
+                try:
+                    match_row = None
+                    with journal_path.open("r", encoding="utf-8-sig", newline="") as f:
+                        reader = csv.DictReader(f)
+                        for row in reader:
+                            if str(row.get("trade_id", "")).strip() != str(trade_id):
+                                continue
+                            if str(row.get("status", "")).strip().upper() != "OPEN":
+                                continue
+                            match_row = row
+                    if match_row:
+                        credit = float(match_row.get("entry_credit", 0.0) or 0.0)
+                        if credit > 0:
+                            self.logger.info(f"   ℹ️ Recovery: entry_credit=${credit:.4f} from journal")
+                            return credit
+                except Exception as e:
+                    self.logger.warning(f"   ⚠️ Recovery: could not read journal entry_credit: {e}")
+
+        # 3) fallback: IBKR avgCost-derived estimate (unreliable)
+        if fallback_avgcost_credit is not None:
+            try:
+                credit = float(fallback_avgcost_credit)
+                if credit > 0:
+                    self.logger.warning(
+                        "   ⚠️ Recovery: entry_credit from state/journal unavailable. "
+                        "Falling back to IBKR avgCost (SL threshold may be inaccurate)."
+                    )
+                    return credit
+            except (TypeError, ValueError):
+                pass
+
+        self.logger.warning("   ⚠️ Recovery: entry_credit unavailable; using minimal safe placeholder $0.01")
+        return 0.01
 
     def has_active_position(self) -> bool:
         """Check if there's an active position managed by us (FIX 9)."""
@@ -1949,6 +2059,9 @@ class LiveExecutor:
         if not self.active_position or not self.active_position.legs:
             self.logger.warning("No active position legs found for atomic closure")
             return False
+        if getattr(self, 'emergency_halt', False):
+            self.logger.critical("🚨 Emergency halt active - blocking atomic close attempt.")
+            return False
         
         self.logger.info("📉 Attempting atomic closure (BAG order)...")
         
@@ -1985,8 +2098,8 @@ class LiveExecutor:
             if trade.orderStatus.status in ['Cancelled', 'Inactive', 'ApiCancelled']:
                 break
         
-        # BAG failed — MUST cancel explicitly and wait before fallback
-        self.logger.warning("BAG close failed. Cancelling order before fallback...")
+        # BAG failed — cancel explicitly and stop (no auto fallback).
+        self.logger.warning("BAG close failed. Cancelling order and aborting auto-close flow...")
         try:
             self.ib.cancelOrder(trade.order)
         except Exception as e:
@@ -1999,11 +2112,14 @@ class LiveExecutor:
         self.ib.reqGlobalCancel()
         self.ib.sleep(2)
 
-        self.logger.info("BAG order cancelled. Proceeding to individual leg fallback...")
-        return self.close_position_individual_fallback()
+        self.logger.error("❌ BAG order failed and was cancelled. No leg-by-leg fallback will be attempted automatically.")
+        return False
 
     def close_position_individual_fallback(self) -> bool:
         """Cierre de patas individuales si falla el BAG order (FIX 4 + FIX 9)"""
+        if getattr(self, 'emergency_halt', False):
+            self.logger.critical("🚨 Emergency halt active - blocking leg-by-leg fallback close.")
+            return False
         self.logger.info("📉 Fallback: Closing individual legs...")
         
         # POSITION ISOLATION (FIX 9): ONLY close legs matching our IC's conIds
@@ -2143,7 +2259,16 @@ class LiveExecutor:
         
         max_profit = self.active_position.max_profit
         take_profit_target = max_profit * self.TAKE_PROFIT_PCT
-        stop_loss_target = -self.active_position.entry_credit * 100 * self.STOP_LOSS_MULT
+        qty = max(self.active_position.qty, 1)
+        current_spread_cost = calc_current_spread_cost_from_pnl(
+            self.active_position.entry_credit,
+            pnl,
+            qty,
+        )
+        sl_threshold_cost = calc_sl_threshold_cost(
+            self.active_position.entry_credit,
+            self.STOP_LOSS_MULT,
+        )
         
         # 1. Take Profit (disabled in hold-to-expiry mode to avoid phantom closes)
         if not self.HOLD_TO_EXPIRY_MODE and pnl >= take_profit_target:
@@ -2151,20 +2276,22 @@ class LiveExecutor:
             return f"TP_{tp_label} [PnL ${pnl:.0f} >= ${take_profit_target:.0f}]"
         
         # 2. Stop Loss
-        if pnl <= stop_loss_target:
-            return f"SL_{int(self.STOP_LOSS_MULT)}X [PnL ${pnl:.0f} <= ${stop_loss_target:.0f}]"
+        if (
+            current_spread_cost is not None
+            and sl_threshold_cost is not None
+            and current_spread_cost >= sl_threshold_cost
+        ):
+            return (
+                f"SL_{int(self.STOP_LOSS_MULT)}X "
+                f"[Spread ${current_spread_cost:.2f} >= ${sl_threshold_cost:.2f}]"
+            )
         
         # 3. EOD Force Close (time of day cutoff)
         now_time = datetime.now().time()
         if now_time >= self.FORCE_CLOSE_TIME:
             if self.HOLD_TO_EXPIRY_MODE:
-                # In hold-to-expiry mode, avoid closing nearly worthless winners.
-                # PnL formula inversion:
-                # current_spread_cost = entry_credit - (pnl / (100 * qty))
-                qty = max(self.active_position.qty, 1)
-                current_spread_cost = self.active_position.entry_credit - (pnl / (100 * qty))
-                if current_spread_cost <= self.TICK_SIZE:
-                    return None
+                self.logger.info("⏳ Hold-to-expiry active - skipping EOD close evaluation.")
+                return None
             return f"EOD_TIME [Time {now_time.strftime('%H:%M')} >= {self.FORCE_CLOSE_TIME}]"
         
         return None
@@ -2221,6 +2348,10 @@ class LiveExecutor:
             return True
         else:
             self.logger.error("❌ EXIT FAILED - Atomic Closure failed. Position might be partially open.")
+            self.logger.critical(
+                "🚨 Atomic BAG close failed on first attempt. Emergency halt activated. Manual intervention required."
+            )
+            self._emergency_halt("Atomic BAG close failed on first attempt")
             return False
 
 
@@ -2278,7 +2409,13 @@ class LiveExecutor:
                 pnl = self.get_position_pnl()
                 if pnl is not None:
                     last_known_pnl = pnl
-                    current_spread_cost = self.active_position.entry_credit - (pnl / (100 * self.active_position.qty))
+                    current_spread_cost = calc_current_spread_cost_from_pnl(
+                        self.active_position.entry_credit,
+                        pnl,
+                        self.active_position.qty,
+                    )
+                    if current_spread_cost is None:
+                        current_spread_cost = 0.0
                     if current_spread_cost > max_spread_val:
                         max_spread_val = current_spread_cost
                     if pnl < min_pnl_observed:
@@ -2310,8 +2447,19 @@ class LiveExecutor:
                 pnl_val = pnl if pnl is not None else 0.0
                 tp_target = max_profit * self.TAKE_PROFIT_PCT
                 tp_pct = (pnl_val / tp_target * 100) if tp_target > 0 else 0
-                sl_target = -self.active_position.entry_credit * 100 * self.STOP_LOSS_MULT
-                sl_pct = (pnl_val / sl_target * 100) if sl_target < 0 else 0
+                current_spread_cost_for_sl = calc_current_spread_cost_from_pnl(
+                    self.active_position.entry_credit,
+                    pnl_val,
+                    self.active_position.qty,
+                )
+                sl_threshold_cost = calc_sl_threshold_cost(
+                    self.active_position.entry_credit,
+                    self.STOP_LOSS_MULT,
+                )
+                sl_pct = calc_sl_pct_cost_basis(
+                    current_spread_cost_for_sl if current_spread_cost_for_sl is not None else 0.0,
+                    sl_threshold_cost if sl_threshold_cost is not None else 0.0,
+                )
                 max_pct = (pnl_val / max_profit * 100) if max_profit > 0 else 0
 
                 # Time held
@@ -2371,6 +2519,12 @@ class LiveExecutor:
                         max_pnl_observed,
                     )
                     if success:
+                        break
+                    if getattr(self, 'emergency_halt', False):
+                        self.logger.critical(
+                            "🚨 Exit attempt failed and emergency halt is active. "
+                            "Stopping monitor loop for manual intervention."
+                        )
                         break
                     print("⚠️ Exit failed. Retrying monitoring loop...")
                     try:
